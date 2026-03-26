@@ -1,0 +1,888 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		19D0E6182DA3BEC3ECFC72E4 /* MoonrakerConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5FAA86E3FF790BE00B67C1 /* MoonrakerConfigurationTests.swift */; };
+		1AED95A8409CBEF3684C36EE /* MoonrakerWebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56142C5BDFDDF4A94561C13 /* MoonrakerWebSocketMessage.swift */; };
+		1B1ABEE13C3BE492FE57159B /* MenuBarIconConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */; };
+		1EE3208E11C5F4CB79A5B01A /* MenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1C2A4B55080140BAA9017F /* MenuContentView.swift */; };
+		2B3182874B6790EF8D195CA7 /* MenuBarStatusIconRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCFB8003B2471E9BCCFC82 /* MenuBarStatusIconRenderer.swift */; };
+		2BC49AE3848C81A1A34FB914 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C5685BDF05F023DB4C961B /* AppConfig.swift */; };
+		2C1FBC4B5355E2AD257FD3BB /* MenuBarStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04803325601911E33F3F355F /* MenuBarStatusController.swift */; };
+		3C388159A95FE2FFDBFC4609 /* PrinterStatusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BD80AC67C69D6C826BBADD /* PrinterStatusStoreTests.swift */; };
+		3C49686F45434182BDAF398A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6586DD64BFB26A97E156CECC /* AppDelegate.swift */; };
+		5B9B41C9569512F8DB8CF58F /* MoonrakerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F04629C0853378A9FEC0B7 /* MoonrakerConfiguration.swift */; };
+		5DD5E3ED2FC58DF0ED14D605 /* PrinterStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */; };
+		65774F452A2E8B331A3E865D /* LogWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578BFD7E1802AE0DECD0A4FC /* LogWindowController.swift */; };
+		6C9FA5459FB405D23DED9B0D /* MoonrakerCameraClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE16A8BF6754D7446A49D79F /* MoonrakerCameraClient.swift */; };
+		6F94E406AE296B77A8A862BB /* AppConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90B6D77A25BE019E863E8A9 /* AppConfigTests.swift */; };
+		8602CA7A18E954BA43B859D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD47869D8271A934D5B7A712 /* SettingsView.swift */; };
+		8E11B7F38AA9E8B607865240 /* MoonrakerCameraClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */; };
+		943069046312EF6BD5E252CF /* PrinterStatusStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */; };
+		9525D3A114B7707096E5D6BF /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE8328D080EA70F6A54B62A /* LogView.swift */; };
+		96ED0ACC05F5A7D91716A435 /* MoonrakerStatusParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7A5F1C14ED6BE85611231F /* MoonrakerStatusParsingTests.swift */; };
+		9BC779227A8EFBC8AD2BC31D /* AppLogStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7A80A26E325C50AEC9E8338 /* AppLogStore.swift */; };
+		ACEFB8C0BAABA20BD010790C /* SelenophileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29BEF3BC6E8986AE25F1B8 /* SelenophileApp.swift */; };
+		C1E2C203443135721BA805FD /* libSelenophileKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B107EEF376C0D261F3775438 /* libSelenophileKit.a */; };
+		C62AF00E6AD26DA0CCE50E9D /* AppLogStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */; };
+		D92F54154696D3F8AC6E7877 /* libSelenophileKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B107EEF376C0D261F3775438 /* libSelenophileKit.a */; };
+		DCE1E9AC7E88B5BA2CB7E66D /* MenuBarIconConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4227315CF1E93F0519C60410 /* MenuBarIconConfiguration.swift */; };
+		F17FFC7C2977E7A267C94109 /* MoonrakerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		30BC2C2BDB121646C95A88A1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A3889A96367A82C2595090C5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8561DEBB7E1CBFA57A4AFC0C;
+			remoteInfo = Selenophile;
+		};
+		7CA465B64E150F369E8DCCB2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A3889A96367A82C2595090C5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DF8F456F42B1A23D84684FF6;
+			remoteInfo = SelenophileKit;
+		};
+		D7B622A219DBDFA12E5217DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A3889A96367A82C2595090C5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DF8F456F42B1A23D84684FF6;
+			remoteInfo = SelenophileKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4D8FDC8AF2F622FCCCA62071 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9A0134B04F10F5002638196 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BBE6DD5164EFA0995009EC59 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC6464B2FD452B720E89D135 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		04803325601911E33F3F355F /* MenuBarStatusController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusController.swift; sourceTree = "<group>"; };
+		1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerClient.swift; sourceTree = "<group>"; };
+		24E52344B58B7D1B332BADA6 /* Selenophile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Selenophile-Info.plist"; sourceTree = "<group>"; };
+		29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatus.swift; sourceTree = "<group>"; };
+		30BD80AC67C69D6C826BBADD /* PrinterStatusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusStoreTests.swift; sourceTree = "<group>"; };
+		4227315CF1E93F0519C60410 /* MenuBarIconConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconConfiguration.swift; sourceTree = "<group>"; };
+		4B7EE020F7B0F6B9D4BA43DD /* SelenophileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SelenophileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		578BFD7E1802AE0DECD0A4FC /* LogWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWindowController.swift; sourceTree = "<group>"; };
+		5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogStoreTests.swift; sourceTree = "<group>"; };
+		5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconConfigurationTests.swift; sourceTree = "<group>"; };
+		6586DD64BFB26A97E156CECC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		6D5FAA86E3FF790BE00B67C1 /* MoonrakerConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerConfigurationTests.swift; sourceTree = "<group>"; };
+		7DE8328D080EA70F6A54B62A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
+		80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusStore.swift; sourceTree = "<group>"; };
+		86C5685BDF05F023DB4C961B /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		8CF6FB2A5FF5A58EFD219185 /* SelenophileKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SelenophileKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB1C2A4B55080140BAA9017F /* MenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuContentView.swift; sourceTree = "<group>"; };
+		B107EEF376C0D261F3775438 /* libSelenophileKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSelenophileKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B90B6D77A25BE019E863E8A9 /* AppConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigTests.swift; sourceTree = "<group>"; };
+		B9D75DB916E7F7B8DC1A07E5 /* SelenophileKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SelenophileKitTests-Info.plist"; sourceTree = "<group>"; };
+		BD47869D8271A934D5B7A712 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C56142C5BDFDDF4A94561C13 /* MoonrakerWebSocketMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerWebSocketMessage.swift; sourceTree = "<group>"; };
+		C6F04629C0853378A9FEC0B7 /* MoonrakerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerConfiguration.swift; sourceTree = "<group>"; };
+		DD29BEF3BC6E8986AE25F1B8 /* SelenophileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelenophileApp.swift; sourceTree = "<group>"; };
+		DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerCameraClientTests.swift; sourceTree = "<group>"; };
+		E8CCFB8003B2471E9BCCFC82 /* MenuBarStatusIconRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusIconRenderer.swift; sourceTree = "<group>"; };
+		EB7A5F1C14ED6BE85611231F /* MoonrakerStatusParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerStatusParsingTests.swift; sourceTree = "<group>"; };
+		EE16A8BF6754D7446A49D79F /* MoonrakerCameraClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerCameraClient.swift; sourceTree = "<group>"; };
+		F24F9C835685980E10BB49A1 /* Selenophile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Selenophile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F6C7249CF5DEC22793439630 /* SelenophileTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SelenophileTests-Info.plist"; sourceTree = "<group>"; };
+		F7A80A26E325C50AEC9E8338 /* AppLogStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogStore.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3CDF9486F82D45DF6B25B3DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6BFADB2DA8766C5E6D355AFA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D92F54154696D3F8AC6E7877 /* libSelenophileKit.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B11BB02C793CF1FDF78BE292 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F014840BFB62AF756A6D2D21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1E2C203443135721BA805FD /* libSelenophileKit.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		370F10948754342232F6CD90 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				CC61C5C2BF451F1DBCCE3594 /* SelenophileKitTests */,
+				644543EF62351630CE769657 /* SelenophileTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		40133BA4722A1C8E50F16308 /* Derived */ = {
+			isa = PBXGroup;
+			children = (
+				50C46F903E3090BA51C6425A /* InfoPlists */,
+			);
+			path = Derived;
+			sourceTree = "<group>";
+		};
+		50C46F903E3090BA51C6425A /* InfoPlists */ = {
+			isa = PBXGroup;
+			children = (
+				24E52344B58B7D1B332BADA6 /* Selenophile-Info.plist */,
+				B9D75DB916E7F7B8DC1A07E5 /* SelenophileKitTests-Info.plist */,
+				F6C7249CF5DEC22793439630 /* SelenophileTests-Info.plist */,
+			);
+			path = InfoPlists;
+			sourceTree = "<group>";
+		};
+		5A18EECDAA860F9E00424EE3 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				C08FD0AC7A9F5AC9F0CB288E /* Selenophile */,
+				F9F1C0075ED7A1666BD48919 /* SelenophileKit */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		61CB2D478DEE62DB374B9312 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				40133BA4722A1C8E50F16308 /* Derived */,
+				5A18EECDAA860F9E00424EE3 /* Sources */,
+				370F10948754342232F6CD90 /* Tests */,
+			);
+			name = Project;
+			sourceTree = "<group>";
+		};
+		644543EF62351630CE769657 /* SelenophileTests */ = {
+			isa = PBXGroup;
+			children = (
+				5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */,
+			);
+			path = SelenophileTests;
+			sourceTree = "<group>";
+		};
+		BD8D14C51357ED53D1CE8DC7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B107EEF376C0D261F3775438 /* libSelenophileKit.a */,
+				F24F9C835685980E10BB49A1 /* Selenophile.app */,
+				8CF6FB2A5FF5A58EFD219185 /* SelenophileKitTests.xctest */,
+				4B7EE020F7B0F6B9D4BA43DD /* SelenophileTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C08FD0AC7A9F5AC9F0CB288E /* Selenophile */ = {
+			isa = PBXGroup;
+			children = (
+				6586DD64BFB26A97E156CECC /* AppDelegate.swift */,
+				7DE8328D080EA70F6A54B62A /* LogView.swift */,
+				578BFD7E1802AE0DECD0A4FC /* LogWindowController.swift */,
+				4227315CF1E93F0519C60410 /* MenuBarIconConfiguration.swift */,
+				04803325601911E33F3F355F /* MenuBarStatusController.swift */,
+				E8CCFB8003B2471E9BCCFC82 /* MenuBarStatusIconRenderer.swift */,
+				AB1C2A4B55080140BAA9017F /* MenuContentView.swift */,
+				DD29BEF3BC6E8986AE25F1B8 /* SelenophileApp.swift */,
+				BD47869D8271A934D5B7A712 /* SettingsView.swift */,
+			);
+			path = Selenophile;
+			sourceTree = "<group>";
+		};
+		CC61C5C2BF451F1DBCCE3594 /* SelenophileKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				B90B6D77A25BE019E863E8A9 /* AppConfigTests.swift */,
+				5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */,
+				DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */,
+				6D5FAA86E3FF790BE00B67C1 /* MoonrakerConfigurationTests.swift */,
+				EB7A5F1C14ED6BE85611231F /* MoonrakerStatusParsingTests.swift */,
+				30BD80AC67C69D6C826BBADD /* PrinterStatusStoreTests.swift */,
+			);
+			path = SelenophileKitTests;
+			sourceTree = "<group>";
+		};
+		CFFECABFC932D7864BD546A5 = {
+			isa = PBXGroup;
+			children = (
+				BD8D14C51357ED53D1CE8DC7 /* Products */,
+				61CB2D478DEE62DB374B9312 /* Project */,
+			);
+			sourceTree = "<group>";
+		};
+		F9F1C0075ED7A1666BD48919 /* SelenophileKit */ = {
+			isa = PBXGroup;
+			children = (
+				86C5685BDF05F023DB4C961B /* AppConfig.swift */,
+				F7A80A26E325C50AEC9E8338 /* AppLogStore.swift */,
+				EE16A8BF6754D7446A49D79F /* MoonrakerCameraClient.swift */,
+				1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */,
+				C6F04629C0853378A9FEC0B7 /* MoonrakerConfiguration.swift */,
+				C56142C5BDFDDF4A94561C13 /* MoonrakerWebSocketMessage.swift */,
+				29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */,
+				80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */,
+			);
+			path = SelenophileKit;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		08B42CC6969FB70EBC13B2A8 /* SelenophileKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA846B236CBF268751122C35 /* Build configuration list for PBXNativeTarget "SelenophileKitTests" */;
+			buildPhases = (
+				039789615E12A292073D8874 /* Sources */,
+				F7EF266A96BE74C0073B6467 /* Resources */,
+				F014840BFB62AF756A6D2D21 /* Frameworks */,
+				B9A0134B04F10F5002638196 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2D7C7C4CB0F2B8D72D506A79 /* PBXTargetDependency */,
+			);
+			name = SelenophileKitTests;
+			packageProductDependencies = (
+			);
+			productName = SelenophileKitTests;
+			productReference = 8CF6FB2A5FF5A58EFD219185 /* SelenophileKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		71A8264A171E586EC6EC6125 /* SelenophileTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 77A8029F9DF805B016126D00 /* Build configuration list for PBXNativeTarget "SelenophileTests" */;
+			buildPhases = (
+				9FADD943FFC0EC8757B49F85 /* Sources */,
+				97F5DC455B6E1D0425D9538C /* Resources */,
+				3CDF9486F82D45DF6B25B3DF /* Frameworks */,
+				4D8FDC8AF2F622FCCCA62071 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A84A6392E0C58A14BDA6A6A9 /* PBXTargetDependency */,
+			);
+			name = SelenophileTests;
+			packageProductDependencies = (
+			);
+			productName = SelenophileTests;
+			productReference = 4B7EE020F7B0F6B9D4BA43DD /* SelenophileTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8561DEBB7E1CBFA57A4AFC0C /* Selenophile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CBD19FA367BD0C5265392A7C /* Build configuration list for PBXNativeTarget "Selenophile" */;
+			buildPhases = (
+				928C70C0692F8ADB4F7F2C45 /* Sources */,
+				D5F60EA11096546FA110300C /* Resources */,
+				6BFADB2DA8766C5E6D355AFA /* Frameworks */,
+				EC6464B2FD452B720E89D135 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2E0988775DEA2B58C106C39C /* PBXTargetDependency */,
+			);
+			name = Selenophile;
+			packageProductDependencies = (
+			);
+			productName = Selenophile;
+			productReference = F24F9C835685980E10BB49A1 /* Selenophile.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DF8F456F42B1A23D84684FF6 /* SelenophileKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 74F60C703F199751DD98FD99 /* Build configuration list for PBXNativeTarget "SelenophileKit" */;
+			buildPhases = (
+				BAB10D865EDA6446B1254F9B /* Sources */,
+				17CDFFD1E4757437767A4E43 /* Resources */,
+				B11BB02C793CF1FDF78BE292 /* Frameworks */,
+				BBE6DD5164EFA0995009EC59 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SelenophileKit;
+			packageProductDependencies = (
+			);
+			productName = SelenophileKit;
+			productReference = B107EEF376C0D261F3775438 /* libSelenophileKit.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A3889A96367A82C2595090C5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				ORGANIZATIONNAME = udon;
+				TargetAttributes = {
+					71A8264A171E586EC6EC6125 = {
+						TestTargetID = 8561DEBB7E1CBFA57A4AFC0C;
+					};
+				};
+			};
+			buildConfigurationList = E6A36C3319D566AA64B53FD6 /* Build configuration list for PBXProject "Selenophile" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = CFFECABFC932D7864BD546A5;
+			productRefGroup = BD8D14C51357ED53D1CE8DC7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8561DEBB7E1CBFA57A4AFC0C /* Selenophile */,
+				DF8F456F42B1A23D84684FF6 /* SelenophileKit */,
+				08B42CC6969FB70EBC13B2A8 /* SelenophileKitTests */,
+				71A8264A171E586EC6EC6125 /* SelenophileTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		17CDFFD1E4757437767A4E43 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97F5DC455B6E1D0425D9538C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D5F60EA11096546FA110300C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F7EF266A96BE74C0073B6467 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		039789615E12A292073D8874 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F94E406AE296B77A8A862BB /* AppConfigTests.swift in Sources */,
+				C62AF00E6AD26DA0CCE50E9D /* AppLogStoreTests.swift in Sources */,
+				8E11B7F38AA9E8B607865240 /* MoonrakerCameraClientTests.swift in Sources */,
+				19D0E6182DA3BEC3ECFC72E4 /* MoonrakerConfigurationTests.swift in Sources */,
+				96ED0ACC05F5A7D91716A435 /* MoonrakerStatusParsingTests.swift in Sources */,
+				3C388159A95FE2FFDBFC4609 /* PrinterStatusStoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		928C70C0692F8ADB4F7F2C45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3C49686F45434182BDAF398A /* AppDelegate.swift in Sources */,
+				9525D3A114B7707096E5D6BF /* LogView.swift in Sources */,
+				65774F452A2E8B331A3E865D /* LogWindowController.swift in Sources */,
+				DCE1E9AC7E88B5BA2CB7E66D /* MenuBarIconConfiguration.swift in Sources */,
+				2C1FBC4B5355E2AD257FD3BB /* MenuBarStatusController.swift in Sources */,
+				2B3182874B6790EF8D195CA7 /* MenuBarStatusIconRenderer.swift in Sources */,
+				1EE3208E11C5F4CB79A5B01A /* MenuContentView.swift in Sources */,
+				ACEFB8C0BAABA20BD010790C /* SelenophileApp.swift in Sources */,
+				8602CA7A18E954BA43B859D5 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9FADD943FFC0EC8757B49F85 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B1ABEE13C3BE492FE57159B /* MenuBarIconConfigurationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAB10D865EDA6446B1254F9B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2BC49AE3848C81A1A34FB914 /* AppConfig.swift in Sources */,
+				9BC779227A8EFBC8AD2BC31D /* AppLogStore.swift in Sources */,
+				6C9FA5459FB405D23DED9B0D /* MoonrakerCameraClient.swift in Sources */,
+				F17FFC7C2977E7A267C94109 /* MoonrakerClient.swift in Sources */,
+				5B9B41C9569512F8DB8CF58F /* MoonrakerConfiguration.swift in Sources */,
+				1AED95A8409CBEF3684C36EE /* MoonrakerWebSocketMessage.swift in Sources */,
+				5DD5E3ED2FC58DF0ED14D605 /* PrinterStatus.swift in Sources */,
+				943069046312EF6BD5E252CF /* PrinterStatusStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2D7C7C4CB0F2B8D72D506A79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SelenophileKit;
+			target = DF8F456F42B1A23D84684FF6 /* SelenophileKit */;
+			targetProxy = 7CA465B64E150F369E8DCCB2 /* PBXContainerItemProxy */;
+		};
+		2E0988775DEA2B58C106C39C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SelenophileKit;
+			target = DF8F456F42B1A23D84684FF6 /* SelenophileKit */;
+			targetProxy = D7B622A219DBDFA12E5217DC /* PBXContainerItemProxy */;
+		};
+		A84A6392E0C58A14BDA6A6A9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Selenophile;
+			target = 8561DEBB7E1CBFA57A4AFC0C /* Selenophile */;
+			targetProxy = 30BC2C2BDB121646C95A88A1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		573EC62AC896E2A82B5F5386 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				INFOPLIST_FILE = "Derived/InfoPlists/SelenophileTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-L$(DT_TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileTests;
+				PRODUCT_NAME = SelenophileTests;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Selenophile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Selenophile";
+				TEST_TARGET_NAME = Selenophile;
+			};
+			name = Debug;
+		};
+		816586C482B6CC1C5351CC59 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				EXECUTABLE_PREFIX = lib;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit;
+				PRODUCT_NAME = SelenophileKit;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		8240113183DE7EC276AA3444 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				INFOPLIST_FILE = "Derived/InfoPlists/SelenophileTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-L$(DT_TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileTests;
+				PRODUCT_NAME = SelenophileTests;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Selenophile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Selenophile";
+				TEST_TARGET_NAME = Selenophile;
+			};
+			name = Release;
+		};
+		860E083808C10EF0EAFBBBF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A3F39139AE44962A233A1A7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				INFOPLIST_FILE = "Derived/InfoPlists/SelenophileKitTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-L$(DT_TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKitTests;
+				PRODUCT_NAME = SelenophileKitTests;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B6EBA40184C6C2B05B1441C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/Selenophile-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-L$(DT_TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile;
+				PRODUCT_NAME = Selenophile;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B964C3DFF5197332DFC7A29A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				EXECUTABLE_PREFIX = lib;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit;
+				PRODUCT_NAME = SelenophileKit;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D262E061637B28C5AD94578A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E943BFACB530F4F3D7AC5C42 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				INFOPLIST_FILE = "Derived/InfoPlists/SelenophileKitTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-L$(DT_TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKitTests;
+				PRODUCT_NAME = SelenophileKitTests;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FC2331C552A0152C89D8C8AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/Selenophile-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-L$(DT_TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile;
+				PRODUCT_NAME = Selenophile;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		74F60C703F199751DD98FD99 /* Build configuration list for PBXNativeTarget "SelenophileKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B964C3DFF5197332DFC7A29A /* Debug */,
+				816586C482B6CC1C5351CC59 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		77A8029F9DF805B016126D00 /* Build configuration list for PBXNativeTarget "SelenophileTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				573EC62AC896E2A82B5F5386 /* Debug */,
+				8240113183DE7EC276AA3444 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CBD19FA367BD0C5265392A7C /* Build configuration list for PBXNativeTarget "Selenophile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B6EBA40184C6C2B05B1441C4 /* Debug */,
+				FC2331C552A0152C89D8C8AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E6A36C3319D566AA64B53FD6 /* Build configuration list for PBXProject "Selenophile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				860E083808C10EF0EAFBBBF8 /* Debug */,
+				D262E061637B28C5AD94578A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA846B236CBF268751122C35 /* Build configuration list for PBXNativeTarget "SelenophileKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E943BFACB530F4F3D7AC5C42 /* Debug */,
+				A3F39139AE44962A233A1A7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A3889A96367A82C2595090C5 /* Project object */;
+}

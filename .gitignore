@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# SwiftPM
+.build/
+.swiftpm/
+
+# Tuist / Xcode generated output
+Derived/
+Selenophile.app/
+xcuserdata/
+*.xcuserstate
+*.hmap
+
+# Local assistant / workspace state
+.codex/
+.superpowers/
+
+# Archives and packages
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# Temporary files
+*.swp
+*.swo
+*.tmp
