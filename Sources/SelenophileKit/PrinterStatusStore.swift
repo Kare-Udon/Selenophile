@@ -191,6 +191,125 @@ public final class PrinterStatusStore {
         return translatedErrorMessage(lastErrorMessage)
     }
 
+    public func widgetSnapshot() -> WidgetSnapshot {
+        guard configuration != nil else {
+            return .placeholder
+        }
+
+        let statusLabel: String
+        let tone: WidgetTone
+
+        switch connectionState {
+        case .unconfigured:
+            return .placeholder
+        case .connecting:
+            statusLabel = "连接中"
+            tone = .muted
+        case .reconnecting:
+            statusLabel = "重连中"
+            tone = .muted
+        case .connected:
+            switch printerStatus.state {
+            case .printing:
+                statusLabel = "打印中"
+                tone = .accent
+            case .paused:
+                statusLabel = "已暂停"
+                tone = .muted
+            case .complete:
+                statusLabel = "已完成"
+                tone = .neutral
+            case .cancelled:
+                statusLabel = "已取消"
+                tone = .neutral
+            case .error:
+                statusLabel = "错误"
+                tone = .danger
+            case .standby, .unknown:
+                statusLabel = "待机"
+                tone = .muted
+            }
+        case .disconnected:
+            statusLabel = "已断开"
+            tone = .danger
+        case .failed:
+            statusLabel = "连接失败"
+            tone = .danger
+        }
+
+        let title: String = {
+            if let filename = WidgetSnapshotFormatter.nonEmpty(printerStatus.filename) {
+                return filename
+            }
+            switch connectionState {
+            case .connected:
+                return "当前无打印任务"
+            case .connecting:
+                return "正在连接 Moonraker"
+            case .reconnecting:
+                return "正在重连 Moonraker"
+            case .disconnected:
+                return "Moonraker 已断开"
+            case .failed:
+                return "Moonraker 连接异常"
+            case .unconfigured:
+                return "请先设置 Moonraker 地址"
+            }
+        }()
+
+        let summary: String = {
+            if let message = WidgetSnapshotFormatter.nonEmpty(printerStatus.message) {
+                return message
+            }
+            if let message = WidgetSnapshotFormatter.nonEmpty(displayErrorMessage) {
+                return message
+            }
+            switch connectionState {
+            case .connected:
+                switch printerStatus.state {
+                case .printing:
+                    return "正在稳定打印，状态正常"
+                case .paused:
+                    return "打印已暂停"
+                case .complete:
+                    return "打印已完成"
+                case .cancelled:
+                    return "打印已取消"
+                case .error:
+                    return "打印状态异常"
+                case .standby, .unknown:
+                    return "打印机已连接，当前没有活动任务"
+                }
+            case .connecting:
+                return "正在连接 Moonraker"
+            case .reconnecting:
+                return connectionStatusSummary
+            case .disconnected:
+                return "请检查 Moonraker 地址或网络连接"
+            case .failed:
+                return "请检查 Moonraker 地址或网络连接"
+            case .unconfigured:
+                return "还没有可用的打印状态数据"
+            }
+        }()
+
+        return WidgetSnapshot(
+            statusLabel: statusLabel,
+            connectionLabel: connectionBadgeLabel,
+            title: title,
+            progress: printerStatus.normalizedProgress,
+            progressLabel: WidgetSnapshotFormatter.percentLabel(for: printerStatus.progress),
+            remainingTime: WidgetSnapshotFormatter.clockString(for: printerStatus.estimatedTimeRemaining),
+            elapsedTime: WidgetSnapshotFormatter.clockString(for: printerStatus.printDuration),
+            nozzle: WidgetSnapshotFormatter.temperatureString(for: printerStatus.extruder),
+            bed: WidgetSnapshotFormatter.temperatureString(for: printerStatus.bed),
+            layer: WidgetSnapshotFormatter.layerString(for: printerStatus.layer),
+            speed: WidgetSnapshotFormatter.feedRateString(for: printerStatus.feedRateMultiplier),
+            summary: summary,
+            tone: tone
+        )
+    }
+
     public func start() {
         guard let configuration else {
             connectionState = .unconfigured
