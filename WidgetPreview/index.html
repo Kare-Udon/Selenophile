@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Selenophile Widget Preview</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">Selenophile</p>
+        <h1>Widget Preview</h1>
+        <p class="subtitle">并排查看 systemSmall、systemMedium、systemLarge 的视觉与信息密度。</p>
+      </header>
+
+      <section class="state-switcher" aria-label="状态切换">
+        <button type="button" data-state="printing" class="is-active">打印中</button>
+        <button type="button" data-state="idle">已连接空闲</button>
+        <button type="button" data-state="error">断开 / 失败</button>
+        <button type="button" data-state="unconfigured">未配置</button>
+      </section>
+
+      <section class="widget-grid" aria-label="widget 预览">
+        <article class="widget-stage" data-size="small"></article>
+        <article class="widget-stage" data-size="medium"></article>
+        <article class="widget-stage" data-size="large"></article>
+      </section>
+
+      <footer class="footer-note">
+        <p>默认状态展示打印中；切换按钮会同步更新三种尺寸。</p>
+      </footer>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

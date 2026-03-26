@@ -1,0 +1,62 @@
+export const widgetStates = {
+  printing: {
+    statusLabel: "打印中",
+    connectionLabel: "已连接",
+    title: "Benchy_0.2mm.gcode",
+    progress: 0.64,
+    progressLabel: "64%",
+    remainingTime: "00:28:40",
+    elapsedTime: "00:49:20",
+    nozzle: "215 / 220°C",
+    bed: "63 / 65°C",
+    layer: "124 / 196",
+    speed: "100%",
+    summary: "正在稳定打印，状态正常",
+    tone: "accent"
+  },
+  idle: {
+    statusLabel: "待机",
+    connectionLabel: "已连接",
+    title: "等待打印任务",
+    progress: 0,
+    progressLabel: "0%",
+    remainingTime: "--:--:--",
+    elapsedTime: "--:--:--",
+    nozzle: "--",
+    bed: "--",
+    layer: "--",
+    speed: "--",
+    summary: "打印机已连接，当前没有活动任务",
+    tone: "muted"
+  },
+  error: {
+    statusLabel: "连接失败",
+    connectionLabel: "已断开",
+    title: "Moonraker 连接异常",
+    progress: 0.18,
+    progressLabel: "18%",
+    remainingTime: "暂停",
+    elapsedTime: "已中断",
+    nozzle: "—",
+    bed: "—",
+    layer: "—",
+    speed: "—",
+    summary: "请检查 Moonraker 地址或网络连接",
+    tone: "danger"
+  },
+  unconfigured: {
+    statusLabel: "未配置",
+    connectionLabel: "待配置",
+    title: "请先设置 Moonraker 地址",
+    progress: 0,
+    progressLabel: "0%",
+    remainingTime: "--",
+    elapsedTime: "--",
+    nozzle: "--",
+    bed: "--",
+    layer: "--",
+    speed: "--",
+    summary: "还没有可用的打印状态数据",
+    tone: "neutral"
+  }
+};
