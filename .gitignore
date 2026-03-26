@@ -9,6 +9,7 @@
 Derived/
 Selenophile.app/
 xcuserdata/
+*.tuist-generated
 *.xcuserstate
 *.hmap
 
