@@ -15,18 +15,20 @@ struct MenuBarStatusIconRenderer {
         track.lineWidth = 2.6
         track.stroke()
 
-        NSColor.black.setStroke()
-        let progressPath = NSBezierPath()
-        progressPath.lineWidth = 3.2
-        progressPath.lineCapStyle = .round
-        progressPath.appendArc(
-            withCenter: NSPoint(x: bounds.midX, y: bounds.midY),
-            radius: ringRect.width / 2,
-            startAngle: 90,
-            endAngle: 90 - (configuration.visibleProgress * 360),
-            clockwise: true
-        )
-        progressPath.stroke()
+        if configuration.visibleProgress > 0 {
+            NSColor.black.setStroke()
+            let progressPath = NSBezierPath()
+            progressPath.lineWidth = 3.2
+            progressPath.lineCapStyle = .round
+            progressPath.appendArc(
+                withCenter: NSPoint(x: bounds.midX, y: bounds.midY),
+                radius: ringRect.width / 2,
+                startAngle: 90,
+                endAngle: 90 - (configuration.visibleProgress * 360),
+                clockwise: true
+            )
+            progressPath.stroke()
+        }
 
         if configuration.showsCenterCore {
             NSColor.black.setFill()

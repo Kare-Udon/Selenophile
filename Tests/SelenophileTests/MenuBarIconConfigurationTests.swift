@@ -3,7 +3,7 @@ import Testing
 import SelenophileKit
 
 @Test
-func activePrintAtZeroProgressKeepsVisibleArcAndCenterCore() {
+func activePrintAtZeroProgressUsesRealProgressAndCenterCore() {
     let configuration = MenuBarIconConfiguration(
         connectionState: .connected,
         isWaitingForManualReconnect: false,
@@ -11,7 +11,7 @@ func activePrintAtZeroProgressKeepsVisibleArcAndCenterCore() {
         progress: 0
     )
 
-    #expect(configuration.visibleProgress == 0.18)
+    #expect(configuration.visibleProgress == 0)
     #expect(configuration.overlaySymbolName == nil)
     #expect(configuration.showsCenterCore)
 }
@@ -39,7 +39,7 @@ func disconnectedPrinterUsesWarningGlyph() {
         progress: 0
     )
 
-    #expect(configuration.visibleProgress == 0.22)
+    #expect(configuration.visibleProgress == 0)
     #expect(configuration.overlaySymbolName == "bolt.horizontal.circle.fill")
     #expect(!configuration.showsCenterCore)
 }
@@ -53,7 +53,7 @@ func manualReconnectStateUsesWarningGlyph() {
         progress: 0
     )
 
-    #expect(configuration.visibleProgress == 0.22)
+    #expect(configuration.visibleProgress == 0)
     #expect(configuration.overlaySymbolName == "exclamationmark.circle.fill")
     #expect(!configuration.showsCenterCore)
 }

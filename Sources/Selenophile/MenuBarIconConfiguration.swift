@@ -15,21 +15,21 @@ struct MenuBarIconConfiguration: Equatable {
         let clampedProgress = min(max(progress, 0), 1)
 
         if isWaitingForManualReconnect {
-            visibleProgress = max(clampedProgress, 0.22)
+            visibleProgress = clampedProgress
             overlaySymbolName = "exclamationmark.circle.fill"
             showsCenterCore = false
             return
         }
 
         if connectionState == .failed || connectionState == .disconnected {
-            visibleProgress = max(clampedProgress, 0.22)
+            visibleProgress = clampedProgress
             overlaySymbolName = "bolt.horizontal.circle.fill"
             showsCenterCore = false
             return
         }
 
         if hasActivePrint {
-            visibleProgress = max(clampedProgress, 0.18)
+            visibleProgress = clampedProgress
             overlaySymbolName = nil
             showsCenterCore = true
             return
