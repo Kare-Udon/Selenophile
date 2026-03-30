@@ -13,6 +13,7 @@ extension WidgetCenter: WidgetTimelineReloading {}
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let logStore: AppLogStore
     let store: PrinterStatusStore
+    let launchAtLoginController: LaunchAtLoginController
     private let widgetSnapshotStore: WidgetSnapshotStore
     private let widgetCenter: any WidgetTimelineReloading
     private var settingsWindowController: NSWindowController?
@@ -26,12 +27,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     init(
         logStore: AppLogStore? = nil,
         store: PrinterStatusStore? = nil,
+        launchAtLoginController: LaunchAtLoginController = LaunchAtLoginController(),
         widgetSnapshotStore: WidgetSnapshotStore = WidgetSnapshotStore(),
         widgetCenter: any WidgetTimelineReloading = WidgetCenter.shared
     ) {
         let resolvedLogStore = logStore ?? AppLogStore()
         self.logStore = resolvedLogStore
         self.store = store ?? PrinterStatusStore(logStore: resolvedLogStore)
+        self.launchAtLoginController = launchAtLoginController
         self.widgetSnapshotStore = widgetSnapshotStore
         self.widgetCenter = widgetCenter
         super.init()
@@ -68,9 +71,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func showSettingsWindow() {
         logStore.log(.debug, source: "AppDelegate", message: "打开设置窗口")
-        let settingsView = SettingsView(store: store) { [weak self] in
-            self?.closeSettingsWindow()
-        }
+        let settingsView = makeSettingsView()
 
         if let window = settingsWindowController?.window {
             window.contentViewController = NSHostingController(rootView: settingsView)
@@ -80,7 +81,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 460, height: 340),
+            contentRect: NSRect(x: 0, y: 0, width: 460, height: 460),
             styleMask: [.titled, .closable, .miniaturizable],
             backing: .buffered,
             defer: false
@@ -116,5 +117,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func publishWidgetSnapshot(_ snapshot: WidgetSnapshot) {
         widgetSnapshotStore.save(snapshot)
         widgetCenter.reloadTimelines(ofKind: AppConfig.widgetKind)
+    }
+
+    private func makeSettingsView() -> SettingsView {
+        SettingsView(
+            store: store,
+            onClose: { [weak self] in
+                self?.closeSettingsWindow()
+            },
+            launchAtLoginControl: .init(
+                isAvailable: true,
+                isEnabled: { [weak self] in
+                    self?.launchAtLoginController.isEnabled ?? false
+                },
+                setIsEnabled: { [weak self] enabled in
+                    guard let self else { return }
+                    do {
+                        try self.launchAtLoginController.setEnabled(enabled)
+                    } catch {
+                        self.logStore.log(
+                            .error,
+                            source: "LaunchAtLogin",
+                            message: "更新开机自启失败：\(error.localizedDescription)"
+                        )
+                    }
+                }
+            )
+        )
     }
 }

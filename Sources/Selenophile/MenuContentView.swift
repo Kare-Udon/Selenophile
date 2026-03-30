@@ -7,6 +7,7 @@ struct MenuContentView: View {
     let onOpenSettings: () -> Void
     let onOpenLogs: () -> Void
     @AppStorage("menu.cameraSnapshotCollapsed") private var isCameraSnapshotCollapsed = false
+    @State private var activePreview: MenuPreview?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -19,6 +20,7 @@ struct MenuContentView: View {
             actionRow
             if !isCameraSnapshotCollapsed {
                 cameraSnapshotCard
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)).combined(with: .move(edge: .top)))
             }
         }
         .frame(width: 352)
@@ -82,11 +84,7 @@ struct MenuContentView: View {
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
 
-                Text(store.printerStatus.filename ?? "当前无打印任务")
-                    .font(.system(size: 17, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+                taskNameView
 
                 Spacer(minLength: 8)
 
@@ -102,6 +100,9 @@ struct MenuContentView: View {
         }
         .padding(16)
         .background(cardBackground)
+        .popover(item: $activePreview) { preview in
+            previewPopover(preview)
+        }
     }
 
     private var primaryMetrics: some View {
@@ -196,7 +197,9 @@ struct MenuContentView: View {
 
             HStack(spacing: 8) {
                 Button {
-                    isCameraSnapshotCollapsed.toggle()
+                    withAnimation(.easeInOut(duration: 0.22)) {
+                        isCameraSnapshotCollapsed.toggle()
+                    }
                 } label: {
                     Image(systemName: isCameraSnapshotCollapsed ? "chevron.down" : "chevron.up")
                         .font(.system(size: 11, weight: .bold))
@@ -331,7 +334,15 @@ struct MenuContentView: View {
 
     private var thumbnailTile: some View {
         Group {
-            if store.canManuallyRetryCurrentPrintThumbnail {
+            if thumbnailImage != nil {
+                Button {
+                    activePreview = .thumbnail
+                } label: {
+                    thumbnailTileBody
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("查看打印缩略图")
+            } else if store.canManuallyRetryCurrentPrintThumbnail {
                 Button {
                     store.retryCurrentPrintThumbnail()
                 } label: {
@@ -340,6 +351,30 @@ struct MenuContentView: View {
                 .buttonStyle(.plain)
             } else {
                 thumbnailTileBody
+            }
+        }
+    }
+
+    private var taskNameView: some View {
+        Group {
+            if let filename = store.printerStatus.filename {
+                Button {
+                    activePreview = .taskName(filename)
+                } label: {
+                    Text(filename)
+                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("查看任务全名")
+            } else {
+                Text("当前无打印任务")
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
         }
     }
@@ -389,6 +424,52 @@ struct MenuContentView: View {
             return "点击重试"
         }
         return "无缩略图"
+    }
+
+    @ViewBuilder
+    private func previewPopover(_ preview: MenuPreview) -> some View {
+        switch preview {
+        case .thumbnail:
+            VStack(alignment: .leading, spacing: 12) {
+                Text("打印缩略图")
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
+
+                if let thumbnailImage {
+                    Image(nsImage: thumbnailImage)
+                        .resizable()
+                        .interpolation(.high)
+                        .scaledToFit()
+                        .frame(maxWidth: 360, maxHeight: 360)
+                        .background(Color.white.opacity(0.92), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                } else {
+                    Text("当前没有可预览的打印缩略图")
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
+                }
+            }
+            .padding(16)
+            .frame(width: 384, alignment: .leading)
+
+        case .taskName(let fullName):
+            VStack(alignment: .leading, spacing: 12) {
+                Text("任务全名")
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
+
+                Text(fullName)
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color(red: 0.14, green: 0.17, blue: 0.22))
+                    .textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("可直接选中文本复制")
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
+            }
+            .padding(16)
+            .frame(width: 320, alignment: .leading)
+        }
     }
 
     private func metricCard(
@@ -443,6 +524,20 @@ struct MenuContentView: View {
             return store.printerStatus.estimatedTimeRemaining
         }
         return max(0, slicerEstimatedPrintTime - printDuration)
+    }
+}
+
+private enum MenuPreview: Identifiable {
+    case thumbnail
+    case taskName(String)
+
+    var id: String {
+        switch self {
+        case .thumbnail:
+            return "thumbnail"
+        case .taskName(let name):
+            return "taskName:\(name)"
+        }
     }
 }
 

@@ -4,24 +4,34 @@ import SelenophileKit
 struct SettingsView: View {
     let store: PrinterStatusStore
     let onClose: () -> Void
+    let launchAtLoginControl: LaunchAtLoginControl?
 
     @State private var serverURLString: String
     @State private var apiToken: String
     @State private var cameraSnapshotURL: String
+    @State private var launchAtLoginEnabled: Bool
+    @State private var isUpdatingLaunchAtLogin = false
     @State private var isSaving = false
 
-    init(store: PrinterStatusStore, onClose: @escaping () -> Void) {
+    init(
+        store: PrinterStatusStore,
+        onClose: @escaping () -> Void,
+        launchAtLoginControl: LaunchAtLoginControl? = nil
+    ) {
         self.store = store
         self.onClose = onClose
+        self.launchAtLoginControl = launchAtLoginControl
         _serverURLString = State(initialValue: store.configuration?.serverURLString ?? "http://127.0.0.1:7125")
         _apiToken = State(initialValue: store.configuration?.apiToken ?? "")
         _cameraSnapshotURL = State(initialValue: store.configuration?.cameraSnapshotURL ?? "")
+        _launchAtLoginEnabled = State(initialValue: launchAtLoginControl?.isEnabled() ?? false)
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             heroCard
             formCard
+            launchAtLoginCard
             if let error = store.displayErrorMessage, !error.isEmpty {
                 errorBanner(error)
             }
@@ -39,6 +49,9 @@ struct SettingsView: View {
                 endPoint: .bottom
             )
         )
+        .onAppear {
+            refreshLaunchAtLoginState()
+        }
     }
 
     @MainActor
@@ -56,6 +69,27 @@ struct SettingsView: View {
         if success {
             onClose()
         }
+    }
+
+    @MainActor
+    private func refreshLaunchAtLoginState() {
+        guard let launchAtLoginControl else {
+            launchAtLoginEnabled = false
+            return
+        }
+        launchAtLoginEnabled = launchAtLoginControl.isEnabled()
+    }
+
+    @MainActor
+    private func updateLaunchAtLoginEnabled(_ enabled: Bool) async {
+        guard let launchAtLoginControl, launchAtLoginControl.isAvailable else { return }
+        guard !isUpdatingLaunchAtLogin else { return }
+
+        isUpdatingLaunchAtLogin = true
+        launchAtLoginEnabled = enabled
+        await launchAtLoginControl.setIsEnabled(enabled)
+        refreshLaunchAtLoginState()
+        isUpdatingLaunchAtLogin = false
     }
 
     private var heroCard: some View {
@@ -134,6 +168,53 @@ struct SettingsView: View {
         )
     }
 
+    private var launchAtLoginCard: some View {
+        let isAvailable = launchAtLoginControl?.isAvailable ?? false
+
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 14) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("开机自启")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundStyle(Color(red: 0.11, green: 0.14, blue: 0.18))
+
+                    Text("启用后，应用会在系统登录时自动打开。")
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(Color(red: 0.45, green: 0.49, blue: 0.56))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                Toggle("", isOn: Binding(
+                    get: { launchAtLoginEnabled },
+                    set: { newValue in
+                        Task { await updateLaunchAtLoginEnabled(newValue) }
+                    }
+                ))
+                .labelsHidden()
+                .toggleStyle(SwitchToggleStyle())
+                .disabled(!isAvailable || isUpdatingLaunchAtLogin)
+            }
+
+            if !isAvailable {
+                Text("当前不可用")
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color(red: 0.58, green: 0.62, blue: 0.69))
+            }
+        }
+        .padding(18)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(.white.opacity(0.96))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .stroke(Color.white.opacity(0.75), lineWidth: 1)
+                }
+                .shadow(color: Color.black.opacity(0.08), radius: 16, x: 0, y: 10)
+        )
+    }
+
     private func errorBanner(_ error: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "exclamationmark.triangle.fill")
@@ -166,6 +247,24 @@ struct SettingsView: View {
             .buttonStyle(SetupActionButtonStyle(kind: .primary))
             .keyboardShortcut(.defaultAction)
             .disabled(isSaving)
+        }
+    }
+}
+
+extension SettingsView {
+    struct LaunchAtLoginControl {
+        let isAvailable: Bool
+        let isEnabled: () -> Bool
+        let setIsEnabled: (Bool) async -> Void
+
+        init(
+            isAvailable: Bool = true,
+            isEnabled: @escaping () -> Bool,
+            setIsEnabled: @escaping (Bool) async -> Void
+        ) {
+            self.isAvailable = isAvailable
+            self.isEnabled = isEnabled
+            self.setIsEnabled = setIsEnabled
         }
     }
 }
