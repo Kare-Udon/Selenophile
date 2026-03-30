@@ -94,7 +94,7 @@ func fetchGCodeMetadataUsesMetadataEndpoint() async throws {
                 statusCode: 200,
                 headers: ["Content-Type": "application/json"],
                 body: Data(
-                    #"{"estimated_time":1800,"thumbnails":[{"width":400,"height":300,"size":12345,"relative_path":".thumbs/benchy-400x300.png"}]}"#
+                    #"{"result":{"estimated_time":1800,"thumbnails":[{"width":400,"height":300,"size":12345,"relative_path":".thumbs/benchy-400x300.png"}]}}"#
                     .utf8
                 )
             ),
@@ -110,6 +110,39 @@ func fetchGCodeMetadataUsesMetadataEndpoint() async throws {
         #expect(metadata.thumbnails?.first?.relativePath == ".thumbs/benchy-400x300.png")
         #expect(requests.count == 1)
         #expect(requests[0].url == URL(string: "http://printer.local:7125/server/files/metadata?filename=benchy.gcode"))
+        #expect(requests[0].value(forHTTPHeaderField: "Authorization") == "Bearer secret")
+    }
+}
+
+@Test
+func rescanGCodeMetadataUsesPostMetascanEndpoint() async throws {
+    try await URLProtocolStub.withExclusiveAccess {
+        let session = makeURLSession()
+        let client = MoonrakerClient(session: session)
+        let configuration = MoonrakerValidatedConfiguration(
+            httpURL: URL(string: "http://printer.local:7125")!,
+            webSocketURL: URL(string: "ws://printer.local:7125/websocket")!,
+            apiToken: "secret",
+            cameraSnapshotURL: nil
+        )
+        await URLProtocolStub.setResponses([
+            .init(
+                url: URL(string: "http://printer.local:7125/server/files/metascan?filename=benchy.gcode")!,
+                statusCode: 200,
+                headers: ["Content-Type": "application/json"],
+                body: Data(#"{"result":"ok"}"#.utf8)
+            ),
+        ])
+
+        try await client.rescanGCodeMetadata(
+            configuration: configuration,
+            filename: "benchy.gcode"
+        )
+        let requests = await URLProtocolStub.requests()
+
+        #expect(requests.count == 1)
+        #expect(requests[0].httpMethod == "POST")
+        #expect(requests[0].url == URL(string: "http://printer.local:7125/server/files/metascan?filename=benchy.gcode"))
         #expect(requests[0].value(forHTTPHeaderField: "Authorization") == "Bearer secret")
     }
 }

@@ -6,6 +6,26 @@ public struct MoonrakerWebSocketMessage: Decodable, Sendable {
     public let params: StatusUpdateParams?
     public let error: RPCError?
 
+    enum CodingKeys: String, CodingKey {
+        case result
+        case method
+        case params
+        case error
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        result = try container.decodeIfPresent(SubscriptionResult.self, forKey: .result)
+        method = try container.decodeIfPresent(String.self, forKey: .method)
+        error = try container.decodeIfPresent(RPCError.self, forKey: .error)
+
+        if method == "notify_status_update" {
+            params = try container.decodeIfPresent(StatusUpdateParams.self, forKey: .params)
+        } else {
+            params = nil
+        }
+    }
+
     public var printerStatusSnapshot: PrinterStatus? {
         result?.status?.printerStatus
     }

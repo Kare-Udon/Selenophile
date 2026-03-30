@@ -55,6 +55,10 @@ public struct MoonrakerThumbnailInfo: Decodable, Sendable {
     }
 }
 
+private struct MoonrakerResultEnvelope<T: Decodable>: Decodable {
+    let result: T
+}
+
 public actor MoonrakerClient: MoonrakerClientProtocol {
     private let session: URLSession
     private let decoder = JSONDecoder()
@@ -99,6 +103,7 @@ public actor MoonrakerClient: MoonrakerClientProtocol {
     ) async throws {
         let metascanURL = try metascanURL(configuration: configuration, filename: filename)
         var request = URLRequest(url: metascanURL)
+        request.httpMethod = "POST"
         if let apiToken = configuration.apiToken {
             request.setValue("Bearer \(apiToken)", forHTTPHeaderField: "Authorization")
         }
@@ -127,7 +132,7 @@ public actor MoonrakerClient: MoonrakerClientProtocol {
         else {
             throw URLError(.badServerResponse)
         }
-        return try decoder.decode(MoonrakerFileMetadata.self, from: data)
+        return try decoder.decode(MoonrakerResultEnvelope<MoonrakerFileMetadata>.self, from: data).result
     }
 
     public func fetchGCodeThumbnail(

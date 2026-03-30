@@ -104,3 +104,23 @@ func statusUpdateNotificationMergesOntoExistingStatus() throws {
     #expect(merged.estimatedTimeRemaining == 900)
     #expect(merged.feedRateMultiplier == 0.85)
 }
+
+@Test
+func unrelatedNotificationDoesNotFailDecoding() throws {
+    let data = Data(
+        """
+        {
+          "jsonrpc": "2.0",
+          "method": "notify_klippy_ready",
+          "params": [],
+          "id": null
+        }
+        """.utf8
+    )
+
+    let message = try JSONDecoder().decode(MoonrakerWebSocketMessage.self, from: data)
+
+    #expect(message.printerStatusSnapshot == nil)
+    #expect(message.printerStatusDelta == nil)
+    #expect(message.error == nil)
+}
