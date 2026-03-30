@@ -1,6 +1,8 @@
 import Foundation
 
 public enum AppLocalization {
+    private final class BundleToken {}
+
     public enum Key: String, CaseIterable, Sendable {
         case settingsWindowTitle = "settings_window_title"
         case logWindowTitle = "log_window_title"
@@ -267,13 +269,32 @@ public enum AppLocalization {
         if identifier != AppLanguage.english.rawValue, let bundle = bundle(forLocalization: AppLanguage.english.rawValue) {
             return bundle
         }
-        return .module
+        return localizationBaseBundle()
     }
 
     private static func bundle(forLocalization localization: String) -> Bundle? {
-        guard let url = Bundle.module.url(forResource: localization, withExtension: "lproj") else {
-            return nil
+        let candidateBundles = [
+            localizationBaseBundle(),
+            Bundle.main,
+        ]
+
+        for bundle in candidateBundles {
+            guard let url = bundle.url(forResource: localization, withExtension: "lproj") else {
+                continue
+            }
+            if let localizedBundle = Bundle(url: url) {
+                return localizedBundle
+            }
         }
-        return Bundle(url: url)
+
+        return nil
+    }
+
+    private static func localizationBaseBundle() -> Bundle {
+#if SWIFT_PACKAGE
+        return .module
+#else
+        return Bundle(for: BundleToken.self)
+#endif
     }
 }
