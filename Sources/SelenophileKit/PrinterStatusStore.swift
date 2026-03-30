@@ -96,6 +96,7 @@ public final class PrinterStatusStore {
     public private(set) var currentPrintThumbnailData: Data?
     public private(set) var currentPrintThumbnailErrorMessage: String?
     public private(set) var isFetchingCurrentPrintThumbnail = false
+    public private(set) var isWaitingForManualCurrentPrintThumbnailRetry = false
     public private(set) var retryAttemptCount = 0
     public private(set) var nextRetryAt: Date?
     public private(set) var isWaitingForManualReconnect = false
@@ -105,6 +106,7 @@ public final class PrinterStatusStore {
     private let cameraClient: MoonrakerCameraClientProtocol
     private let persistence: MoonrakerConfigurationPersisting
     private let retryPolicy: MoonrakerRetryPolicy
+    private let currentPrintThumbnailRetryLimit: Int
     private let sleep: @Sendable (Duration) async -> Void
     private var connectTask: Task<Void, Never>?
     private var reconnectTask: Task<Void, Never>?
@@ -112,12 +114,14 @@ public final class PrinterStatusStore {
     private var metadataFetchFilename: String?
     private var metadataFetchToken: UUID?
     private var metadataRescanFilename: String?
+    private var currentPrintThumbnailRetryCount: Int = 0
 
     public init(
         client: MoonrakerClientProtocol = MoonrakerClient(),
         cameraClient: MoonrakerCameraClientProtocol = MoonrakerCameraClient(),
         persistence: MoonrakerConfigurationPersisting = UserDefaultsMoonrakerConfigurationStore(),
         retryPolicy: MoonrakerRetryPolicy = MoonrakerRetryPolicy(),
+        currentPrintThumbnailRetryLimit: Int = 3,
         sleep: @escaping @Sendable (Duration) async -> Void = { duration in
             try? await Task.sleep(for: duration)
         },
@@ -128,6 +132,7 @@ public final class PrinterStatusStore {
         self.cameraClient = cameraClient
         self.persistence = persistence
         self.retryPolicy = retryPolicy
+        self.currentPrintThumbnailRetryLimit = currentPrintThumbnailRetryLimit
         self.sleep = sleep
         self.configuration = persistence.load()
     }
@@ -142,6 +147,16 @@ public final class PrinterStatusStore {
 
     public var cameraSnapshotURL: String? {
         configuration?.cameraSnapshotURL
+    }
+
+    public var canManuallyRetryCurrentPrintThumbnail: Bool {
+        guard configuration != nil else { return false }
+        guard let filename = printerStatus.filename?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !filename.isEmpty
+        else {
+            return false
+        }
+        return !isFetchingCurrentPrintThumbnail && currentPrintThumbnailData == nil
     }
 
     public var connectionBadgeLabel: String {
@@ -381,6 +396,8 @@ public final class PrinterStatusStore {
         metadataFetchFilename = nil
         metadataFetchToken = nil
         metadataRescanFilename = nil
+        currentPrintThumbnailRetryCount = 0
+        isWaitingForManualCurrentPrintThumbnailRetry = false
         currentPrintThumbnailData = nil
         currentPrintThumbnailErrorMessage = nil
         isFetchingCurrentPrintThumbnail = false
@@ -426,6 +443,19 @@ public final class PrinterStatusStore {
         }
     }
 
+    public func retryCurrentPrintThumbnail() {
+        guard canManuallyRetryCurrentPrintThumbnail else { return }
+        currentPrintThumbnailRetryCount = 0
+        isWaitingForManualCurrentPrintThumbnailRetry = false
+        metadataFetchTask?.cancel()
+        metadataFetchTask = nil
+        metadataFetchFilename = nil
+        metadataFetchToken = nil
+        metadataRescanFilename = nil
+        currentPrintThumbnailErrorMessage = nil
+        refreshPrintAssetsIfNeeded(for: printerStatus)
+    }
+
     private func connect(using configuration: MoonrakerConfiguration, isReconnect: Bool) {
         connectTask?.cancel()
         reconnectTask?.cancel()
@@ -434,6 +464,8 @@ public final class PrinterStatusStore {
         metadataFetchFilename = nil
         metadataFetchToken = nil
         metadataRescanFilename = nil
+        currentPrintThumbnailRetryCount = 0
+        isWaitingForManualCurrentPrintThumbnailRetry = false
         currentPrintThumbnailData = nil
         currentPrintThumbnailErrorMessage = nil
         isFetchingCurrentPrintThumbnail = false
@@ -555,6 +587,8 @@ public final class PrinterStatusStore {
             metadataFetchTask = nil
             metadataFetchFilename = nil
             metadataRescanFilename = nil
+            currentPrintThumbnailRetryCount = 0
+            isWaitingForManualCurrentPrintThumbnailRetry = false
             printerStatus.slicerEstimatedPrintTime = nil
             currentPrintThumbnailData = nil
             currentPrintThumbnailErrorMessage = nil
@@ -562,7 +596,11 @@ public final class PrinterStatusStore {
             return
         }
 
-        if metadataFetchFilename == filename, metadataFetchTask == nil {
+        if metadataFetchFilename == filename, metadataFetchTask == nil, currentPrintThumbnailData != nil {
+            return
+        }
+
+        if metadataFetchFilename == filename, metadataFetchTask == nil, isWaitingForManualCurrentPrintThumbnailRetry {
             return
         }
 
@@ -570,9 +608,24 @@ public final class PrinterStatusStore {
             return
         }
 
+        if metadataFetchFilename == filename, metadataFetchTask == nil, currentPrintThumbnailData == nil {
+            guard currentPrintThumbnailRetryCount < currentPrintThumbnailRetryLimit else {
+                isWaitingForManualCurrentPrintThumbnailRetry = true
+                log(
+                    .debug,
+                    "打印缩略图自动重试已停止，达到最大次数 \(currentPrintThumbnailRetryLimit)"
+                )
+                return
+            }
+        }
+
         metadataFetchTask?.cancel()
         metadataFetchFilename = filename
         metadataRescanFilename = nil
+        currentPrintThumbnailRetryCount += 1
+        isWaitingForManualCurrentPrintThumbnailRetry = false
+        isFetchingCurrentPrintThumbnail = true
+        currentPrintThumbnailErrorMessage = nil
         let fetchToken = UUID()
         metadataFetchToken = fetchToken
 
@@ -626,14 +679,24 @@ public final class PrinterStatusStore {
         filename: String,
         metadata: MoonrakerFileMetadata,
         fetchToken: UUID
-    ) async {
+        ) async {
         let thumbnail = await preferredThumbnailOrRescanIfNeeded(
             configuration: configuration,
             filename: filename,
             metadata: metadata,
             fetchToken: fetchToken
         )
-        guard let thumbnail else { return }
+        guard let thumbnail else {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                guard self.metadataFetchToken == fetchToken else { return }
+                self.isFetchingCurrentPrintThumbnail = false
+                if self.currentPrintThumbnailRetryCount >= self.currentPrintThumbnailRetryLimit {
+                    self.isWaitingForManualCurrentPrintThumbnailRetry = true
+                }
+            }
+            return
+        }
 
         await MainActor.run { [weak self] in
             guard let self else { return }
@@ -653,6 +716,9 @@ public final class PrinterStatusStore {
                 guard self.metadataFetchToken == fetchToken else { return }
                 self.currentPrintThumbnailData = data
                 self.isFetchingCurrentPrintThumbnail = false
+                self.currentPrintThumbnailRetryCount = 0
+                self.isWaitingForManualCurrentPrintThumbnailRetry = false
+                self.log(.info, "打印缩略图请求成功，大小 \(data.count) 字节")
             }
         } catch {
             if Task.isCancelled {
@@ -664,6 +730,9 @@ public final class PrinterStatusStore {
                 self.currentPrintThumbnailData = nil
                 self.currentPrintThumbnailErrorMessage = error.localizedDescription
                 self.isFetchingCurrentPrintThumbnail = false
+                if self.currentPrintThumbnailRetryCount >= self.currentPrintThumbnailRetryLimit {
+                    self.isWaitingForManualCurrentPrintThumbnailRetry = true
+                }
                 self.log(.debug, "获取打印缩略图失败：\(error.localizedDescription)")
             }
         }
@@ -686,6 +755,9 @@ public final class PrinterStatusStore {
                 self.currentPrintThumbnailData = nil
                 self.currentPrintThumbnailErrorMessage = nil
                 self.isFetchingCurrentPrintThumbnail = false
+                if self.currentPrintThumbnailRetryCount >= self.currentPrintThumbnailRetryLimit {
+                    self.isWaitingForManualCurrentPrintThumbnailRetry = true
+                }
             }
             return nil
         }
@@ -708,6 +780,9 @@ public final class PrinterStatusStore {
                 self.currentPrintThumbnailData = nil
                 self.currentPrintThumbnailErrorMessage = error.localizedDescription
                 self.isFetchingCurrentPrintThumbnail = false
+                if self.currentPrintThumbnailRetryCount >= self.currentPrintThumbnailRetryLimit {
+                    self.isWaitingForManualCurrentPrintThumbnailRetry = true
+                }
                 self.log(.debug, "重扫打印缩略图失败：\(error.localizedDescription)")
             }
             return nil

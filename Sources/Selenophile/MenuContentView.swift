@@ -154,9 +154,12 @@ struct MenuContentView: View {
             Text(message)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(Color(red: 0.52, green: 0.10, blue: 0.10))
+                .lineLimit(1)
+                .truncationMode(.tail)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(12)
+        .frame(height: 44, alignment: .topLeading)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(red: 0.99, green: 0.93, blue: 0.92))
@@ -327,6 +330,21 @@ struct MenuContentView: View {
     }
 
     private var thumbnailTile: some View {
+        Group {
+            if store.canManuallyRetryCurrentPrintThumbnail {
+                Button {
+                    store.retryCurrentPrintThumbnail()
+                } label: {
+                    thumbnailTileBody
+                }
+                .buttonStyle(.plain)
+            } else {
+                thumbnailTileBody
+            }
+        }
+    }
+
+    private var thumbnailTileBody: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color(red: 0.95, green: 0.96, blue: 0.98))
@@ -334,19 +352,18 @@ struct MenuContentView: View {
             if let thumbnailImage {
                 Image(nsImage: thumbnailImage)
                     .resizable()
+                    .interpolation(.high)
                     .scaledToFill()
-                    .allowsHitTesting(false)
             } else {
                 VStack(spacing: 6) {
                     Image(systemName: store.isFetchingCurrentPrintThumbnail ? "photo" : "square.stack.3d.up")
                         .font(.system(size: 18, weight: .medium))
                         .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
-                    Text(store.isFetchingCurrentPrintThumbnail ? "缩略图" : "无缩略图")
+                    Text(thumbnailPlaceholderText)
                         .font(.system(size: 10, weight: .semibold, design: .rounded))
                         .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
                 }
                 .padding(8)
-                .allowsHitTesting(false)
             }
 
             if store.isFetchingCurrentPrintThumbnail {
@@ -354,15 +371,24 @@ struct MenuContentView: View {
                     .controlSize(.mini)
                     .padding(8)
                     .background(.ultraThinMaterial, in: Capsule())
-                    .allowsHitTesting(false)
             }
         }
-        .frame(width: 86, height: 86)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(Color.white.opacity(0.75), lineWidth: 1)
         }
+        .frame(width: 86, height: 86)
+    }
+
+    private var thumbnailPlaceholderText: String {
+        if store.isFetchingCurrentPrintThumbnail {
+            return "缩略图"
+        }
+        if store.isWaitingForManualCurrentPrintThumbnailRetry || store.currentPrintThumbnailErrorMessage != nil {
+            return "点击重试"
+        }
+        return "无缩略图"
     }
 
     private func metricCard(

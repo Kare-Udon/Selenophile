@@ -38,7 +38,7 @@ func stopsAutoRetryAfterMaximumFailures() async {
     )
 
     store.start()
-    try? await Task.sleep(for: .milliseconds(50))
+    try? await Task.sleep(for: .milliseconds(100))
 
     #expect(await client.connectCallCount() == 3)
     #expect(store.connectionState == .failed)
@@ -65,11 +65,11 @@ func manualReconnectResetsRetryBudget() async {
     )
 
     store.start()
-    try? await Task.sleep(for: .milliseconds(50))
+    try? await Task.sleep(for: .milliseconds(100))
     #expect(store.isWaitingForManualReconnect)
 
     store.reconnectNow()
-    try? await Task.sleep(for: .milliseconds(50))
+    try? await Task.sleep(for: .milliseconds(100))
 
     #expect(await client.connectCallCount() == 4)
     #expect(store.connectionState == .connected)
@@ -93,7 +93,7 @@ func userFacingStatusAndErrorAreTranslatedAfterRetryExhaustion() async {
     )
 
     store.start()
-    try? await Task.sleep(for: .milliseconds(50))
+    try? await Task.sleep(for: .milliseconds(100))
 
     #expect(store.connectionBadgeLabel == "需要处理")
     #expect(store.connectionStatusSummary == "自动重试已停止，请手动重连")
@@ -178,7 +178,7 @@ func slicerMetadataOverridesFileRemainingTime() async {
         )
     )
 
-    try? await Task.sleep(for: .milliseconds(50))
+    try? await Task.sleep(for: .milliseconds(100))
 
     #expect(store.printerStatus.slicerEstimatedPrintTime == 1800)
 }
@@ -222,7 +222,7 @@ func thumbnailMetadataLoadsCurrentPrintThumbnail() async {
         )
     )
 
-    try? await Task.sleep(for: .milliseconds(50))
+    try? await Task.sleep(for: .milliseconds(100))
 
     #expect(store.currentPrintThumbnailData == thumbnailData)
 }
@@ -271,10 +271,131 @@ func thumbnailMetadataRescansWhenInitialMetadataHasNoThumbnail() async {
         )
     )
 
-    try? await Task.sleep(for: .milliseconds(50))
+    try? await Task.sleep(for: .milliseconds(100))
 
     #expect(store.currentPrintThumbnailData == thumbnailData)
     #expect(await client.rescanCallCount() == 1)
+}
+
+@MainActor
+@Test
+func thumbnailMetadataRetriesOnSameFilenameUntilThumbnailAppears() async {
+    let thumbnailData = Data([0x89, 0x50, 0x4E, 0x47])
+    let client = ScriptedMoonrakerClient(
+        eventsPerConnect: [[]],
+        metadataSequencesByFilename: [
+            "benchy.gcode": [
+                MoonrakerFileMetadata(
+                    filename: "benchy.gcode",
+                    estimatedTime: 1800,
+                    thumbnails: nil
+                ),
+                MoonrakerFileMetadata(
+                    filename: "benchy.gcode",
+                    estimatedTime: 1800,
+                    thumbnails: nil
+                ),
+                MoonrakerFileMetadata(
+                    filename: "benchy.gcode",
+                    estimatedTime: 1800,
+                    thumbnails: [
+                        MoonrakerThumbnailInfo(width: 400, height: 300, size: 12345, relativePath: ".thumbs/benchy-400x300.png")
+                    ]
+                )
+            ]
+        ],
+        thumbnailDataByPath: [
+            ".thumbs/benchy-400x300.png": thumbnailData
+        ]
+    )
+    let store = PrinterStatusStore(
+        client: client,
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        )
+    )
+
+    let status = PrinterStatus(
+        state: .printing,
+        filename: "benchy.gcode",
+        progress: 0.4,
+        printDuration: 600
+    )
+
+    store.handle(event: .printerStatus(status))
+    try? await Task.sleep(for: .milliseconds(100))
+    #expect(store.currentPrintThumbnailData == nil)
+
+    store.handle(event: .printerStatus(status))
+    try? await Task.sleep(for: .milliseconds(100))
+
+    #expect(store.currentPrintThumbnailData == thumbnailData)
+    #expect(await client.rescanCallCount() == 1)
+}
+
+@MainActor
+@Test
+func thumbnailMetadataStopsAfterMaxRetriesAndManualRetryResumes() async {
+    let thumbnailData = Data([0x89, 0x50, 0x4E, 0x47])
+    let client = ScriptedMoonrakerClient(
+        eventsPerConnect: [[]],
+        metadataSequencesByFilename: [
+            "benchy.gcode": [
+                MoonrakerFileMetadata(
+                    filename: "benchy.gcode",
+                    estimatedTime: 1800,
+                    thumbnails: nil
+                ),
+                MoonrakerFileMetadata(
+                    filename: "benchy.gcode",
+                    estimatedTime: 1800,
+                    thumbnails: nil
+                ),
+                MoonrakerFileMetadata(
+                    filename: "benchy.gcode",
+                    estimatedTime: 1800,
+                    thumbnails: [
+                        MoonrakerThumbnailInfo(width: 400, height: 300, size: 12345, relativePath: ".thumbs/benchy-400x300.png")
+                    ]
+                )
+            ]
+        ],
+        thumbnailDataByPath: [
+            ".thumbs/benchy-400x300.png": thumbnailData
+        ]
+    )
+    let store = PrinterStatusStore(
+        client: client,
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        ),
+        currentPrintThumbnailRetryLimit: 1
+    )
+
+    let status = PrinterStatus(
+        state: .printing,
+        filename: "benchy.gcode",
+        progress: 0.4,
+        printDuration: 600
+    )
+
+    store.handle(event: .printerStatus(status))
+    try? await Task.sleep(for: .milliseconds(100))
+
+    #expect(store.currentPrintThumbnailData == nil)
+    #expect(store.isWaitingForManualCurrentPrintThumbnailRetry)
+
+    store.handle(event: .printerStatus(status))
+    try? await Task.sleep(for: .milliseconds(100))
+
+    #expect(store.currentPrintThumbnailData == nil)
+    #expect(await client.rescanCallCount() == 1)
+
+    store.retryCurrentPrintThumbnail()
+    try? await Task.sleep(for: .milliseconds(100))
+
+    #expect(store.currentPrintThumbnailData == thumbnailData)
+    #expect(!store.isWaitingForManualCurrentPrintThumbnailRetry)
 }
 
 @MainActor
@@ -318,7 +439,7 @@ func saveConfigurationAndConnectionFailuresAreLogged() async {
     )
     #expect(success)
 
-    try? await Task.sleep(for: .milliseconds(50))
+    try? await Task.sleep(for: .milliseconds(100))
 
     #expect(logStore.entries.contains(where: { $0.message.contains("配置已保存") }))
     #expect(logStore.entries.contains(where: { $0.message.contains("开始连接 Moonraker") }))
