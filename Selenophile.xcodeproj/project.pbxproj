@@ -17,8 +17,10 @@
 		2BCFE7C3E9E8791C04096382 /* PrinterStatusStoreWidgetSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35653F3A6117A9952C61A4 /* PrinterStatusStoreWidgetSnapshotTests.swift */; };
 		2C1FBC4B5355E2AD257FD3BB /* MenuBarStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04803325601911E33F3F355F /* MenuBarStatusController.swift */; };
 		2E56324575C17306DD9A3AAF /* WidgetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4658E3BBF9F768585C241C5A /* WidgetCardView.swift */; };
+		2EF928A1BD776B5321EF04D1 /* LaunchAtLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A79280D907FF9B7EAE19C7D /* LaunchAtLoginService.swift */; };
 		3C388159A95FE2FFDBFC4609 /* PrinterStatusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BD80AC67C69D6C826BBADD /* PrinterStatusStoreTests.swift */; };
 		3C49686F45434182BDAF398A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6586DD64BFB26A97E156CECC /* AppDelegate.swift */; };
+		4616EE2A75CCE4D530D97AA5 /* LaunchAtLoginControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7217A6E35E9FB82AD745AF04 /* LaunchAtLoginControllerTests.swift */; };
 		5478BAA0FC91E5D3AD28677E /* WidgetSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA0400F26278045C2DF8B6B /* WidgetSnapshotStore.swift */; };
 		5B9B41C9569512F8DB8CF58F /* MoonrakerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F04629C0853378A9FEC0B7 /* MoonrakerConfiguration.swift */; };
 		5DD5E3ED2FC58DF0ED14D605 /* PrinterStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */; };
@@ -137,6 +139,7 @@
 		24E52344B58B7D1B332BADA6 /* Selenophile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Selenophile-Info.plist"; sourceTree = "<group>"; };
 		29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatus.swift; sourceTree = "<group>"; };
 		30BD80AC67C69D6C826BBADD /* PrinterStatusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusStoreTests.swift; sourceTree = "<group>"; };
+		3A79280D907FF9B7EAE19C7D /* LaunchAtLoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginService.swift; sourceTree = "<group>"; };
 		4227315CF1E93F0519C60410 /* MenuBarIconConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconConfiguration.swift; sourceTree = "<group>"; };
 		4658E3BBF9F768585C241C5A /* WidgetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCardView.swift; sourceTree = "<group>"; };
 		4B7EE020F7B0F6B9D4BA43DD /* SelenophileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SelenophileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +150,7 @@
 		6586DD64BFB26A97E156CECC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6D5FAA86E3FF790BE00B67C1 /* MoonrakerConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerConfigurationTests.swift; sourceTree = "<group>"; };
 		6F85AA34259590E42CC6873B /* WidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetProvider.swift; sourceTree = "<group>"; };
+		7217A6E35E9FB82AD745AF04 /* LaunchAtLoginControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginControllerTests.swift; sourceTree = "<group>"; };
 		7B7D9E616DAF1908E5FF8F60 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
 		7C7276F7D6D5890B2C79C2BE /* SelenophileWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelenophileWidget.swift; sourceTree = "<group>"; };
 		7DE8328D080EA70F6A54B62A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
@@ -274,6 +278,7 @@
 			isa = PBXGroup;
 			children = (
 				4FDE309A115EB8BAAE8AAC98 /* AppDelegateWidgetPublishingTests.swift */,
+				7217A6E35E9FB82AD745AF04 /* LaunchAtLoginControllerTests.swift */,
 				5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */,
 			);
 			path = SelenophileTests;
@@ -295,6 +300,7 @@
 			isa = PBXGroup;
 			children = (
 				6586DD64BFB26A97E156CECC /* AppDelegate.swift */,
+				3A79280D907FF9B7EAE19C7D /* LaunchAtLoginService.swift */,
 				7DE8328D080EA70F6A54B62A /* LogView.swift */,
 				578BFD7E1802AE0DECD0A4FC /* LogWindowController.swift */,
 				4227315CF1E93F0519C60410 /* MenuBarIconConfiguration.swift */,
@@ -575,6 +581,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C49686F45434182BDAF398A /* AppDelegate.swift in Sources */,
+				2EF928A1BD776B5321EF04D1 /* LaunchAtLoginService.swift in Sources */,
 				9525D3A114B7707096E5D6BF /* LogView.swift in Sources */,
 				65774F452A2E8B331A3E865D /* LogWindowController.swift in Sources */,
 				DCE1E9AC7E88B5BA2CB7E66D /* MenuBarIconConfiguration.swift in Sources */,
@@ -591,6 +598,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A20D425494F29CE9FEB61A13 /* AppDelegateWidgetPublishingTests.swift in Sources */,
+				4616EE2A75CCE4D530D97AA5 /* LaunchAtLoginControllerTests.swift in Sources */,
 				1B1ABEE13C3BE492FE57159B /* MenuBarIconConfigurationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
