@@ -422,6 +422,27 @@ func saveConfigurationPersistsCameraSnapshotURL() async throws {
 
 @MainActor
 @Test
+func saveConfigurationPersistsSelectedAppLanguage() async throws {
+    let persistence = RecordingMoonrakerConfigurationStore()
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: persistence
+    )
+
+    let success = await store.saveConfiguration(
+        serverURLString: "http://printer.local:7125",
+        apiToken: "token",
+        cameraSnapshotURL: nil,
+        appLanguage: .traditionalChinese
+    )
+
+    #expect(success)
+    #expect(persistence.savedConfiguration()?.appLanguage == .traditionalChinese)
+    #expect(store.configuration?.appLanguage == .traditionalChinese)
+}
+
+@MainActor
+@Test
 func saveConfigurationAndConnectionFailuresAreLogged() async {
     let logStore = AppLogStore(maxEntries: 20, dateProvider: { Date(timeIntervalSince1970: 0) })
     let client = ScriptedMoonrakerClient(eventsPerConnect: [[.failed("连接超时")]])

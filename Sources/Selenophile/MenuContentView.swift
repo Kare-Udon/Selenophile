@@ -4,6 +4,7 @@ import SelenophileKit
 
 struct MenuContentView: View {
     let store: PrinterStatusStore
+    let appLanguageStore: AppLanguageStore
     let onOpenSettings: () -> Void
     let onOpenLogs: () -> Void
     let onPreferredPopoverHeightChange: (CGFloat) -> Void
@@ -13,6 +14,14 @@ struct MenuContentView: View {
     private let cameraSnapshotImageHeight: CGFloat = 172
     private let contentPadding: CGFloat = 36
     private let cameraSnapshotSpacing: CGFloat = 14
+
+    private var uiLanguage: AppLanguage {
+        appLanguageStore.effectiveLanguage()
+    }
+
+    private func l10n(_ key: AppLocalization.Key) -> String {
+        AppLocalization.localizedString(key, language: uiLanguage)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -76,7 +85,7 @@ struct MenuContentView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Live Print")
+                    Text(l10n(.menuLivePrint))
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
                         .foregroundStyle(Color(red: 0.36, green: 0.40, blue: 0.47))
                         .textCase(.uppercase)
@@ -113,7 +122,7 @@ struct MenuContentView: View {
             }
 
             HStack(alignment: .center, spacing: 10) {
-                Text("任务")
+                Text(l10n(.menuTask))
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
 
@@ -141,13 +150,13 @@ struct MenuContentView: View {
     private var primaryMetrics: some View {
         HStack(spacing: 10) {
             metricCard(
-                title: "已用时间",
+                title: l10n(.menuElapsedTime),
                 value: store.printerStatus.printDuration.formattedAsClock,
                 valueColor: Color.white,
                 background: AnyShapeStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
             )
             metricCard(
-                title: "剩余时间",
+                title: l10n(.menuRemainingTime),
                 value: slicerRemainingTime.formattedAsClock,
                 valueColor: Color(red: 0.15, green: 0.08, blue: 0.04),
                 background: AnyShapeStyle(
@@ -172,10 +181,10 @@ struct MenuContentView: View {
             ],
             spacing: 8
         ) {
-            detailMetricTile("喷嘴", store.printerStatus.extruder.temperatureText)
-            detailMetricTile("热床", store.printerStatus.bed.temperatureText)
-            detailMetricTile("层数", store.printerStatus.layer?.layerText ?? "--")
-            detailMetricTile("打印倍率", store.printerStatus.feedRateMultiplier.feedRateText)
+            detailMetricTile(l10n(.menuNozzle), store.printerStatus.extruder.temperatureText)
+            detailMetricTile(l10n(.menuBed), store.printerStatus.bed.temperatureText)
+            detailMetricTile(l10n(.menuLayer), store.printerStatus.layer?.layerText ?? "--")
+            detailMetricTile(l10n(.menuPrintSpeed), store.printerStatus.feedRateMultiplier.feedRateText)
         }
         .padding(14)
         .background(cardBackground)
@@ -203,23 +212,23 @@ struct MenuContentView: View {
     private var actionRow: some View {
         HStack(alignment: .center, spacing: 10) {
             HStack(spacing: 10) {
-                Button("重连") {
+                Button(l10n(.menuReconnect)) {
                     store.reconnectNow()
                 }
                 .buttonStyle(MenuActionButtonStyle(kind: .secondary))
                 .disabled(store.connectionState == .connecting || store.connectionState == .reconnecting)
 
-                Button("日志") {
+                Button(l10n(.menuOpenLogs)) {
                     onOpenLogs()
                 }
                 .buttonStyle(MenuActionButtonStyle(kind: .secondary))
 
-                Button("设置") {
+                Button(l10n(.menuOpenSettings)) {
                     onOpenSettings()
                 }
                 .buttonStyle(MenuActionButtonStyle(kind: .primary))
 
-                Button("退出") {
+                Button(l10n(.menuQuit)) {
                     NSApplication.shared.terminate(nil)
                 }
                 .buttonStyle(MenuActionButtonStyle(kind: .ghost))
@@ -242,7 +251,7 @@ struct MenuContentView: View {
                 }
                 .buttonStyle(.plain)
 
-                Button(store.isFetchingCameraSnapshot ? "抓取中…" : "刷新") {
+                Button(store.isFetchingCameraSnapshot ? l10n(.menuRefreshing) : l10n(.menuRefresh)) {
                     Task { _ = await store.fetchCameraSnapshot() }
                 }
                 .buttonStyle(MenuActionButtonStyle(kind: .secondary))
@@ -264,7 +273,7 @@ struct MenuContentView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("相机快照")
+                    Text(l10n(.menuCameraSnapshot))
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
                         .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
                         .textCase(.uppercase)
@@ -352,12 +361,12 @@ struct MenuContentView: View {
 
     private var cameraSnapshotPlaceholder: String {
         if store.configuration == nil {
-            return "请先完成 Moonraker 配置"
+            return l10n(.menuNeedConfigForCameraSnapshot)
         }
         if store.isFetchingCameraSnapshot {
-            return "正在获取相机快照"
+            return l10n(.menuFetchingCameraSnapshot)
         }
-        return "点击刷新获取一张快照"
+        return l10n(.menuRefreshToGetSnapshot)
     }
 
     private var cardBackground: some View {
@@ -404,7 +413,7 @@ struct MenuContentView: View {
                     thumbnailTileBody
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("查看打印缩略图")
+                .accessibilityLabel(l10n(.menuViewThumbnailAccessibility))
             } else if store.canManuallyRetryCurrentPrintThumbnail {
                 Button {
                     store.retryCurrentPrintThumbnail()
@@ -431,9 +440,9 @@ struct MenuContentView: View {
                         .truncationMode(.tail)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("查看任务全名")
+                .accessibilityLabel(l10n(.menuViewTaskNameAccessibility))
             } else {
-                Text("当前无打印任务")
+                Text(l10n(.menuNoPrintTask))
                     .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
                     .lineLimit(1)
@@ -481,12 +490,12 @@ struct MenuContentView: View {
 
     private var thumbnailPlaceholderText: String {
         if store.isFetchingCurrentPrintThumbnail {
-            return "缩略图"
+            return l10n(.menuThumbnailPlaceholderFetching)
         }
         if store.isWaitingForManualCurrentPrintThumbnailRetry || store.currentPrintThumbnailErrorMessage != nil {
-            return "点击重试"
+            return l10n(.menuThumbnailPlaceholderRetry)
         }
-        return "无缩略图"
+        return l10n(.menuThumbnailPlaceholderEmpty)
     }
 
     @ViewBuilder
@@ -494,7 +503,7 @@ struct MenuContentView: View {
         switch preview {
         case .thumbnail:
             VStack(alignment: .leading, spacing: 12) {
-                Text("打印缩略图")
+                Text(l10n(.menuPrintThumbnailTitle))
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
 
@@ -506,7 +515,7 @@ struct MenuContentView: View {
                         .frame(maxWidth: 360, maxHeight: 360)
                         .background(Color.white.opacity(0.92), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                 } else {
-                    Text("当前没有可预览的打印缩略图")
+                    Text(l10n(.menuNoThumbnailPreview))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
                 }
@@ -516,7 +525,7 @@ struct MenuContentView: View {
 
         case .taskName(let fullName):
             VStack(alignment: .leading, spacing: 12) {
-                Text("任务全名")
+                Text(l10n(.menuTaskFullName))
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
 
@@ -526,7 +535,7 @@ struct MenuContentView: View {
                     .textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("可直接选中文本复制")
+                Text(l10n(.menuCopySelectableText))
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
             }

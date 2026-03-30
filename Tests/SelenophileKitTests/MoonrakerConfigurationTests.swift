@@ -44,3 +44,37 @@ func validatedWebSocketURLRejectsUnsupportedScheme() {
         _ = try configuration.validated()
     }
 }
+
+@Test
+func moonrakerConfigurationEncodesAndDecodesAppLanguage() throws {
+    let configuration = MoonrakerConfiguration(
+        serverURLString: "http://printer.local:7125",
+        apiToken: "secret-token",
+        cameraSnapshotURL: "http://camera.local/snapshot.jpg",
+        appLanguage: .japanese
+    )
+
+    let data = try JSONEncoder().encode(configuration)
+    let decoded = try JSONDecoder().decode(MoonrakerConfiguration.self, from: data)
+
+    #expect(decoded == configuration)
+    #expect(decoded.appLanguage == .japanese)
+}
+
+@Test
+func moonrakerConfigurationDefaultsAppLanguageWhenMissingFromLegacyJSON() throws {
+    let legacyJSON = #"""
+    {
+      "serverURLString": "http://printer.local:7125",
+      "apiToken": "secret-token",
+      "cameraSnapshotURL": "http://camera.local/snapshot.jpg"
+    }
+    """#
+
+    let decoded = try JSONDecoder().decode(MoonrakerConfiguration.self, from: Data(legacyJSON.utf8))
+
+    #expect(decoded.serverURLString == "http://printer.local:7125")
+    #expect(decoded.apiToken == "secret-token")
+    #expect(decoded.cameraSnapshotURL == "http://camera.local/snapshot.jpg")
+    #expect(decoded.appLanguage == .system)
+}

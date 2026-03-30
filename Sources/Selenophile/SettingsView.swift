@@ -5,10 +5,12 @@ struct SettingsView: View {
     let store: PrinterStatusStore
     let onClose: () -> Void
     let launchAtLoginControl: LaunchAtLoginControl?
+    let appLanguageStore: AppLanguageStore
 
     @State private var serverURLString: String
     @State private var apiToken: String
     @State private var cameraSnapshotURL: String
+    @State private var selectedAppLanguage: AppLanguage
     @State private var launchAtLoginEnabled: Bool
     @State private var isUpdatingLaunchAtLogin = false
     @State private var isSaving = false
@@ -16,14 +18,17 @@ struct SettingsView: View {
     init(
         store: PrinterStatusStore,
         onClose: @escaping () -> Void,
-        launchAtLoginControl: LaunchAtLoginControl? = nil
+        launchAtLoginControl: LaunchAtLoginControl? = nil,
+        appLanguageStore: AppLanguageStore
     ) {
         self.store = store
         self.onClose = onClose
         self.launchAtLoginControl = launchAtLoginControl
+        self.appLanguageStore = appLanguageStore
         _serverURLString = State(initialValue: store.configuration?.serverURLString ?? "http://127.0.0.1:7125")
         _apiToken = State(initialValue: store.configuration?.apiToken ?? "")
         _cameraSnapshotURL = State(initialValue: store.configuration?.cameraSnapshotURL ?? "")
+        _selectedAppLanguage = State(initialValue: store.configuration?.appLanguage ?? .system)
         _launchAtLoginEnabled = State(initialValue: launchAtLoginControl?.isEnabled() ?? false)
     }
 
@@ -63,12 +68,21 @@ struct SettingsView: View {
             apiToken: token.isEmpty ? nil : token,
             cameraSnapshotURL: cameraSnapshotURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                 ? nil
-                : cameraSnapshotURL.trimmingCharacters(in: .whitespacesAndNewlines)
+                : cameraSnapshotURL.trimmingCharacters(in: .whitespacesAndNewlines),
+            appLanguage: selectedAppLanguage
         )
         isSaving = false
         if success {
             onClose()
         }
+    }
+
+    private var uiLanguage: AppLanguage {
+        appLanguageStore.effectiveLanguage()
+    }
+
+    private func l10n(_ key: AppLocalization.Key) -> String {
+        AppLocalization.localizedString(key, language: uiLanguage)
     }
 
     @MainActor
@@ -94,17 +108,17 @@ struct SettingsView: View {
 
     private var heroCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Moonraker Setup")
+            Text(l10n(.settingsHeroBadge))
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                 .foregroundStyle(Color.white.opacity(0.68))
                 .textCase(.uppercase)
                 .tracking(2)
 
-            Text("连接你的打印状态源")
+            Text(l10n(.settingsHeroTitle))
                 .font(.system(size: 24, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
 
-            Text("输入 Moonraker 地址、可选令牌和相机快照地址，保存后会立即测试连接。")
+            Text(l10n(.settingsHeroSubtitle))
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundStyle(Color.white.opacity(0.78))
                 .fixedSize(horizontal: false, vertical: true)
@@ -129,31 +143,44 @@ struct SettingsView: View {
     private var formCard: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Moonraker URL")
+                Text(l10n(.settingsMoonrakerURLLabel))
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                TextField("http://127.0.0.1:7125", text: $serverURLString)
+                TextField(l10n(.settingsMoonrakerURLPlaceholder), text: $serverURLString)
                     .textFieldStyle(SetupFieldStyle())
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("API Token（可选）")
+                Text(l10n(.settingsAPITokenLabel))
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                SecureField("JWT 或 API key", text: $apiToken)
+                SecureField(l10n(.settingsAPITokenPlaceholder), text: $apiToken)
                     .textFieldStyle(SetupFieldStyle())
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("相机快照 URL")
+                Text(l10n(.settingsCameraSnapshotURLLabel))
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                TextField("http://127.0.0.1/webcam/?action=snapshot", text: $cameraSnapshotURL)
+                TextField(l10n(.settingsCameraSnapshotURLPlaceholder), text: $cameraSnapshotURL)
                     .textFieldStyle(SetupFieldStyle())
-                Text("填写一个可以直接返回图片的地址。支持绝对 URL，也支持相对当前 Moonraker 主机的路径。")
+                Text(l10n(.settingsCameraSnapshotHelp))
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundStyle(Color(red: 0.45, green: 0.49, blue: 0.56))
                     .fixedSize(horizontal: false, vertical: true)
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text(l10n(.settingsLanguageLabel))
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
+                Picker("", selection: $selectedAppLanguage) {
+                    ForEach(AppLanguage.supportedSelections, id: \.self) { language in
+                        Text(language.displayName(in: uiLanguage)).tag(language)
+                    }
+                }
+                .pickerStyle(.menu)
+                .labelsHidden()
             }
         }
         .padding(18)
@@ -174,11 +201,11 @@ struct SettingsView: View {
         return VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 14) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("开机自启")
+                    Text(l10n(.settingsLaunchAtLoginLabel))
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundStyle(Color(red: 0.11, green: 0.14, blue: 0.18))
 
-                    Text("启用后，应用会在系统登录时自动打开。")
+                    Text(l10n(.settingsLaunchAtLoginDescription))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .foregroundStyle(Color(red: 0.45, green: 0.49, blue: 0.56))
                         .fixedSize(horizontal: false, vertical: true)
@@ -198,7 +225,7 @@ struct SettingsView: View {
             }
 
             if !isAvailable {
-                Text("当前不可用")
+                Text(l10n(.settingsLaunchAtLoginUnavailable))
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundStyle(Color(red: 0.58, green: 0.62, blue: 0.69))
             }
@@ -235,13 +262,13 @@ struct SettingsView: View {
         HStack {
             Spacer()
 
-            Button("取消") {
+            Button(l10n(.settingsCancel)) {
                 onClose()
             }
             .buttonStyle(SetupActionButtonStyle(kind: .secondary))
             .disabled(isSaving && store.configuration == nil)
 
-            Button(isSaving ? "连接中…" : "测试连接并保存") {
+            Button(isSaving ? l10n(.settingsSaving) : l10n(.settingsSave)) {
                 Task { await save() }
             }
             .buttonStyle(SetupActionButtonStyle(kind: .primary))

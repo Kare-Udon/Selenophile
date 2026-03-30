@@ -4,7 +4,16 @@ import SelenophileKit
 
 struct LogView: View {
     let logStore: AppLogStore
+    let appLanguageStore: AppLanguageStore
     @AppStorage("log.minimumLevel") private var minimumLevelRawValue: String = AppLogLevel.info.rawValue
+
+    private var uiLanguage: AppLanguage {
+        appLanguageStore.effectiveLanguage()
+    }
+
+    private func l10n(_ key: AppLocalization.Key) -> String {
+        AppLocalization.localizedString(key, language: uiLanguage)
+    }
 
     private var minimumLevel: AppLogLevel {
         get {
@@ -42,11 +51,11 @@ struct LogView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("调试日志")
+                    Text(l10n(.logHeaderTitle))
                         .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
 
-                    Text("显示应用内部的连接、重试、状态更新与相机请求日志。")
+                    Text(l10n(.logHeaderSubtitle))
                         .font(.system(size: 13, weight: .medium, design: .rounded))
                         .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
                 }
@@ -55,13 +64,13 @@ struct LogView: View {
 
                 VStack(alignment: .trailing, spacing: 10) {
                     HStack(spacing: 8) {
-                        Text("日志等级")
+                        Text(l10n(.logLevelLabel))
                             .font(.system(size: 12, weight: .semibold, design: .rounded))
                             .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
 
                         Picker("", selection: minimumLevelBinding) {
                             ForEach(AppLogLevel.allCases, id: \.self) { level in
-                                Text(level.displayName).tag(level)
+                                Text(level.displayName(in: uiLanguage)).tag(level)
                             }
                         }
                         .pickerStyle(.menu)
@@ -70,13 +79,13 @@ struct LogView: View {
                     }
 
                     HStack(spacing: 8) {
-                        Button("复制全部") {
+                        Button(l10n(.logCopyAll)) {
                             copyAllLogs()
                         }
                         .buttonStyle(LogActionButtonStyle(kind: .secondary))
                         .disabled(logStore.entries.isEmpty)
 
-                        Button("清空") {
+                        Button(l10n(.logClear)) {
                             logStore.clear()
                         }
                         .buttonStyle(LogActionButtonStyle(kind: .primary))
@@ -117,11 +126,11 @@ struct LogView: View {
                 .font(.system(size: 26, weight: .medium))
                 .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
 
-            Text("当前还没有日志")
+            Text(l10n(.logEmptyStateTitle))
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundStyle(Color(red: 0.14, green: 0.17, blue: 0.22))
 
-            Text("应用开始记录连接或相机事件后，会在这里实时显示。")
+            Text(l10n(.logEmptyStateSubtitle))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
         }
@@ -136,11 +145,11 @@ struct LogView: View {
                 .font(.system(size: 26, weight: .medium))
                 .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
 
-            Text("当前等级下没有日志")
+            Text(l10n(.logFilteredEmptyStateTitle))
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundStyle(Color(red: 0.14, green: 0.17, blue: 0.22))
 
-            Text("调整最低显示等级后，可以看到更多日志。")
+            Text(l10n(.logFilteredEmptyStateSubtitle))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
         }
@@ -156,7 +165,7 @@ struct LogView: View {
                     .font(.system(size: 12, weight: .semibold, design: .monospaced))
                     .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
 
-                Text(entry.level.label)
+                Text(entry.level.displayName(in: uiLanguage))
                     .font(.system(size: 11, weight: .bold, design: .rounded))
                     .foregroundStyle(entry.level.foregroundColor)
                     .padding(.horizontal, 8)
@@ -198,12 +207,12 @@ struct LogView: View {
 
     private var countSummary: String {
         if logStore.entries.isEmpty {
-            return "当前共 0 条"
+            return l10n(.logCountZero)
         }
         if visibleEntries.count == logStore.entries.count {
-            return "当前共 \(logStore.entries.count) 条"
+            return String(format: l10n(.logCountTotal), logStore.entries.count)
         }
-        return "当前显示 \(visibleEntries.count) / 共 \(logStore.entries.count) 条"
+        return String(format: l10n(.logCountVisible), visibleEntries.count, logStore.entries.count)
     }
 
     private var minimumLevelBinding: Binding<AppLogLevel> {
@@ -249,16 +258,16 @@ private extension AppLogLevel {
         [.debug, .info, .warning, .error]
     }
 
-    var displayName: String {
+    func displayName(in uiLanguage: AppLanguage) -> String {
         switch self {
         case .debug:
-            return "Debug"
+            return AppLocalization.localizedString(.logLevelDebug, language: uiLanguage)
         case .info:
-            return "Info"
+            return AppLocalization.localizedString(.logLevelInfo, language: uiLanguage)
         case .warning:
-            return "Warning"
+            return AppLocalization.localizedString(.logLevelWarning, language: uiLanguage)
         case .error:
-            return "Error"
+            return AppLocalization.localizedString(.logLevelError, language: uiLanguage)
         }
     }
 

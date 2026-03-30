@@ -20,6 +20,7 @@ func appDelegatePublishesAndRefreshesWidgetSnapshots() {
     let appDelegate = AppDelegate(
         logStore: logStore,
         store: store,
+        appLanguageStore: AppLanguageStore(),
         widgetSnapshotStore: widgetStore,
         widgetCenter: widgetCenter
     )

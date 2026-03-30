@@ -33,7 +33,10 @@ func launchAtLoginControllerTreatsRequiresApprovalAsDisabled() {
 @Test
 func appDelegateStoresInjectedLaunchAtLoginController() {
     let controller = LaunchAtLoginController(service: LaunchAtLoginServiceSpy(status: .enabled))
-    let appDelegate = AppDelegate(launchAtLoginController: controller)
+    let appDelegate = AppDelegate(
+        launchAtLoginController: controller,
+        appLanguageStore: AppLanguageStore()
+    )
 
     #expect(appDelegate.launchAtLoginController.isEnabled)
 }

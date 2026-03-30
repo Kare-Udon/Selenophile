@@ -9,6 +9,7 @@ final class MenuBarStatusController: NSObject {
     private static let popoverHeight: CGFloat = 640
 
     private let store: PrinterStatusStore
+    private let appLanguageStore: AppLanguageStore
     private let onOpenSettings: () -> Void
     private let onOpenLogs: () -> Void
     private let statusItem: NSStatusItem
@@ -18,10 +19,12 @@ final class MenuBarStatusController: NSObject {
 
     init(
         store: PrinterStatusStore,
+        appLanguageStore: AppLanguageStore,
         onOpenSettings: @escaping () -> Void,
         onOpenLogs: @escaping () -> Void
     ) {
         self.store = store
+        self.appLanguageStore = appLanguageStore
         self.onOpenSettings = onOpenSettings
         self.onOpenLogs = onOpenLogs
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -65,6 +68,7 @@ final class MenuBarStatusController: NSObject {
         let hostingController = NSHostingController(
             rootView: MenuContentView(
                 store: store,
+                appLanguageStore: appLanguageStore,
                 onOpenSettings: onOpenSettings,
                 onOpenLogs: onOpenLogs,
                 onPreferredPopoverHeightChange: { [weak self] height in
@@ -108,7 +112,8 @@ final class MenuBarStatusController: NSObject {
     private var tooltipText: String {
         let progressText = formattedProgressText(for: store.printerStatus.progress)
         let stateText = store.printerStatus.state.localizedLabel
-        return "Selenophile\n状态：\(stateText)\n进度：\(progressText)"
+        let uiLanguage = appLanguageStore.effectiveLanguage()
+        return "\(AppLocalization.localizedString(.menuTooltipTitle, language: uiLanguage))\n\(AppLocalization.localizedString(.menuTooltipStatus, language: uiLanguage))：\(stateText)\n\(AppLocalization.localizedString(.menuTooltipProgress, language: uiLanguage))：\(progressText)"
     }
 
     private func beginObservingStore() {
@@ -117,6 +122,7 @@ final class MenuBarStatusController: NSObject {
             _ = store.isWaitingForManualReconnect
             _ = store.hasActivePrint
             _ = store.printerStatus
+            _ = appLanguageStore.selectedLanguage
         } onChange: { [weak self] in
             Task { @MainActor [weak self] in
                 self?.refreshStatusItem()

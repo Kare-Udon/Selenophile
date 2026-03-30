@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "Selenophile",
+    defaultLocalization: "en",
     platforms: [
         .macOS(.v14),
     ],
@@ -13,7 +14,10 @@ let package = Package(
     targets: [
         .target(
             name: "SelenophileKit",
-            path: "Sources/SelenophileKit"
+            path: "Sources/SelenophileKit",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .executableTarget(
             name: "Selenophile",

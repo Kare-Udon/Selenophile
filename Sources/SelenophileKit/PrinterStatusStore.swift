@@ -85,12 +85,17 @@ public final class UserDefaultsMoonrakerConfigurationStore: MoonrakerConfigurati
 @MainActor
 @Observable
 public final class PrinterStatusStore {
-    public var configuration: MoonrakerConfiguration?
+    public var configuration: MoonrakerConfiguration? {
+        didSet {
+            onConfigurationChange?(configuration)
+        }
+    }
     public var connectionState: MoonrakerConnectionState = .unconfigured
     public var printerStatus = PrinterStatus()
     public var lastErrorMessage: String?
     public var lastUpdatedAt: Date?
     public var onWidgetSnapshotChange: ((WidgetSnapshot) -> Void)?
+    public var onConfigurationChange: ((MoonrakerConfiguration?) -> Void)?
     public private(set) var cameraSnapshotData: Data?
     public private(set) var cameraSnapshotErrorMessage: String?
     public private(set) var isFetchingCameraSnapshot = false
@@ -366,12 +371,14 @@ public final class PrinterStatusStore {
     public func saveConfiguration(
         serverURLString: String,
         apiToken: String?,
-        cameraSnapshotURL: String? = nil
+        cameraSnapshotURL: String? = nil,
+        appLanguage: AppLanguage? = nil
     ) async -> Bool {
         let configuration = MoonrakerConfiguration(
             serverURLString: serverURLString,
             apiToken: apiToken,
-            cameraSnapshotURL: cameraSnapshotURL
+            cameraSnapshotURL: cameraSnapshotURL,
+            appLanguage: appLanguage ?? self.configuration?.appLanguage ?? .system
         )
         do {
             _ = try configuration.validated()

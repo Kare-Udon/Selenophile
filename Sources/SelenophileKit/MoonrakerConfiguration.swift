@@ -4,17 +4,41 @@ public struct MoonrakerConfiguration: Codable, Equatable, Sendable {
     public var serverURLString: String
     public var apiToken: String?
     public var cameraSnapshotURL: String?
+    public var appLanguage: AppLanguage
+
+    private enum CodingKeys: String, CodingKey {
+        case serverURLString
+        case apiToken
+        case cameraSnapshotURL
+        case appLanguage
+    }
 
     public init(
         serverURLString: String,
         apiToken: String?,
-        cameraSnapshotURL: String? = nil
+        cameraSnapshotURL: String? = nil,
+        appLanguage: AppLanguage = .system
     ) {
         self.serverURLString = serverURLString.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedToken = apiToken?.trimmingCharacters(in: .whitespacesAndNewlines)
         self.apiToken = trimmedToken?.isEmpty == true ? nil : trimmedToken
         let trimmedSnapshotURL = cameraSnapshotURL?.trimmingCharacters(in: .whitespacesAndNewlines)
         self.cameraSnapshotURL = trimmedSnapshotURL?.isEmpty == true ? nil : trimmedSnapshotURL
+        self.appLanguage = appLanguage
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let serverURLString = try container.decode(String.self, forKey: .serverURLString)
+        let apiToken = try container.decodeIfPresent(String.self, forKey: .apiToken)
+        let cameraSnapshotURL = try container.decodeIfPresent(String.self, forKey: .cameraSnapshotURL)
+        let appLanguage = try container.decodeIfPresent(AppLanguage.self, forKey: .appLanguage) ?? .system
+        self.init(
+            serverURLString: serverURLString,
+            apiToken: apiToken,
+            cameraSnapshotURL: cameraSnapshotURL,
+            appLanguage: appLanguage
+        )
     }
 
     public func validated() throws -> MoonrakerValidatedConfiguration {
