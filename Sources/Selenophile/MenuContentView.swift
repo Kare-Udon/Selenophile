@@ -6,10 +6,48 @@ struct MenuContentView: View {
     let store: PrinterStatusStore
     let onOpenSettings: () -> Void
     let onOpenLogs: () -> Void
+    let onPreferredPopoverHeightChange: (CGFloat) -> Void
     @AppStorage("menu.cameraSnapshotCollapsed") private var isCameraSnapshotCollapsed = false
     @State private var activePreview: MenuPreview?
+    @State private var baseContentHeight: CGFloat = 0
+    private let cameraSnapshotImageHeight: CGFloat = 172
+    private let contentPadding: CGFloat = 36
+    private let cameraSnapshotSpacing: CGFloat = 14
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            baseContent
+
+            cameraSnapshotCard
+                .padding(.top, isCameraSnapshotCollapsed ? 0 : cameraSnapshotSpacing)
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .padding(18)
+        .frame(width: 388, alignment: .topLeading)
+        .background(backgroundGradient)
+        .onAppear {
+            syncPopoverHeightForCurrentState()
+        }
+    }
+
+    private var baseContent: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            staticMenuContent
+            actionRow
+        }
+        .background {
+            GeometryReader { proxy in
+                Color.clear
+                    .preference(key: MenuContentHeightPreferenceKey.self, value: proxy.size.height)
+            }
+        }
+        .onPreferenceChange(MenuContentHeightPreferenceKey.self) { height in
+            baseContentHeight = height
+            syncPopoverHeightForCurrentState()
+        }
+    }
+
+    private var staticMenuContent: some View {
         VStack(alignment: .leading, spacing: 14) {
             headerCard
             primaryMetrics
@@ -17,15 +55,10 @@ struct MenuContentView: View {
             if let lastError = store.displayErrorMessage?.nonEmpty {
                 errorBanner(lastError)
             }
-            actionRow
-            if !isCameraSnapshotCollapsed {
-                cameraSnapshotCard
-                    .transition(.opacity.combined(with: .scale(scale: 0.98)).combined(with: .move(edge: .top)))
-            }
         }
-        .frame(width: 352)
-        .padding(18)
-        .background(backgroundGradient)
+        .transaction { transaction in
+            transaction.animation = nil
+        }
     }
 
     private var backgroundGradient: some View {
@@ -197,9 +230,9 @@ struct MenuContentView: View {
 
             HStack(spacing: 8) {
                 Button {
-                    withAnimation(.easeInOut(duration: 0.22)) {
-                        isCameraSnapshotCollapsed.toggle()
-                    }
+                    let nextCollapsed = !isCameraSnapshotCollapsed
+                    isCameraSnapshotCollapsed = nextCollapsed
+                    onPreferredPopoverHeightChange(nextCollapsed ? collapsedPopoverHeight : expandedPopoverHeight)
                 } label: {
                     Image(systemName: isCameraSnapshotCollapsed ? "chevron.down" : "chevron.up")
                         .font(.system(size: 11, weight: .bold))
@@ -219,6 +252,15 @@ struct MenuContentView: View {
     }
 
     private var cameraSnapshotCard: some View {
+        cameraSnapshotCardContent
+            .fixedSize(horizontal: false, vertical: true)
+            .allowsHitTesting(!isCameraSnapshotCollapsed)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .frame(height: isCameraSnapshotCollapsed ? 0 : cameraSnapshotExpandedHeight, alignment: .topLeading)
+        .clipped()
+    }
+
+    private var cameraSnapshotCardContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -232,44 +274,7 @@ struct MenuContentView: View {
                 Spacer()
             }
 
-            if !isCameraSnapshotCollapsed {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(Color(red: 0.93, green: 0.95, blue: 0.98))
-
-                    if let snapshotImage {
-                        Image(nsImage: snapshotImage)
-                            .resizable()
-                            .scaledToFill()
-                            .allowsHitTesting(false)
-                    } else {
-                        VStack(spacing: 10) {
-                            Image(systemName: store.isFetchingCameraSnapshot ? "camera.aperture" : "webcam")
-                                .font(.system(size: 22, weight: .medium))
-                                .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
-                            Text(cameraSnapshotPlaceholder)
-                                .font(.system(size: 12, weight: .medium, design: .rounded))
-                                .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
-                        }
-                        .padding(.horizontal, 18)
-                        .allowsHitTesting(false)
-                    }
-
-                    if store.isFetchingCameraSnapshot {
-                        ProgressView()
-                            .controlSize(.small)
-                            .padding(10)
-                            .background(.ultraThinMaterial, in: Capsule())
-                            .allowsHitTesting(false)
-                    }
-                }
-                .frame(height: 172)
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                }
-            }
+            cameraSnapshotMediaContent
 
             if let error = store.cameraSnapshotErrorMessage?.nonEmpty {
                 Text(error)
@@ -278,13 +283,71 @@ struct MenuContentView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(14)
         .background(cardBackground)
+    }
+
+    private var cameraSnapshotMediaContent: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(red: 0.93, green: 0.95, blue: 0.98))
+
+            if let snapshotImage {
+                Image(nsImage: snapshotImage)
+                    .resizable()
+                    .scaledToFill()
+                    .allowsHitTesting(false)
+            } else {
+                VStack(spacing: 10) {
+                    Image(systemName: store.isFetchingCameraSnapshot ? "camera.aperture" : "webcam")
+                        .font(.system(size: 22, weight: .medium))
+                        .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
+                    Text(cameraSnapshotPlaceholder)
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
+                }
+                .padding(.horizontal, 18)
+                .allowsHitTesting(false)
+            }
+
+            if store.isFetchingCameraSnapshot {
+                ProgressView()
+                    .controlSize(.small)
+                    .padding(10)
+                    .background(.ultraThinMaterial, in: Capsule())
+                    .allowsHitTesting(false)
+            }
+        }
+        .frame(height: cameraSnapshotImageHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Color.white.opacity(0.7), lineWidth: 1)
+        }
     }
 
     private var snapshotImage: NSImage? {
         guard let data = store.cameraSnapshotData else { return nil }
         return NSImage(data: data)
+    }
+
+    private var cameraSnapshotExpandedHeight: CGFloat {
+        let errorHeight: CGFloat = store.cameraSnapshotErrorMessage?.nonEmpty == nil ? 0 : 38
+        return 226 + errorHeight
+    }
+
+    private var collapsedPopoverHeight: CGFloat {
+        baseContentHeight + contentPadding
+    }
+
+    private var expandedPopoverHeight: CGFloat {
+        collapsedPopoverHeight + cameraSnapshotSpacing + cameraSnapshotExpandedHeight
+    }
+
+    private func syncPopoverHeightForCurrentState() {
+        guard baseContentHeight > 0 else { return }
+        onPreferredPopoverHeightChange(isCameraSnapshotCollapsed ? collapsedPopoverHeight : expandedPopoverHeight)
     }
 
     private var cameraSnapshotPlaceholder: String {
@@ -486,7 +549,7 @@ struct MenuContentView: View {
                 .font(.system(size: 21, weight: .bold, design: .monospaced))
                 .foregroundStyle(valueColor)
                 .lineLimit(1)
-                .minimumScaleFactor(0.82)
+                .fixedSize(horizontal: true, vertical: false)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
@@ -650,5 +713,13 @@ private extension String {
     var nonEmpty: String? {
         let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? nil : trimmed
+    }
+}
+
+private struct MenuContentHeightPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }

@@ -5,12 +5,16 @@ import SelenophileKit
 
 @MainActor
 final class MenuBarStatusController: NSObject {
+    private static let popoverWidth: CGFloat = 388
+    private static let popoverHeight: CGFloat = 640
+
     private let store: PrinterStatusStore
     private let onOpenSettings: () -> Void
     private let onOpenLogs: () -> Void
     private let statusItem: NSStatusItem
     private let popover = NSPopover()
     private let iconRenderer = MenuBarStatusIconRenderer()
+    private var hostingController: NSHostingController<MenuContentView>?
 
     init(
         store: PrinterStatusStore,
@@ -57,15 +61,34 @@ final class MenuBarStatusController: NSObject {
 
     private func configurePopover() {
         popover.behavior = .transient
-        popover.animates = true
-        popover.contentSize = NSSize(width: 388, height: 640)
-        popover.contentViewController = NSHostingController(
+        popover.animates = false
+        let hostingController = NSHostingController(
             rootView: MenuContentView(
                 store: store,
                 onOpenSettings: onOpenSettings,
-                onOpenLogs: onOpenLogs
+                onOpenLogs: onOpenLogs,
+                onPreferredPopoverHeightChange: { [weak self] height in
+                    self?.updatePopoverHeight(height)
+                }
             )
         )
+        self.hostingController = hostingController
+        popover.contentViewController = hostingController
+        popover.contentSize = NSSize(width: Self.popoverWidth, height: Self.popoverHeight)
+    }
+
+    private func updatePopoverHeight(_ height: CGFloat) {
+        let resolvedHeight = max(0, height)
+        let newSize = NSSize(width: Self.popoverWidth, height: resolvedHeight)
+        guard popover.contentSize != newSize else { return }
+
+        let topEdge = popover.contentViewController?.view.window?.frame.maxY
+        popover.contentSize = newSize
+
+        guard let topEdge, let window = popover.contentViewController?.view.window else { return }
+        var frame = window.frame
+        frame.origin.y = topEdge - frame.height
+        window.setFrame(frame, display: true)
     }
 
     private func refreshStatusItem() {
