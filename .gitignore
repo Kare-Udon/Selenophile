@@ -16,6 +16,7 @@ xcuserdata/
 # Local assistant / workspace state
 .codex/
 .superpowers/
+.worktrees/
 
 # Archives and packages
 *.ipa
