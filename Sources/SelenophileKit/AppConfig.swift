@@ -6,5 +6,6 @@ public enum AppConfig {
     public static let settingsWindowTitle = "Moonraker 设置"
     public static let logWindowTitle = "调试日志"
     public static let projectURL = "https://github.com/udon/Selenophile"
+    public static let widgetKind = "SelenophileWidget"
     public static let widgetSnapshotFileName = "widget-snapshot.json"
 }

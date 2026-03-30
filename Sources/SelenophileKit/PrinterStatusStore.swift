@@ -90,6 +90,7 @@ public final class PrinterStatusStore {
     public var printerStatus = PrinterStatus()
     public var lastErrorMessage: String?
     public var lastUpdatedAt: Date?
+    public var onWidgetSnapshotChange: ((WidgetSnapshot) -> Void)?
     public private(set) var cameraSnapshotData: Data?
     public private(set) var cameraSnapshotErrorMessage: String?
     public private(set) var isFetchingCameraSnapshot = false
@@ -204,6 +205,10 @@ public final class PrinterStatusStore {
     public var displayErrorMessage: String? {
         guard let lastErrorMessage, !lastErrorMessage.isEmpty else { return nil }
         return translatedErrorMessage(lastErrorMessage)
+    }
+
+    private func emitWidgetSnapshot() {
+        onWidgetSnapshotChange?(widgetSnapshot())
     }
 
     public func widgetSnapshot() -> WidgetSnapshot {
@@ -329,6 +334,7 @@ public final class PrinterStatusStore {
         guard let configuration else {
             connectionState = .unconfigured
             log(.warning, "启动连接失败：尚未配置 Moonraker")
+            emitWidgetSnapshot()
             return
         }
         log(.info, "开始连接 Moonraker")
@@ -343,6 +349,7 @@ public final class PrinterStatusStore {
         guard let configuration else {
             connectionState = .unconfigured
             log(.warning, "手动重连失败：尚未配置 Moonraker")
+            emitWidgetSnapshot()
             return
         }
         reconnectTask?.cancel()
@@ -382,6 +389,7 @@ public final class PrinterStatusStore {
             lastErrorMessage = error.localizedDescription
             connectionState = .failed
             log(.error, "配置保存失败：\(error.localizedDescription)")
+            emitWidgetSnapshot()
             return false
         }
     }
@@ -405,6 +413,7 @@ public final class PrinterStatusStore {
         nextRetryAt = nil
         isWaitingForManualReconnect = false
         log(.info, "已主动断开连接")
+        emitWidgetSnapshot()
         Task { await client.disconnect() }
     }
 
@@ -476,6 +485,7 @@ public final class PrinterStatusStore {
             isWaitingForManualReconnect = false
         }
         log(.debug, "\(isReconnect ? "准备重连" : "准备连接")：\(configuration.serverURLString)")
+        emitWidgetSnapshot()
 
         connectTask = Task {
             do {
@@ -505,16 +515,19 @@ public final class PrinterStatusStore {
             nextRetryAt = nil
             isWaitingForManualReconnect = false
             log(.info, "Moonraker 已连接")
+            emitWidgetSnapshot()
         case .printerStatus(let status):
             printerStatus = status
             lastUpdatedAt = Date()
             logStatusUpdate(status)
             refreshPrintAssetsIfNeeded(for: status)
+            emitWidgetSnapshot()
         case .printerStatusDelta(let delta):
             printerStatus = printerStatus.applying(delta: delta)
             lastUpdatedAt = Date()
             log(.debug, "收到打印状态增量更新")
             refreshPrintAssetsIfNeeded(for: printerStatus)
+            emitWidgetSnapshot()
         case .disconnected(let message):
             if shouldIgnoreTransientDisconnection(message) {
                 log(.debug, "忽略连接阶段的瞬时断开事件")
@@ -549,6 +562,7 @@ public final class PrinterStatusStore {
             nextRetryAt = nil
             isWaitingForManualReconnect = true
             log(.error, "自动重试已停止，达到最大次数 \(retryPolicy.maxAttempts)")
+            emitWidgetSnapshot()
             return
         }
 
@@ -556,6 +570,7 @@ public final class PrinterStatusStore {
         let delay = retryPolicy.delay(failureCount)
         nextRetryAt = Date().addingTimeInterval(delay.timeInterval)
         log(.warning, "将在 \(Int(delay.timeInterval.rounded())) 秒后自动重试（\(failureCount)/\(retryPolicy.maxAttempts)）")
+        emitWidgetSnapshot()
         reconnectTask = Task { [weak self] in
             await self?.sleep(delay)
             guard !Task.isCancelled else { return }

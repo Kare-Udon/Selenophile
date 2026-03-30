@@ -1,20 +1,43 @@
 import AppKit
 import SwiftUI
+import WidgetKit
 import SelenophileKit
+
+protocol WidgetTimelineReloading {
+    func reloadTimelines(ofKind kind: String)
+}
+
+extension WidgetCenter: WidgetTimelineReloading {}
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let logStore: AppLogStore
     let store: PrinterStatusStore
+    private let widgetSnapshotStore: WidgetSnapshotStore
+    private let widgetCenter: any WidgetTimelineReloading
     private var settingsWindowController: NSWindowController?
     private var logWindowController: LogWindowController?
     private var menuBarStatusController: MenuBarStatusController?
 
-    override init() {
-        let logStore = AppLogStore()
-        self.logStore = logStore
-        self.store = PrinterStatusStore(logStore: logStore)
+    convenience override init() {
+        self.init(logStore: AppLogStore())
+    }
+
+    init(
+        logStore: AppLogStore? = nil,
+        store: PrinterStatusStore? = nil,
+        widgetSnapshotStore: WidgetSnapshotStore = WidgetSnapshotStore(),
+        widgetCenter: any WidgetTimelineReloading = WidgetCenter.shared
+    ) {
+        let resolvedLogStore = logStore ?? AppLogStore()
+        self.logStore = resolvedLogStore
+        self.store = store ?? PrinterStatusStore(logStore: resolvedLogStore)
+        self.widgetSnapshotStore = widgetSnapshotStore
+        self.widgetCenter = widgetCenter
         super.init()
+        self.store.onWidgetSnapshotChange = { [weak self] snapshot in
+            self?.publishWidgetSnapshot(snapshot)
+        }
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -28,6 +51,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self?.showLogWindow()
             }
         )
+
+        publishWidgetSnapshot(store.widgetSnapshot())
 
         if store.needsInitialConfiguration {
             logStore.log(.info, source: "AppDelegate", message: "检测到未配置 Moonraker，打开设置窗口")
@@ -86,5 +111,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func closeSettingsWindow() {
         settingsWindowController?.close()
+    }
+
+    private func publishWidgetSnapshot(_ snapshot: WidgetSnapshot) {
+        widgetSnapshotStore.save(snapshot)
+        widgetCenter.reloadTimelines(ofKind: AppConfig.widgetKind)
     }
 }

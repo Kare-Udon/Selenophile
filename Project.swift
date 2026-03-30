@@ -35,6 +35,27 @@ let project = Project(
             ]
         ),
         .target(
+            name: "SelenophileWidgetExtension",
+            destinations: .macOS,
+            product: .appExtension,
+            bundleId: "com.udon.selenophile.widget",
+            deploymentTargets: .macOS("14.0"),
+            infoPlist: .extendingDefault(
+                with: [
+                    "CFBundleDisplayName": "Selenophile Widget",
+                    "NSExtension": [
+                        "NSExtensionPointIdentifier": "com.apple.widgetkit-extension",
+                        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).SelenophileWidgetBundle",
+                    ],
+                ]
+            ),
+            sources: ["Sources/SelenophileWidgetExtension/**"],
+            entitlements: .file(path: "SelenophileWidgetExtension.entitlements"),
+            dependencies: [
+                .target(name: "SelenophileKit"),
+            ]
+        ),
+        .target(
             name: "SelenophileKitTests",
             destinations: .macOS,
             product: .unitTests,

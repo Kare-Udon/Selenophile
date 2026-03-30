@@ -62,6 +62,20 @@
                ReferencedContainer = "container:Selenophile.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1C6AF0E10187A78E8120210D"
+               BuildableName = "SelenophileWidgetExtension.appex"
+               BlueprintName = "SelenophileWidgetExtension"
+               ReferencedContainer = "container:Selenophile.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
