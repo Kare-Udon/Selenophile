@@ -8,7 +8,7 @@ struct LogView: View {
     @AppStorage("log.minimumLevel") private var minimumLevelRawValue: String = AppLogLevel.info.rawValue
 
     private var uiLanguage: AppLanguage {
-        appLanguageStore.effectiveLanguage()
+        appLanguageStore.selectedLanguage.resolved(preferredLanguages: Locale.preferredLanguages)
     }
 
     private func l10n(_ key: AppLocalization.Key) -> String {

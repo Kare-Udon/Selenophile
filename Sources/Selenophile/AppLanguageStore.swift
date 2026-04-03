@@ -5,6 +5,8 @@ import SelenophileKit
 @MainActor
 @Observable
 final class AppLanguageStore {
+    static let shared = AppLanguageStore()
+
     var selectedLanguage: AppLanguage
 
     init(selectedLanguage: AppLanguage = .system) {

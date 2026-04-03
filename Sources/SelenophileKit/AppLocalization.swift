@@ -235,8 +235,22 @@ public enum AppLocalization {
     }
 
     static func localizedString(_ key: String, fallback: String, language: AppLanguage) -> String {
+        localizedString(
+            key,
+            fallback: fallback,
+            language: language,
+            candidateBundles: defaultCandidateBundles()
+        )
+    }
+
+    static func localizedString(
+        _ key: String,
+        fallback: String,
+        language: AppLanguage,
+        candidateBundles: [Bundle]
+    ) -> String {
         let resolvedLanguage = language.resolved()
-        let bundle = localizedBundle(for: resolvedLanguage)
+        let bundle = localizedBundle(for: resolvedLanguage, candidateBundles: candidateBundles)
         let localized = bundle.localizedString(forKey: key, value: fallback, table: nil)
 
         if localized != key {
@@ -244,7 +258,7 @@ public enum AppLocalization {
         }
 
         if resolvedLanguage != .english {
-            let fallbackBundle = localizedBundle(for: .english)
+            let fallbackBundle = localizedBundle(for: .english, candidateBundles: candidateBundles)
             let fallbackValue = fallbackBundle.localizedString(forKey: key, value: fallback, table: nil)
             if fallbackValue != key {
                 return fallbackValue
@@ -254,31 +268,27 @@ public enum AppLocalization {
         return fallback
     }
 
-    private static func localizedBundle(for language: AppLanguage) -> Bundle {
+    private static func localizedBundle(for language: AppLanguage, candidateBundles: [Bundle]) -> Bundle {
         let identifier = language.localeIdentifier ?? AppLanguage.english.rawValue
         let candidates = identifier == identifier.lowercased()
             ? [identifier]
             : [identifier, identifier.lowercased()]
 
         for candidate in candidates {
-            if let bundle = bundle(forLocalization: candidate) {
+            if let bundle = bundle(forLocalization: candidate, candidateBundles: candidateBundles) {
                 return bundle
             }
         }
 
-        if identifier != AppLanguage.english.rawValue, let bundle = bundle(forLocalization: AppLanguage.english.rawValue) {
+        if identifier != AppLanguage.english.rawValue,
+           let bundle = bundle(forLocalization: AppLanguage.english.rawValue, candidateBundles: candidateBundles) {
             return bundle
         }
         return localizationBaseBundle()
     }
 
-    private static func bundle(forLocalization localization: String) -> Bundle? {
-        let candidateBundles = [
-            localizationBaseBundle(),
-            Bundle.main,
-        ]
-
-        for bundle in candidateBundles {
+    private static func bundle(forLocalization localization: String, candidateBundles: [Bundle]) -> Bundle? {
+        for bundle in expandedCandidateBundles(from: candidateBundles) {
             guard let url = bundle.url(forResource: localization, withExtension: "lproj") else {
                 continue
             }
@@ -296,5 +306,40 @@ public enum AppLocalization {
 #else
         return Bundle(for: BundleToken.self)
 #endif
+    }
+
+    private static func defaultCandidateBundles() -> [Bundle] {
+        [localizationBaseBundle(), Bundle.main]
+    }
+
+    private static func expandedCandidateBundles(from roots: [Bundle]) -> [Bundle] {
+        var visited = Set<URL>()
+        var bundles: [Bundle] = []
+
+        for root in roots {
+            appendBundle(root, to: &bundles, visited: &visited)
+
+            guard let resourceURL = root.resourceURL else { continue }
+            let nestedBundleURLs = (try? FileManager.default.contentsOfDirectory(
+                at: resourceURL,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            )) ?? []
+
+            for nestedURL in nestedBundleURLs where nestedURL.pathExtension == "bundle" {
+                guard let nestedBundle = Bundle(url: nestedURL) else { continue }
+                appendBundle(nestedBundle, to: &bundles, visited: &visited)
+            }
+        }
+
+        return bundles
+    }
+
+    private static func appendBundle(_ bundle: Bundle, to bundles: inout [Bundle], visited: inout Set<URL>) {
+        let bundleURL = bundle.bundleURL.standardizedFileURL
+        guard visited.insert(bundleURL).inserted else {
+            return
+        }
+        bundles.append(bundle)
     }
 }

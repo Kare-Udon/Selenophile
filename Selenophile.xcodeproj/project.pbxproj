@@ -8,28 +8,42 @@
 
 /* Begin PBXBuildFile section */
 		0FC2DA1B0F19BFCFEE4270B3 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62644B5C5D22734C2542E4D /* WidgetSnapshot.swift */; };
+		10C1CBFB8CF36AC30061CFD5 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98D6C91D5F8B98AA12C2444 /* AppLanguage.swift */; };
+		150E5AF3D135CF19797A780C /* AppLocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0288D672E90FBB4A1193CE /* AppLocalizationTests.swift */; };
+		18B7DC022C07F2B4D7E5331A /* Selenophile_SelenophileKit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
 		19D0E6182DA3BEC3ECFC72E4 /* MoonrakerConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5FAA86E3FF790BE00B67C1 /* MoonrakerConfigurationTests.swift */; };
 		1AED95A8409CBEF3684C36EE /* MoonrakerWebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56142C5BDFDDF4A94561C13 /* MoonrakerWebSocketMessage.swift */; };
 		1B1ABEE13C3BE492FE57159B /* MenuBarIconConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */; };
 		1EE3208E11C5F4CB79A5B01A /* MenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1C2A4B55080140BAA9017F /* MenuContentView.swift */; };
+		2205530F941B0BC6BBCBD5F7 /* AppLanguageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F935BCEFFF22B89E352C12 /* AppLanguageTests.swift */; };
+		26F2ECC19DE258A61B27DEB5 /* AppLanguageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453328176320E6CADD04C72 /* AppLanguageStoreTests.swift */; };
 		2B3182874B6790EF8D195CA7 /* MenuBarStatusIconRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCFB8003B2471E9BCCFC82 /* MenuBarStatusIconRenderer.swift */; };
 		2BC49AE3848C81A1A34FB914 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C5685BDF05F023DB4C961B /* AppConfig.swift */; };
 		2BCFE7C3E9E8791C04096382 /* PrinterStatusStoreWidgetSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35653F3A6117A9952C61A4 /* PrinterStatusStoreWidgetSnapshotTests.swift */; };
 		2C1FBC4B5355E2AD257FD3BB /* MenuBarStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04803325601911E33F3F355F /* MenuBarStatusController.swift */; };
 		2E56324575C17306DD9A3AAF /* WidgetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4658E3BBF9F768585C241C5A /* WidgetCardView.swift */; };
 		2EF928A1BD776B5321EF04D1 /* LaunchAtLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A79280D907FF9B7EAE19C7D /* LaunchAtLoginService.swift */; };
+		360361B354CCEFCE84E039E6 /* AppLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2AF887ECA373FF3EC8C2BC4 /* AppLocalization.swift */; };
 		3C388159A95FE2FFDBFC4609 /* PrinterStatusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BD80AC67C69D6C826BBADD /* PrinterStatusStoreTests.swift */; };
 		3C49686F45434182BDAF398A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6586DD64BFB26A97E156CECC /* AppDelegate.swift */; };
 		4616EE2A75CCE4D530D97AA5 /* LaunchAtLoginControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7217A6E35E9FB82AD745AF04 /* LaunchAtLoginControllerTests.swift */; };
+		492067A6E3D01494B4351531 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A778EB6A0E645DB0EB94E1BB /* Localizable.strings */; };
+		4E20B8DA32E8D3E8AFDF99ED /* Selenophile_SelenophileKit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
 		5478BAA0FC91E5D3AD28677E /* WidgetSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA0400F26278045C2DF8B6B /* WidgetSnapshotStore.swift */; };
 		5B9B41C9569512F8DB8CF58F /* MoonrakerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F04629C0853378A9FEC0B7 /* MoonrakerConfiguration.swift */; };
 		5DD5E3ED2FC58DF0ED14D605 /* PrinterStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */; };
 		65774F452A2E8B331A3E865D /* LogWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578BFD7E1802AE0DECD0A4FC /* LogWindowController.swift */; };
 		6C9FA5459FB405D23DED9B0D /* MoonrakerCameraClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE16A8BF6754D7446A49D79F /* MoonrakerCameraClient.swift */; };
 		6F94E406AE296B77A8A862BB /* AppConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90B6D77A25BE019E863E8A9 /* AppConfigTests.swift */; };
+		7066A653AFC8FB041C4FE8A6 /* Selenophile_SelenophileKit.bundle in Dependencies */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
+		7A87F268386E2019BC57B5D0 /* Selenophile_SelenophileKit.bundle in Dependencies */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
+		808E78ACD9C7DB9786D1D010 /* AppLanguageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87322F049EA4FB355413FB0B /* AppLanguageStore.swift */; };
 		8602CA7A18E954BA43B859D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD47869D8271A934D5B7A712 /* SettingsView.swift */; };
 		8DFD88A80A429B3B2B30585C /* WidgetFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8870652E515C7E4D80BD0A3 /* WidgetFamilyView.swift */; };
 		8E11B7F38AA9E8B607865240 /* MoonrakerCameraClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */; };
+		915CCDC32044BDEE2CA73F72 /* TuistBundle+SelenophileKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460EF2E119A26F8C75B4C7BD /* TuistBundle+SelenophileKit.swift */; };
+		9185FEDEAA2CA0EBCED55376 /* TuistStrings+SelenophileKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C075EE9B310FAD9213210A /* TuistStrings+SelenophileKit.swift */; };
+		9347FE31DC88FF7C26582FDE /* Selenophile_SelenophileKit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
 		943069046312EF6BD5E252CF /* PrinterStatusStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */; };
 		9525D3A114B7707096E5D6BF /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE8328D080EA70F6A54B62A /* LogView.swift */; };
 		96ED0ACC05F5A7D91716A435 /* MoonrakerStatusParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7A5F1C14ED6BE85611231F /* MoonrakerStatusParsingTests.swift */; };
@@ -42,6 +56,7 @@
 		C1E2C203443135721BA805FD /* libSelenophileKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B107EEF376C0D261F3775438 /* libSelenophileKit.a */; };
 		C62AF00E6AD26DA0CCE50E9D /* AppLogStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */; };
 		CA2D27574E353F2634FD82B7 /* SelenophileWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7276F7D6D5890B2C79C2BE /* SelenophileWidget.swift */; };
+		D37A68E00E0DD42937093B72 /* Selenophile_SelenophileKit.bundle in Dependencies */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
 		D92F54154696D3F8AC6E7877 /* libSelenophileKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B107EEF376C0D261F3775438 /* libSelenophileKit.a */; };
 		DCE1E9AC7E88B5BA2CB7E66D /* MenuBarIconConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4227315CF1E93F0519C60410 /* MenuBarIconConfiguration.swift */; };
 		F17FFC7C2977E7A267C94109 /* MoonrakerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */; };
@@ -63,6 +78,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8561DEBB7E1CBFA57A4AFC0C;
 			remoteInfo = Selenophile;
+		};
+		6272A161A7EAD4F210416F6F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A3889A96367A82C2595090C5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1AA62C9722B06992F8264E13;
+			remoteInfo = Selenophile_SelenophileKit;
 		};
 		7CA465B64E150F369E8DCCB2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -101,6 +123,26 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5ED2D064F7EF23C31CFDBF77 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9BA4359C4B4FE688ADC0034 /* Dependencies */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstSubfolderSpec = 16;
+			files = (
+				7A87F268386E2019BC57B5D0 /* Selenophile_SelenophileKit.bundle in Dependencies */,
+			);
+			name = Dependencies;
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		B9A0134B04F10F5002638196 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -121,6 +163,26 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C4473F74C3DE568D51BD4916 /* Dependencies */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstSubfolderSpec = 16;
+			files = (
+				7066A653AFC8FB041C4FE8A6 /* Selenophile_SelenophileKit.bundle in Dependencies */,
+			);
+			name = Dependencies;
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		DD2BFFB8AEFF212471F348F4 /* Dependencies */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstSubfolderSpec = 16;
+			files = (
+				D37A68E00E0DD42937093B72 /* Selenophile_SelenophileKit.bundle in Dependencies */,
+			);
+			name = Dependencies;
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		EC6464B2FD452B720E89D135 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -134,52 +196,83 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0432269A62567FD638255C2E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		04803325601911E33F3F355F /* MenuBarStatusController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusController.swift; sourceTree = "<group>"; };
 		1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerClient.swift; sourceTree = "<group>"; };
+		1B87F7BD374296A3F99A9695 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
+		21A53F3AEA3A0C9A6489E6E3 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		24E52344B58B7D1B332BADA6 /* Selenophile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Selenophile-Info.plist"; sourceTree = "<group>"; };
+		28D1FE6CC40169DAA012331A /* Selenophile_SelenophileKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Selenophile_SelenophileKit-Info.plist"; sourceTree = "<group>"; };
 		29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatus.swift; sourceTree = "<group>"; };
+		2C2EDD5F29086A04B4E9319C /* te */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = te; path = te.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2C686A7666483FF61A8EC8EE /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		2C7EE3FD58CC798691293613 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		30477F61B854544095BCE38B /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		30BD80AC67C69D6C826BBADD /* PrinterStatusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusStoreTests.swift; sourceTree = "<group>"; };
+		339D2E302C1BFA7043F4E092 /* jv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = jv; path = jv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3A79280D907FF9B7EAE19C7D /* LaunchAtLoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginService.swift; sourceTree = "<group>"; };
 		4227315CF1E93F0519C60410 /* MenuBarIconConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconConfiguration.swift; sourceTree = "<group>"; };
+		450843C1D337D91FA6E61102 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		460EF2E119A26F8C75B4C7BD /* TuistBundle+SelenophileKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistBundle+SelenophileKit.swift"; sourceTree = "<group>"; };
 		4658E3BBF9F768585C241C5A /* WidgetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCardView.swift; sourceTree = "<group>"; };
 		4B7EE020F7B0F6B9D4BA43DD /* SelenophileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SelenophileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Selenophile_SelenophileKit.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FDE309A115EB8BAAE8AAC98 /* AppDelegateWidgetPublishingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateWidgetPublishingTests.swift; sourceTree = "<group>"; };
+		5072E5BCAD76C2EC7D4C6707 /* pa */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pa; path = pa.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5453328176320E6CADD04C72 /* AppLanguageStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguageStoreTests.swift; sourceTree = "<group>"; };
 		578BFD7E1802AE0DECD0A4FC /* LogWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWindowController.swift; sourceTree = "<group>"; };
 		5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogStoreTests.swift; sourceTree = "<group>"; };
 		5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconConfigurationTests.swift; sourceTree = "<group>"; };
 		6586DD64BFB26A97E156CECC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		6B0776BB50D239CFA4E7A210 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		6D1398131463C9B09E98D572 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		6D5FAA86E3FF790BE00B67C1 /* MoonrakerConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerConfigurationTests.swift; sourceTree = "<group>"; };
 		6F85AA34259590E42CC6873B /* WidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetProvider.swift; sourceTree = "<group>"; };
 		7217A6E35E9FB82AD745AF04 /* LaunchAtLoginControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginControllerTests.swift; sourceTree = "<group>"; };
+		75E486CF00FCD12A1FFA3235 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		78C075EE9B310FAD9213210A /* TuistStrings+SelenophileKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistStrings+SelenophileKit.swift"; sourceTree = "<group>"; };
 		7B7D9E616DAF1908E5FF8F60 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
 		7C7276F7D6D5890B2C79C2BE /* SelenophileWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelenophileWidget.swift; sourceTree = "<group>"; };
 		7DE8328D080EA70F6A54B62A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusStore.swift; sourceTree = "<group>"; };
 		849466EBD3E8F207F0DA0251 /* SelenophileWidgetExtension-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SelenophileWidgetExtension-Info.plist"; sourceTree = "<group>"; };
 		86C5685BDF05F023DB4C961B /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		87322F049EA4FB355413FB0B /* AppLanguageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguageStore.swift; sourceTree = "<group>"; };
 		8CF6FB2A5FF5A58EFD219185 /* SelenophileKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SelenophileKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E0288D672E90FBB4A1193CE /* AppLocalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalizationTests.swift; sourceTree = "<group>"; };
+		91D79CDC24A7E6FB1938A359 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A4207E78D297F2847C32586B /* bn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bn; path = bn.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A62644B5C5D22734C2542E4D /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
 		A8870652E515C7E4D80BD0A3 /* WidgetFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFamilyView.swift; sourceTree = "<group>"; };
 		AB1C2A4B55080140BAA9017F /* MenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuContentView.swift; sourceTree = "<group>"; };
 		AD35653F3A6117A9952C61A4 /* PrinterStatusStoreWidgetSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusStoreWidgetSnapshotTests.swift; sourceTree = "<group>"; };
+		ADEE11B23DAE682619914F74 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B107EEF376C0D261F3775438 /* libSelenophileKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSelenophileKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2AF887ECA373FF3EC8C2BC4 /* AppLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalization.swift; sourceTree = "<group>"; };
+		B36D35C9576BACFAD3A27034 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B90B6D77A25BE019E863E8A9 /* AppConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigTests.swift; sourceTree = "<group>"; };
+		B98D6C91D5F8B98AA12C2444 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		B9D75DB916E7F7B8DC1A07E5 /* SelenophileKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SelenophileKitTests-Info.plist"; sourceTree = "<group>"; };
 		BD47869D8271A934D5B7A712 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BDA0400F26278045C2DF8B6B /* WidgetSnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotStore.swift; sourceTree = "<group>"; };
 		C56142C5BDFDDF4A94561C13 /* MoonrakerWebSocketMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerWebSocketMessage.swift; sourceTree = "<group>"; };
 		C6F04629C0853378A9FEC0B7 /* MoonrakerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerConfiguration.swift; sourceTree = "<group>"; };
+		C75B453E88EF840C678335C9 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CEA8F4378C9CDD78B0C4A174 /* SelenophileWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SelenophileWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D9B9E3B91EDFC189574DA3 /* WidgetEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntry.swift; sourceTree = "<group>"; };
 		DD29BEF3BC6E8986AE25F1B8 /* SelenophileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelenophileApp.swift; sourceTree = "<group>"; };
 		DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerCameraClientTests.swift; sourceTree = "<group>"; };
 		DDDE30D4AA62792AA629DB0C /* WidgetSnapshotStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotStoreTests.swift; sourceTree = "<group>"; };
+		DFC3A0D80F1DA99F26CD63B8 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E28E9E6F3577BBDE58758CDE /* SelenophileWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelenophileWidgetExtension.entitlements; sourceTree = "<group>"; };
+		E2F935BCEFFF22B89E352C12 /* AppLanguageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguageTests.swift; sourceTree = "<group>"; };
+		E35F816603B7C9F499CF069E /* mr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = mr; path = mr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E8CCFB8003B2471E9BCCFC82 /* MenuBarStatusIconRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusIconRenderer.swift; sourceTree = "<group>"; };
 		EB7A5F1C14ED6BE85611231F /* MoonrakerStatusParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerStatusParsingTests.swift; sourceTree = "<group>"; };
 		EE16A8BF6754D7446A49D79F /* MoonrakerCameraClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerCameraClient.swift; sourceTree = "<group>"; };
 		F24F9C835685980E10BB49A1 /* Selenophile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Selenophile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C7249CF5DEC22793439630 /* SelenophileTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SelenophileTests-Info.plist"; sourceTree = "<group>"; };
+		F72938DD855E1B1791C6E98B /* ta */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ta; path = ta.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7A80A26E325C50AEC9E8338 /* AppLogStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -214,6 +307,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BF07774168967F61D7D8F4E9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F014840BFB62AF756A6D2D21 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -238,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				50C46F903E3090BA51C6425A /* InfoPlists */,
+				55E247473283DB84038D6009 /* Sources */,
 			);
 			path = Derived;
 			sourceTree = "<group>";
@@ -245,12 +346,22 @@
 		50C46F903E3090BA51C6425A /* InfoPlists */ = {
 			isa = PBXGroup;
 			children = (
+				28D1FE6CC40169DAA012331A /* Selenophile_SelenophileKit-Info.plist */,
 				24E52344B58B7D1B332BADA6 /* Selenophile-Info.plist */,
 				B9D75DB916E7F7B8DC1A07E5 /* SelenophileKitTests-Info.plist */,
 				F6C7249CF5DEC22793439630 /* SelenophileTests-Info.plist */,
 				849466EBD3E8F207F0DA0251 /* SelenophileWidgetExtension-Info.plist */,
 			);
 			path = InfoPlists;
+			sourceTree = "<group>";
+		};
+		55E247473283DB84038D6009 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				460EF2E119A26F8C75B4C7BD /* TuistBundle+SelenophileKit.swift */,
+				78C075EE9B310FAD9213210A /* TuistStrings+SelenophileKit.swift */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		5A18EECDAA860F9E00424EE3 /* Sources */ = {
@@ -278,6 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				4FDE309A115EB8BAAE8AAC98 /* AppDelegateWidgetPublishingTests.swift */,
+				5453328176320E6CADD04C72 /* AppLanguageStoreTests.swift */,
 				7217A6E35E9FB82AD745AF04 /* LaunchAtLoginControllerTests.swift */,
 				5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */,
 			);
@@ -288,6 +400,7 @@
 			isa = PBXGroup;
 			children = (
 				B107EEF376C0D261F3775438 /* libSelenophileKit.a */,
+				4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */,
 				F24F9C835685980E10BB49A1 /* Selenophile.app */,
 				8CF6FB2A5FF5A58EFD219185 /* SelenophileKitTests.xctest */,
 				4B7EE020F7B0F6B9D4BA43DD /* SelenophileTests.xctest */,
@@ -300,6 +413,7 @@
 			isa = PBXGroup;
 			children = (
 				6586DD64BFB26A97E156CECC /* AppDelegate.swift */,
+				87322F049EA4FB355413FB0B /* AppLanguageStore.swift */,
 				3A79280D907FF9B7EAE19C7D /* LaunchAtLoginService.swift */,
 				7DE8328D080EA70F6A54B62A /* LogView.swift */,
 				578BFD7E1802AE0DECD0A4FC /* LogWindowController.swift */,
@@ -317,6 +431,8 @@
 			isa = PBXGroup;
 			children = (
 				B90B6D77A25BE019E863E8A9 /* AppConfigTests.swift */,
+				E2F935BCEFFF22B89E352C12 /* AppLanguageTests.swift */,
+				8E0288D672E90FBB4A1193CE /* AppLocalizationTests.swift */,
 				5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */,
 				DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */,
 				6D5FAA86E3FF790BE00B67C1 /* MoonrakerConfigurationTests.swift */,
@@ -336,6 +452,14 @@
 			);
 			sourceTree = "<group>";
 		};
+		D6269C83B25EB9194419193A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A778EB6A0E645DB0EB94E1BB /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		E820CAAE4B62C8D6BBE8595B /* SelenophileWidgetExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,7 +476,10 @@
 		F9F1C0075ED7A1666BD48919 /* SelenophileKit */ = {
 			isa = PBXGroup;
 			children = (
+				D6269C83B25EB9194419193A /* Resources */,
 				86C5685BDF05F023DB4C961B /* AppConfig.swift */,
+				B98D6C91D5F8B98AA12C2444 /* AppLanguage.swift */,
+				B2AF887ECA373FF3EC8C2BC4 /* AppLocalization.swift */,
 				F7A80A26E325C50AEC9E8338 /* AppLogStore.swift */,
 				EE16A8BF6754D7446A49D79F /* MoonrakerCameraClient.swift */,
 				1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */,
@@ -377,6 +504,7 @@
 				F7EF266A96BE74C0073B6467 /* Resources */,
 				F014840BFB62AF756A6D2D21 /* Frameworks */,
 				B9A0134B04F10F5002638196 /* Embed Frameworks */,
+				DD2BFFB8AEFF212471F348F4 /* Dependencies */,
 			);
 			buildRules = (
 			);
@@ -390,6 +518,26 @@
 			productReference = 8CF6FB2A5FF5A58EFD219185 /* SelenophileKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		1AA62C9722B06992F8264E13 /* Selenophile_SelenophileKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F6F17B45341BB5DC0BB03457 /* Build configuration list for PBXNativeTarget "Selenophile_SelenophileKit" */;
+			buildPhases = (
+				4FF67941BAB1FFB471D3A7D3 /* Sources */,
+				8C91F798BB875698A874199B /* Resources */,
+				BF07774168967F61D7D8F4E9 /* Frameworks */,
+				5ED2D064F7EF23C31CFDBF77 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Selenophile_SelenophileKit;
+			packageProductDependencies = (
+			);
+			productName = Selenophile_SelenophileKit;
+			productReference = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 		1C6AF0E10187A78E8120210D /* SelenophileWidgetExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 69B85ACEFBAEB578ADD7C390 /* Build configuration list for PBXNativeTarget "SelenophileWidgetExtension" */;
@@ -398,6 +546,7 @@
 				BB86B9C8FB48A3292F2AFFD2 /* Resources */,
 				47E7515F562EA3330E5D3760 /* Frameworks */,
 				274B92BE62FBA559BC2FE39B /* Embed Frameworks */,
+				A9BA4359C4B4FE688ADC0034 /* Dependencies */,
 			);
 			buildRules = (
 			);
@@ -440,6 +589,7 @@
 				D5F60EA11096546FA110300C /* Resources */,
 				6BFADB2DA8766C5E6D355AFA /* Frameworks */,
 				EC6464B2FD452B720E89D135 /* Embed Frameworks */,
+				C4473F74C3DE568D51BD4916 /* Dependencies */,
 			);
 			buildRules = (
 			);
@@ -465,6 +615,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CEF343375D03289F83B9075C /* PBXTargetDependency */,
 			);
 			name = SelenophileKit;
 			packageProductDependencies = (
@@ -493,7 +644,27 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				ar,
+				bn,
+				de,
 				en,
+				es,
+				fr,
+				hi,
+				ja,
+				jv,
+				ko,
+				mr,
+				pa,
+				"pt-BR",
+				ru,
+				ta,
+				te,
+				tr,
+				ur,
+				vi,
+				"zh-Hans",
+				"zh-Hant",
 			);
 			mainGroup = CFFECABFC932D7864BD546A5;
 			productRefGroup = BD8D14C51357ED53D1CE8DC7 /* Products */;
@@ -505,6 +676,7 @@
 				08B42CC6969FB70EBC13B2A8 /* SelenophileKitTests */,
 				71A8264A171E586EC6EC6125 /* SelenophileTests */,
 				1C6AF0E10187A78E8120210D /* SelenophileWidgetExtension */,
+				1AA62C9722B06992F8264E13 /* Selenophile_SelenophileKit */,
 			);
 		};
 /* End PBXProject section */
@@ -514,6 +686,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C91F798BB875698A874199B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				492067A6E3D01494B4351531 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +708,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9347FE31DC88FF7C26582FDE /* Selenophile_SelenophileKit.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -535,6 +716,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18B7DC022C07F2B4D7E5331A /* Selenophile_SelenophileKit.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,6 +724,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E20B8DA32E8D3E8AFDF99ED /* Selenophile_SelenophileKit.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -553,6 +736,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F94E406AE296B77A8A862BB /* AppConfigTests.swift in Sources */,
+				2205530F941B0BC6BBCBD5F7 /* AppLanguageTests.swift in Sources */,
+				150E5AF3D135CF19797A780C /* AppLocalizationTests.swift in Sources */,
 				C62AF00E6AD26DA0CCE50E9D /* AppLogStoreTests.swift in Sources */,
 				8E11B7F38AA9E8B607865240 /* MoonrakerCameraClientTests.swift in Sources */,
 				19D0E6182DA3BEC3ECFC72E4 /* MoonrakerConfigurationTests.swift in Sources */,
@@ -560,6 +745,13 @@
 				3C388159A95FE2FFDBFC4609 /* PrinterStatusStoreTests.swift in Sources */,
 				2BCFE7C3E9E8791C04096382 /* PrinterStatusStoreWidgetSnapshotTests.swift in Sources */,
 				F3908F293355327FE9973361 /* WidgetSnapshotStoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FF67941BAB1FFB471D3A7D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,6 +773,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C49686F45434182BDAF398A /* AppDelegate.swift in Sources */,
+				808E78ACD9C7DB9786D1D010 /* AppLanguageStore.swift in Sources */,
 				2EF928A1BD776B5321EF04D1 /* LaunchAtLoginService.swift in Sources */,
 				9525D3A114B7707096E5D6BF /* LogView.swift in Sources */,
 				65774F452A2E8B331A3E865D /* LogWindowController.swift in Sources */,
@@ -598,6 +791,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A20D425494F29CE9FEB61A13 /* AppDelegateWidgetPublishingTests.swift in Sources */,
+				26F2ECC19DE258A61B27DEB5 /* AppLanguageStoreTests.swift in Sources */,
 				4616EE2A75CCE4D530D97AA5 /* LaunchAtLoginControllerTests.swift in Sources */,
 				1B1ABEE13C3BE492FE57159B /* MenuBarIconConfigurationTests.swift in Sources */,
 			);
@@ -607,7 +801,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				915CCDC32044BDEE2CA73F72 /* TuistBundle+SelenophileKit.swift in Sources */,
+				9185FEDEAA2CA0EBCED55376 /* TuistStrings+SelenophileKit.swift in Sources */,
 				2BC49AE3848C81A1A34FB914 /* AppConfig.swift in Sources */,
+				10C1CBFB8CF36AC30061CFD5 /* AppLanguage.swift in Sources */,
+				360361B354CCEFCE84E039E6 /* AppLocalization.swift in Sources */,
 				9BC779227A8EFBC8AD2BC31D /* AppLogStore.swift in Sources */,
 				6C9FA5459FB405D23DED9B0D /* MoonrakerCameraClient.swift in Sources */,
 				F17FFC7C2977E7A267C94109 /* MoonrakerClient.swift in Sources */,
@@ -647,7 +845,44 @@
 			target = 8561DEBB7E1CBFA57A4AFC0C /* Selenophile */;
 			targetProxy = 30BC2C2BDB121646C95A88A1 /* PBXContainerItemProxy */;
 		};
+		CEF343375D03289F83B9075C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Selenophile_SelenophileKit;
+			target = 1AA62C9722B06992F8264E13 /* Selenophile_SelenophileKit */;
+			targetProxy = 6272A161A7EAD4F210416F6F /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A778EB6A0E645DB0EB94E1BB /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				30477F61B854544095BCE38B /* ar */,
+				A4207E78D297F2847C32586B /* bn */,
+				6B0776BB50D239CFA4E7A210 /* de */,
+				75E486CF00FCD12A1FFA3235 /* en */,
+				DFC3A0D80F1DA99F26CD63B8 /* es */,
+				0432269A62567FD638255C2E /* fr */,
+				1B87F7BD374296A3F99A9695 /* hi */,
+				B36D35C9576BACFAD3A27034 /* ja */,
+				339D2E302C1BFA7043F4E092 /* jv */,
+				450843C1D337D91FA6E61102 /* ko */,
+				E35F816603B7C9F499CF069E /* mr */,
+				5072E5BCAD76C2EC7D4C6707 /* pa */,
+				2C686A7666483FF61A8EC8EE /* pt-BR */,
+				2C7EE3FD58CC798691293613 /* ru */,
+				F72938DD855E1B1791C6E98B /* ta */,
+				2C2EDD5F29086A04B4E9319C /* te */,
+				C75B453E88EF840C678335C9 /* tr */,
+				91D79CDC24A7E6FB1938A359 /* ur */,
+				21A53F3AEA3A0C9A6489E6E3 /* vi */,
+				ADEE11B23DAE682619914F74 /* zh-Hans */,
+				6D1398131463C9B09E98D572 /* zh-Hant */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		573EC62AC896E2A82B5F5386 /* Debug */ = {
@@ -675,7 +910,7 @@
 				);
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Selenophile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Selenophile";
 				TEST_TARGET_NAME = Selenophile;
 			};
@@ -702,7 +937,7 @@
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 			};
 			name = Release;
 		};
@@ -712,13 +947,14 @@
 				CODE_SIGN_IDENTITY = "-";
 				EXECUTABLE_PREFIX = lib;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PACKAGE_RESOURCE_BUNDLE_NAME = Selenophile_SelenophileKit;
 				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit;
 				PRODUCT_NAME = SelenophileKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 			};
 			name = Release;
 		};
@@ -743,7 +979,7 @@
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Selenophile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Selenophile";
 				TEST_TARGET_NAME = Selenophile;
 			};
@@ -809,6 +1045,48 @@
 			};
 			name = Debug;
 		};
+		889CA18760591185A6817E0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_MASTER_OBJECT_FILE = NO;
+				INFOPLIST_FILE = "Derived/InfoPlists/Selenophile_SelenophileKit-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit.generated.resources;
+				PRODUCT_NAME = Selenophile_SelenophileKit;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5;
+				VERSIONING_SYSTEM = "";
+			};
+			name = Release;
+		};
+		95FCDA66CB15760DED5E3C19 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_MASTER_OBJECT_FILE = NO;
+				INFOPLIST_FILE = "Derived/InfoPlists/Selenophile_SelenophileKit-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit.generated.resources;
+				PRODUCT_NAME = Selenophile_SelenophileKit;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5;
+				VERSIONING_SYSTEM = "";
+			};
+			name = Debug;
+		};
 		A3F39139AE44962A233A1A7B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -829,7 +1107,7 @@
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 			};
 			name = Release;
 		};
@@ -860,7 +1138,7 @@
 				);
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 			};
 			name = Debug;
 		};
@@ -870,6 +1148,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				EXECUTABLE_PREFIX = lib;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PACKAGE_RESOURCE_BUNDLE_NAME = Selenophile_SelenophileKit;
 				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit;
 				PRODUCT_NAME = SelenophileKit;
 				SDKROOT = macosx;
@@ -880,7 +1159,7 @@
 				);
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 			};
 			name = Debug;
 		};
@@ -962,7 +1241,7 @@
 				);
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 			};
 			name = Debug;
 		};
@@ -991,7 +1270,7 @@
 				);
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 			};
 			name = Debug;
 		};
@@ -1018,7 +1297,7 @@
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5;
 			};
 			name = Release;
 		};
@@ -1075,6 +1354,15 @@
 			buildConfigurations = (
 				E943BFACB530F4F3D7AC5C42 /* Debug */,
 				A3F39139AE44962A233A1A7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F6F17B45341BB5DC0BB03457 /* Build configuration list for PBXNativeTarget "Selenophile_SelenophileKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				95FCDA66CB15760DED5E3C19 /* Debug */,
+				889CA18760591185A6817E0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

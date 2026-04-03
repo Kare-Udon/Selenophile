@@ -4,6 +4,8 @@ import SelenophileKit
 struct SettingsView: View {
     let store: PrinterStatusStore
     let onClose: () -> Void
+    let onCancel: () -> Void
+    let onLanguageSelectionPreview: (AppLanguage) -> Void
     let launchAtLoginControl: LaunchAtLoginControl?
     let appLanguageStore: AppLanguageStore
 
@@ -18,11 +20,15 @@ struct SettingsView: View {
     init(
         store: PrinterStatusStore,
         onClose: @escaping () -> Void,
+        onCancel: @escaping () -> Void,
+        onLanguageSelectionPreview: @escaping (AppLanguage) -> Void = { _ in },
         launchAtLoginControl: LaunchAtLoginControl? = nil,
         appLanguageStore: AppLanguageStore
     ) {
         self.store = store
         self.onClose = onClose
+        self.onCancel = onCancel
+        self.onLanguageSelectionPreview = onLanguageSelectionPreview
         self.launchAtLoginControl = launchAtLoginControl
         self.appLanguageStore = appLanguageStore
         _serverURLString = State(initialValue: store.configuration?.serverURLString ?? "http://127.0.0.1:7125")
@@ -56,6 +62,7 @@ struct SettingsView: View {
         )
         .onAppear {
             refreshLaunchAtLoginState()
+            onLanguageSelectionPreview(selectedAppLanguage)
         }
     }
 
@@ -78,7 +85,7 @@ struct SettingsView: View {
     }
 
     private var uiLanguage: AppLanguage {
-        appLanguageStore.effectiveLanguage()
+        selectedAppLanguage.resolved(preferredLanguages: Locale.preferredLanguages)
     }
 
     private func l10n(_ key: AppLocalization.Key) -> String {
@@ -174,13 +181,7 @@ struct SettingsView: View {
                 Text(l10n(.settingsLanguageLabel))
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                Picker("", selection: $selectedAppLanguage) {
-                    ForEach(AppLanguage.supportedSelections, id: \.self) { language in
-                        Text(language.displayName(in: uiLanguage)).tag(language)
-                    }
-                }
-                .pickerStyle(.menu)
-                .labelsHidden()
+                languagePicker
             }
         }
         .padding(18)
@@ -263,7 +264,7 @@ struct SettingsView: View {
             Spacer()
 
             Button(l10n(.settingsCancel)) {
-                onClose()
+                onCancel()
             }
             .buttonStyle(SetupActionButtonStyle(kind: .secondary))
             .disabled(isSaving && store.configuration == nil)
@@ -275,6 +276,34 @@ struct SettingsView: View {
             .keyboardShortcut(.defaultAction)
             .disabled(isSaving)
         }
+    }
+
+    private var languagePicker: some View {
+        ZStack(alignment: .trailing) {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.white)
+
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color(red: 0.82, green: 0.86, blue: 0.92), lineWidth: 1)
+
+            AppLanguagePopUpButton(
+                selection: $selectedAppLanguage,
+                uiLanguage: uiLanguage,
+                onSelectionChanged: { language in
+                    onLanguageSelectionPreview(language)
+                }
+            )
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(Color(red: 0.45, green: 0.49, blue: 0.56))
+                .padding(.trailing, 14)
+                .allowsHitTesting(false)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 44)
     }
 }
 
@@ -351,6 +380,82 @@ private struct SetupActionButtonStyle: ButtonStyle {
                     .fill(isPressed ? Color.white.opacity(0.72) : Color.white)
                     .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 6)
             )
+        }
+    }
+}
+
+private struct AppLanguagePopUpButton: NSViewRepresentable {
+    @Binding var selection: AppLanguage
+    let uiLanguage: AppLanguage
+    let onSelectionChanged: (AppLanguage) -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(selection: $selection, onSelectionChanged: onSelectionChanged)
+    }
+
+    func makeNSView(context: Context) -> NSPopUpButton {
+        let button = NSPopUpButton(frame: .zero, pullsDown: false)
+        button.target = context.coordinator
+        button.action = #selector(Coordinator.selectionDidChange(_:))
+        button.font = .systemFont(ofSize: 13, weight: .medium)
+        button.bezelStyle = .shadowlessSquare
+        button.controlSize = .regular
+        button.isBordered = false
+        button.contentTintColor = NSColor(
+            calibratedRed: 0.11,
+            green: 0.14,
+            blue: 0.18,
+            alpha: 1
+        )
+        button.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            button.heightAnchor.constraint(equalToConstant: 28)
+        ])
+        update(button)
+        return button
+    }
+
+    func updateNSView(_ nsView: NSPopUpButton, context: Context) {
+        context.coordinator.selection = $selection
+        context.coordinator.onSelectionChanged = onSelectionChanged
+        update(nsView)
+    }
+
+    private func update(_ button: NSPopUpButton) {
+        let currentTitles = button.itemTitles
+        let desiredTitles = AppLanguage.supportedSelections.map { $0.displayName(in: uiLanguage) }
+
+        if currentTitles != desiredTitles {
+            button.removeAllItems()
+            button.addItems(withTitles: desiredTitles)
+        }
+
+        if let index = AppLanguage.supportedSelections.firstIndex(of: selection),
+           button.indexOfSelectedItem != index {
+            button.selectItem(at: index)
+        }
+    }
+
+    final class Coordinator: NSObject {
+        var selection: Binding<AppLanguage>
+        var onSelectionChanged: (AppLanguage) -> Void
+
+        init(
+            selection: Binding<AppLanguage>,
+            onSelectionChanged: @escaping (AppLanguage) -> Void
+        ) {
+            self.selection = selection
+            self.onSelectionChanged = onSelectionChanged
+        }
+
+        @MainActor
+        @objc
+        func selectionDidChange(_ sender: NSPopUpButton) {
+            let index = sender.indexOfSelectedItem
+            guard AppLanguage.supportedSelections.indices.contains(index) else { return }
+            let language = AppLanguage.supportedSelections[index]
+            selection.wrappedValue = language
+            onSelectionChanged(language)
         }
     }
 }

@@ -11,12 +11,14 @@ struct MenuContentView: View {
     @AppStorage("menu.cameraSnapshotCollapsed") private var isCameraSnapshotCollapsed = false
     @State private var activePreview: MenuPreview?
     @State private var baseContentHeight: CGFloat = 0
+    @State private var hoveredActionHint: String?
+    @State private var hoverHintTask: Task<Void, Never>?
     private let cameraSnapshotImageHeight: CGFloat = 172
     private let contentPadding: CGFloat = 36
     private let cameraSnapshotSpacing: CGFloat = 14
 
     private var uiLanguage: AppLanguage {
-        appLanguageStore.effectiveLanguage()
+        appLanguageStore.selectedLanguage.resolved(preferredLanguages: Locale.preferredLanguages)
     }
 
     private func l10n(_ key: AppLocalization.Key) -> String {
@@ -212,26 +214,38 @@ struct MenuContentView: View {
     private var actionRow: some View {
         HStack(alignment: .center, spacing: 10) {
             HStack(spacing: 10) {
-                Button(l10n(.menuReconnect)) {
+                menuIconButton(
+                    systemName: "arrow.clockwise",
+                    titleKey: .menuReconnect,
+                    kind: .secondary
+                ) {
                     store.reconnectNow()
                 }
-                .buttonStyle(MenuActionButtonStyle(kind: .secondary))
                 .disabled(store.connectionState == .connecting || store.connectionState == .reconnecting)
 
-                Button(l10n(.menuOpenLogs)) {
+                menuIconButton(
+                    systemName: "text.alignleft",
+                    titleKey: .menuOpenLogs,
+                    kind: .secondary
+                ) {
                     onOpenLogs()
                 }
-                .buttonStyle(MenuActionButtonStyle(kind: .secondary))
 
-                Button(l10n(.menuOpenSettings)) {
+                menuIconButton(
+                    systemName: "gearshape.fill",
+                    titleKey: .menuOpenSettings,
+                    kind: .primary
+                ) {
                     onOpenSettings()
                 }
-                .buttonStyle(MenuActionButtonStyle(kind: .primary))
 
-                Button(l10n(.menuQuit)) {
+                menuIconButton(
+                    systemName: "power",
+                    titleKey: .menuQuit,
+                    kind: .ghost
+                ) {
                     NSApplication.shared.terminate(nil)
                 }
-                .buttonStyle(MenuActionButtonStyle(kind: .ghost))
                 .keyboardShortcut("q")
             }
 
@@ -257,6 +271,59 @@ struct MenuContentView: View {
                 .buttonStyle(MenuActionButtonStyle(kind: .secondary))
                 .disabled(store.isFetchingCameraSnapshot || store.configuration == nil)
             }
+        }
+    }
+
+    private func menuIconButton(
+        systemName: String,
+        titleKey: AppLocalization.Key,
+        kind: MenuActionButtonStyle.Kind,
+        action: @escaping () -> Void
+    ) -> some View {
+        let title = l10n(titleKey)
+
+        return Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 12, weight: .semibold))
+                .frame(width: 28, height: 28)
+        }
+        .buttonStyle(MenuActionButtonStyle(kind: kind, isCompact: true))
+        .menuToolTip(title)
+        .accessibilityLabel(title)
+        .overlay(alignment: .top) {
+            if hoveredActionHint == title {
+                Text(title)
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(
+                        Capsule()
+                            .fill(Color(red: 0.07, green: 0.10, blue: 0.15).opacity(0.96))
+                    )
+                    .offset(y: -30)
+                    .fixedSize()
+                    .allowsHitTesting(false)
+            }
+        }
+        .zIndex(hoveredActionHint == title ? 1 : 0)
+        .onHover { isHovered in
+            updateHoveredActionHint(isHovered ? title : nil)
+        }
+    }
+
+    private func updateHoveredActionHint(_ hint: String?) {
+        hoverHintTask?.cancel()
+
+        guard let hint else {
+            hoveredActionHint = nil
+            return
+        }
+
+        hoverHintTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(180))
+            guard !Task.isCancelled else { return }
+            hoveredActionHint = hint
         }
     }
 
@@ -621,13 +688,14 @@ private struct MenuActionButtonStyle: ButtonStyle {
     }
 
     let kind: Kind
+    var isCompact = false
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 12, weight: .semibold, design: .rounded))
+            .font(.system(size: isCompact ? 11 : 12, weight: .semibold, design: .rounded))
             .foregroundStyle(foregroundColor)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 9)
+            .padding(.horizontal, isCompact ? 0 : 12)
+            .padding(.vertical, isCompact ? 0 : 9)
             .background(background(configuration.isPressed))
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
@@ -730,5 +798,33 @@ private struct MenuContentHeightPreferenceKey: PreferenceKey {
 
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = nextValue()
+    }
+}
+
+private struct MenuToolTipModifier: ViewModifier {
+    let text: String
+
+    func body(content: Content) -> some View {
+        content.background(MenuToolTipHostView(text: text))
+    }
+}
+
+private struct MenuToolTipHostView: NSViewRepresentable {
+    let text: String
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView(frame: .zero)
+        view.toolTip = text
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        nsView.toolTip = text
+    }
+}
+
+private extension View {
+    func menuToolTip(_ text: String) -> some View {
+        modifier(MenuToolTipModifier(text: text))
     }
 }

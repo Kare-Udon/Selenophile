@@ -53,6 +53,62 @@ func appDelegateUpdatesLanguageStateAfterSavingConfiguration() async {
     #expect(appDelegate.settingsWindowTitle() == "Moonraker 设置")
 }
 
+@MainActor
+@Test
+func appDelegatePreviewsLanguageSelectionBeforeSavingConfiguration() {
+    let logStore = AppLogStore()
+    let configurationStore = InMemoryMoonrakerConfigurationStore(configuration: nil)
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: configurationStore,
+        logStore: logStore
+    )
+    let languageStore = AppLanguageStore(selectedLanguage: .system)
+    let appDelegate = AppDelegate(
+        logStore: logStore,
+        store: store,
+        appLanguageStore: languageStore,
+        widgetCenter: WidgetCenterRecorder()
+    )
+
+    appDelegate.previewLanguageSelection(.simplifiedChinese)
+
+    #expect(languageStore.selectedLanguage == .simplifiedChinese)
+    #expect(appDelegate.settingsWindowTitle() == "Moonraker 设置")
+}
+
+@MainActor
+@Test
+func appDelegateRestoresPersistedLanguageSelectionAfterCancellingPreview() {
+    let logStore = AppLogStore()
+    let configurationStore = InMemoryMoonrakerConfigurationStore(
+        configuration: MoonrakerConfiguration(
+            serverURLString: "http://printer.local:7125",
+            apiToken: nil,
+            cameraSnapshotURL: nil,
+            appLanguage: .traditionalChinese
+        )
+    )
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: configurationStore,
+        logStore: logStore
+    )
+    let languageStore = AppLanguageStore(selectedLanguage: .system)
+    let appDelegate = AppDelegate(
+        logStore: logStore,
+        store: store,
+        appLanguageStore: languageStore,
+        widgetCenter: WidgetCenterRecorder()
+    )
+
+    appDelegate.previewLanguageSelection(.simplifiedChinese)
+    appDelegate.restorePersistedLanguageSelection()
+
+    #expect(languageStore.selectedLanguage == .traditionalChinese)
+    #expect(appDelegate.settingsWindowTitle() == "Moonraker 設定")
+}
+
 private final class WidgetCenterRecorder: WidgetTimelineReloading {
     func reloadTimelines(ofKind kind: String) {}
 }

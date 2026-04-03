@@ -76,6 +76,20 @@
                ReferencedContainer = "container:Selenophile.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1AA62C9722B06992F8264E13"
+               BuildableName = "Selenophile_SelenophileKit.bundle"
+               BlueprintName = "Selenophile_SelenophileKit"
+               ReferencedContainer = "container:Selenophile.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

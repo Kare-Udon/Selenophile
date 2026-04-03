@@ -15,7 +15,8 @@ let project = Project(
             product: .staticLibrary,
             bundleId: "com.udon.selenophile.SelenophileKit",
             deploymentTargets: .macOS("14.0"),
-            sources: ["Sources/SelenophileKit/**"]
+            sources: ["Sources/SelenophileKit/**"],
+            resources: ["Sources/SelenophileKit/Resources/**"]
         ),
         .target(
             name: "Selenophile",

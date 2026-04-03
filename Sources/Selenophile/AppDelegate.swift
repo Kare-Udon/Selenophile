@@ -12,7 +12,7 @@ extension WidgetCenter: WidgetTimelineReloading {}
 
 @MainActor
 @Observable
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let logStore: AppLogStore
     let store: PrinterStatusStore
     let launchAtLoginController: LaunchAtLoginController
@@ -24,14 +24,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var menuBarStatusController: MenuBarStatusController?
 
     convenience override init() {
-        self.init(logStore: AppLogStore(), appLanguageStore: AppLanguageStore())
+        self.init(logStore: AppLogStore(), appLanguageStore: AppLanguageStore.shared)
     }
 
     init(
         logStore: AppLogStore? = nil,
         store: PrinterStatusStore? = nil,
         launchAtLoginController: LaunchAtLoginController = LaunchAtLoginController(),
-        appLanguageStore: AppLanguageStore,
+        appLanguageStore: AppLanguageStore = AppLanguageStore.shared,
         widgetSnapshotStore: WidgetSnapshotStore = WidgetSnapshotStore(),
         widgetCenter: any WidgetTimelineReloading = WidgetCenter.shared
     ) {
@@ -101,6 +101,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
         window.title = settingsWindowTitle()
         window.isReleasedWhenClosed = false
+        window.delegate = self
         window.center()
         window.contentViewController = NSHostingController(rootView: settingsView)
         let controller = NSWindowController(window: window)
@@ -129,6 +130,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindowController?.close()
     }
 
+    func previewLanguageSelection(_ language: AppLanguage) {
+        appLanguageStore.update(selectedLanguage: language)
+        refreshLocalizedWindowTitles()
+    }
+
+    func restorePersistedLanguageSelection() {
+        appLanguageStore.update(selectedLanguage: store.configuration?.appLanguage)
+        refreshLocalizedWindowTitles()
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow else { return }
+        guard window === settingsWindowController?.window else { return }
+        restorePersistedLanguageSelection()
+    }
+
     private func publishWidgetSnapshot(_ snapshot: WidgetSnapshot) {
         widgetSnapshotStore.save(snapshot)
         widgetCenter.reloadTimelines(ofKind: AppConfig.widgetKind)
@@ -152,6 +169,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             store: store,
             onClose: { [weak self] in
                 self?.closeSettingsWindow()
+            },
+            onCancel: { [weak self] in
+                self?.restorePersistedLanguageSelection()
+                self?.closeSettingsWindow()
+            },
+            onLanguageSelectionPreview: { [weak self] language in
+                self?.previewLanguageSelection(language)
             },
             launchAtLoginControl: .init(
                 isAvailable: true,

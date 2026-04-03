@@ -1,18 +1,9 @@
-import AppKit
 import SwiftUI
 
 @main
 struct SelenophileApp: App {
-    @State private var appLanguageStore: AppLanguageStore
-    private let appDelegate: AppDelegate
-
-    init() {
-        let languageStore = AppLanguageStore()
-        _appLanguageStore = State(initialValue: languageStore)
-        let delegate = AppDelegate(appLanguageStore: languageStore)
-        self.appDelegate = delegate
-        NSApplication.shared.delegate = delegate
-    }
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @State private var appLanguageStore = AppLanguageStore.shared
 
     var body: some Scene {
         Settings {
