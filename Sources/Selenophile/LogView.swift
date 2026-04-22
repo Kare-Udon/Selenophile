@@ -178,7 +178,7 @@ struct LogView: View {
                 .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                 .frame(width: timeColumnWidth, alignment: .leading)
 
-            Text(entry.level.label)
+            Text(entry.level.displayName(in: uiLanguage))
                 .font(.system(size: 11, weight: .bold, design: .rounded))
                 .foregroundStyle(entry.level.foregroundColor)
                 .padding(.horizontal, 9)
@@ -242,19 +242,6 @@ private extension AppLogLevel {
             return AppLocalization.localizedString(.logLevelWarning, language: uiLanguage)
         case .error:
             return AppLocalization.localizedString(.logLevelError, language: uiLanguage)
-        }
-    }
-
-    var label: String {
-        switch self {
-        case .debug:
-            return "DEBUG"
-        case .info:
-            return "INFO"
-        case .warning:
-            return "WARN"
-        case .error:
-            return "ERROR"
         }
     }
 

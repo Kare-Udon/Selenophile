@@ -451,7 +451,7 @@ struct MenuContentView: View {
         guard let updatedAt = store.lastUpdatedAt else {
             return l10n(.menuRefreshToGetSnapshot)
         }
-        return "Last updated: \(updatedAt.menuTimestamp)"
+        return "\(l10n(.menuLastUpdatedPrefix)): \(updatedAt.menuTimestamp)"
     }
 
     private var snapshotImage: NSImage? {

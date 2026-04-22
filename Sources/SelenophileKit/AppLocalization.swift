@@ -66,6 +66,7 @@ public enum AppLocalization {
         case menuTooltipTitle = "menu_tooltip_title"
         case menuTooltipStatus = "menu_tooltip_status"
         case menuTooltipProgress = "menu_tooltip_progress"
+        case menuLastUpdatedPrefix = "menu_last_updated_prefix"
 
         case logLevelDebug = "log_level_debug"
         case logLevelInfo = "log_level_info"
@@ -211,6 +212,8 @@ public enum AppLocalization {
                 return "Status"
             case .menuTooltipProgress:
                 return "Progress"
+            case .menuLastUpdatedPrefix:
+                return "Last updated"
             case .logLevelDebug:
                 return "Debug"
             case .logLevelInfo:
