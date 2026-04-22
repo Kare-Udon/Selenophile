@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var isUpdatingLaunchAtLogin = false
     @State private var isSaving = false
     @State private var selectedSection: SettingsSection = .connection
+    @State private var connectionTestFeedback: ConnectionTestFeedback?
 
     init(
         store: PrinterStatusStore,
@@ -66,6 +67,7 @@ struct SettingsView: View {
     @MainActor
     private func submit(closeOnSuccess: Bool) async {
         isSaving = true
+        connectionTestFeedback = nil
         let token = apiToken.trimmingCharacters(in: .whitespacesAndNewlines)
         let success = await store.saveConfiguration(
             serverURLString: serverURLString,
@@ -78,6 +80,47 @@ struct SettingsView: View {
         isSaving = false
         if success && closeOnSuccess {
             onClose()
+        }
+    }
+
+    @MainActor
+    private func runConnectionTest() async {
+        isSaving = true
+        connectionTestFeedback = nil
+
+        defer {
+            isSaving = false
+        }
+
+        let trimmedToken = apiToken.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedSnapshotURL = cameraSnapshotURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        let configuration = MoonrakerConfiguration(
+            serverURLString: serverURLString,
+            apiToken: trimmedToken.isEmpty ? nil : trimmedToken,
+            cameraSnapshotURL: trimmedSnapshotURL.isEmpty
+                ? nil
+                : trimmedSnapshotURL,
+            appLanguage: selectedAppLanguage
+        )
+
+        do {
+            let validated = try configuration.validated()
+            let result = await MoonrakerConnectionProbe.test(
+                configuration: validated,
+                timeoutMessage: l10n(.settingsConnectionTestTimeout)
+            )
+
+            switch result {
+            case .success:
+                connectionTestFeedback = .init(
+                    message: l10n(.settingsConnectionTestSuccess),
+                    isError: false
+                )
+            case .failure(let message):
+                connectionTestFeedback = .init(message: message, isError: true)
+            }
+        } catch {
+            connectionTestFeedback = .init(message: error.localizedDescription, isError: true)
         }
     }
 
@@ -138,9 +181,9 @@ struct SettingsView: View {
                     .fixedSize(horizontal: false, vertical: true)
 
                 ForEach([
-                    "Monitor progress, temps, layers, and speed",
-                    "Quick access to logs and settings",
-                    "Secure connection to your Moonraker instance"
+                    l10n(.settingsFeatureStatus),
+                    l10n(.settingsFeatureLogs),
+                    l10n(.settingsFeatureSecurity)
                 ], id: \.self) { item in
                     Label(item, systemImage: "checkmark.shield")
                         .font(.system(size: 11, weight: .medium, design: .rounded))
@@ -244,6 +287,10 @@ struct SettingsView: View {
                     placeholderSection(title: l10n(.settingsAdvancedSection))
                 case .about:
                     aboutSection
+                }
+
+                if let connectionTestFeedback {
+                    feedbackBanner(connectionTestFeedback)
                 }
 
                 if let error = store.displayErrorMessage, !error.isEmpty {
@@ -371,11 +418,15 @@ struct SettingsView: View {
     }
 
     private func errorBanner(_ error: String) -> some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(SelenophileTheme.Colors.danger)
+        feedbackBanner(.init(message: error, isError: true))
+    }
 
-            Text(error)
+    private func feedbackBanner(_ feedback: ConnectionTestFeedback) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: feedback.isError ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                .foregroundStyle(feedback.isError ? SelenophileTheme.Colors.danger : SelenophileTheme.Colors.success)
+
+            Text(feedback.message)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(SelenophileTheme.Colors.primaryText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -384,7 +435,9 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .selenophileCard(
             cornerRadius: SelenophileTheme.Metrics.mediumCorner,
-            fill: SelenophileTheme.Colors.danger.opacity(0.15),
+            fill: feedback.isError
+                ? SelenophileTheme.Colors.danger.opacity(0.15)
+                : SelenophileTheme.Colors.success.opacity(0.15),
             strokeOpacity: 0.45
         )
     }
@@ -394,7 +447,7 @@ struct SettingsView: View {
             Spacer(minLength: 0)
 
             Button(isSaving ? l10n(.settingsSaving) : l10n(.settingsTestConnection)) {
-                Task { await submit(closeOnSuccess: false) }
+                Task { await runConnectionTest() }
             }
             .buttonStyle(SelenophileButtonStyle(kind: .secondary))
             .disabled(isSaving)
@@ -437,6 +490,16 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity)
         .frame(height: 44)
     }
+}
+
+private struct ConnectionTestFeedback: Equatable {
+    let message: String
+    let isError: Bool
+}
+
+private enum ConnectionProbeOutcome: Equatable {
+    case success
+    case failure(String)
 }
 
 extension SettingsView {
@@ -563,5 +626,93 @@ private struct AppLanguagePopUpButton: NSViewRepresentable {
             selection.wrappedValue = language
             onSelectionChanged(language)
         }
+    }
+}
+
+private final class MoonrakerConnectionProbeRelay: @unchecked Sendable {
+    private let lock = NSLock()
+    private var continuation: CheckedContinuation<ConnectionProbeOutcome, Never>?
+    private var resolvedResult: ConnectionProbeOutcome?
+
+    func install(_ continuation: CheckedContinuation<ConnectionProbeOutcome, Never>) {
+        let resultToResume = lock.withLock { () -> ConnectionProbeOutcome? in
+            if let resolvedResult {
+                return resolvedResult
+            }
+            self.continuation = continuation
+            return nil
+        }
+
+        if let resultToResume {
+            continuation.resume(returning: resultToResume)
+        }
+    }
+
+    func handle(_ event: MoonrakerClientEvent) {
+        switch event {
+        case .connected:
+            resolve(.success)
+        case .failed(let message):
+            resolve(.failure(message))
+        case .disconnected(let reason):
+            if let reason, !reason.isEmpty {
+                resolve(.failure(reason))
+            }
+        case .printerStatus, .printerStatusDelta:
+            break
+        }
+    }
+
+    func timeout(message: String) {
+        resolve(.failure(message))
+    }
+
+    private func resolve(_ result: ConnectionProbeOutcome) {
+        let continuationToResume = lock.withLock { () -> CheckedContinuation<ConnectionProbeOutcome, Never>? in
+            guard resolvedResult == nil else { return nil }
+            resolvedResult = result
+            let continuation = continuation
+            self.continuation = nil
+            return continuation
+        }
+
+        continuationToResume?.resume(returning: result)
+    }
+}
+
+private enum MoonrakerConnectionProbe {
+    static func test(
+        configuration: MoonrakerValidatedConfiguration,
+        timeoutMessage: String,
+        timeout: Duration = .seconds(4)
+    ) async -> ConnectionProbeOutcome {
+        let client = MoonrakerClient()
+        let relay = MoonrakerConnectionProbeRelay()
+
+        let result = await withCheckedContinuation { (continuation: CheckedContinuation<ConnectionProbeOutcome, Never>) in
+            relay.install(continuation)
+
+            Task {
+                await client.connect(configuration: configuration) { event in
+                    relay.handle(event)
+                }
+            }
+
+            Task {
+                try? await Task.sleep(for: timeout)
+                relay.timeout(message: timeoutMessage)
+            }
+        }
+
+        await client.disconnect()
+        return result
+    }
+}
+
+private extension NSLock {
+    func withLock<T>(_ body: () -> T) -> T {
+        lock()
+        defer { unlock() }
+        return body()
     }
 }

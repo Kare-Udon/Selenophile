@@ -32,7 +32,7 @@ struct MenuContentView: View {
             baseContent
 
             cameraSnapshotCard
-                .padding(.top, isCameraSnapshotCollapsed ? 0 : cameraSnapshotSpacing)
+                .padding(.top, cameraSnapshotSpacing)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(18)
@@ -350,10 +350,7 @@ struct MenuContentView: View {
     private var cameraSnapshotCard: some View {
         cameraSnapshotCardContent
             .fixedSize(horizontal: false, vertical: true)
-            .allowsHitTesting(!isCameraSnapshotCollapsed)
             .frame(maxWidth: .infinity, alignment: .topLeading)
-            .frame(height: isCameraSnapshotCollapsed ? 0 : cameraSnapshotExpandedHeight, alignment: .topLeading)
-            .clipped()
     }
 
     private var cameraSnapshotCardContent: some View {
@@ -388,19 +385,21 @@ struct MenuContentView: View {
 
             cameraSnapshotMediaContent
 
-            HStack {
-                Text(snapshotUpdatedLabel)
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+            if !isCameraSnapshotCollapsed {
+                HStack {
+                    Text(snapshotUpdatedLabel)
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
 
-                Spacer(minLength: 10)
-            }
+                    Spacer(minLength: 10)
+                }
 
-            if let error = store.cameraSnapshotErrorMessage?.nonEmpty {
-                Text(error)
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundStyle(SelenophileTheme.Colors.danger)
-                    .fixedSize(horizontal: false, vertical: true)
+                if let error = store.cameraSnapshotErrorMessage?.nonEmpty {
+                    Text(error)
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.danger)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .padding(16)
@@ -408,42 +407,48 @@ struct MenuContentView: View {
     }
 
     private var cameraSnapshotMediaContent: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
-                .fill(SelenophileTheme.Colors.surfaceMuted)
-
-            if let snapshotImage {
-                Image(nsImage: snapshotImage)
-                    .resizable()
-                    .scaledToFill()
-                    .allowsHitTesting(false)
+        Group {
+            if isCameraSnapshotCollapsed {
+                EmptyView()
             } else {
-                VStack(spacing: 10) {
-                    Image(systemName: store.isFetchingCameraSnapshot ? "camera.aperture" : "webcam")
-                        .font(.system(size: 24, weight: .medium))
-                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                ZStack {
+                    RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
+                        .fill(SelenophileTheme.Colors.surfaceMuted)
 
-                    Text(cameraSnapshotPlaceholder)
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    if let snapshotImage {
+                        Image(nsImage: snapshotImage)
+                            .resizable()
+                            .scaledToFill()
+                            .allowsHitTesting(false)
+                    } else {
+                        VStack(spacing: 10) {
+                            Image(systemName: store.isFetchingCameraSnapshot ? "camera.aperture" : "webcam")
+                                .font(.system(size: 24, weight: .medium))
+                                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+
+                            Text(cameraSnapshotPlaceholder)
+                                .font(.system(size: 12, weight: .medium, design: .rounded))
+                                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                        }
+                        .padding(.horizontal, 18)
+                        .allowsHitTesting(false)
+                    }
+
+                    if store.isFetchingCameraSnapshot {
+                        ProgressView()
+                            .controlSize(.small)
+                            .padding(10)
+                            .background(.ultraThinMaterial, in: Capsule())
+                            .allowsHitTesting(false)
+                    }
                 }
-                .padding(.horizontal, 18)
-                .allowsHitTesting(false)
+                .frame(height: cameraSnapshotImageHeight)
+                .clipShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
+                        .stroke(SelenophileTheme.Colors.border, lineWidth: 1)
+                }
             }
-
-            if store.isFetchingCameraSnapshot {
-                ProgressView()
-                    .controlSize(.small)
-                    .padding(10)
-                    .background(.ultraThinMaterial, in: Capsule())
-                    .allowsHitTesting(false)
-            }
-        }
-        .frame(height: cameraSnapshotImageHeight)
-        .clipShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
-                .stroke(SelenophileTheme.Colors.border, lineWidth: 1)
         }
     }
 
@@ -464,8 +469,12 @@ struct MenuContentView: View {
         return 242 + errorHeight
     }
 
+    private var cameraSnapshotCollapsedHeight: CGFloat {
+        76
+    }
+
     private var collapsedPopoverHeight: CGFloat {
-        baseContentHeight + contentPadding
+        baseContentHeight + cameraSnapshotSpacing + cameraSnapshotCollapsedHeight + contentPadding
     }
 
     private var expandedPopoverHeight: CGFloat {
@@ -509,6 +518,7 @@ struct MenuContentView: View {
                     thumbnailTileBody
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(l10n(.menuThumbnailPlaceholderRetry))
             } else {
                 thumbnailTileBody
             }

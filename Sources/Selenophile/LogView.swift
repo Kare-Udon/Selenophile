@@ -181,6 +181,8 @@ struct LogView: View {
             Text(entry.level.displayName(in: uiLanguage))
                 .font(.system(size: 11, weight: .bold, design: .rounded))
                 .foregroundStyle(entry.level.foregroundColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
                 .padding(.horizontal, 9)
                 .padding(.vertical, 5)
                 .background(entry.level.backgroundColor, in: Capsule())
@@ -224,6 +226,7 @@ private struct CircleTrafficLights: View {
             Circle().fill(Color(red: 0.17, green: 0.80, blue: 0.35))
         }
         .frame(width: 46, alignment: .leading)
+        .accessibilityHidden(true)
     }
 }
 

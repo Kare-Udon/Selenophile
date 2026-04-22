@@ -30,6 +30,11 @@ public enum AppLocalization {
         case settingsConnectionHint = "settings_connection_hint"
         case settingsNoAdditionalOptions = "settings_no_additional_options"
         case settingsAboutBody = "settings_about_body"
+        case settingsFeatureStatus = "settings_feature_status"
+        case settingsFeatureLogs = "settings_feature_logs"
+        case settingsFeatureSecurity = "settings_feature_security"
+        case settingsConnectionTestSuccess = "settings_connection_test_success"
+        case settingsConnectionTestTimeout = "settings_connection_test_timeout"
         case settingsCancel = "settings_cancel"
         case settingsSave = "settings_save"
         case settingsSaving = "settings_saving"
@@ -142,6 +147,16 @@ public enum AppLocalization {
                 return "No additional options in this section yet."
             case .settingsAboutBody:
                 return "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools."
+            case .settingsFeatureStatus:
+                return "Monitor progress, temps, layers, and speed"
+            case .settingsFeatureLogs:
+                return "Quick access to logs and settings"
+            case .settingsFeatureSecurity:
+                return "Secure connection to your Moonraker instance"
+            case .settingsConnectionTestSuccess:
+                return "Connection test succeeded."
+            case .settingsConnectionTestTimeout:
+                return "Connection test timed out."
             case .settingsCancel:
                 return "Cancel"
             case .settingsSave:
