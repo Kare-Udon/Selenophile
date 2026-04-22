@@ -39,7 +39,7 @@ func appDelegateUpdatesLanguageStateAfterSavingConfiguration() async {
         widgetCenter: WidgetCenterRecorder()
     )
 
-    #expect(appDelegate.settingsWindowTitle() == "Moonraker Settings")
+    #expect(appDelegate.settingsWindowTitle() == AppConfig.settingsWindowTitle(for: languageStore.effectiveLanguage()))
 
     let success = await store.saveConfiguration(
         serverURLString: "http://printer.local:7125",

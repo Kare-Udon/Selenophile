@@ -21,6 +21,15 @@ public enum AppLocalization {
         case settingsLaunchAtLoginLabel = "settings_launch_at_login_label"
         case settingsLaunchAtLoginDescription = "settings_launch_at_login_description"
         case settingsLaunchAtLoginUnavailable = "settings_launch_at_login_unavailable"
+        case settingsConnectionSection = "settings_connection_section"
+        case settingsGeneralSection = "settings_general_section"
+        case settingsAppearanceSection = "settings_appearance_section"
+        case settingsAdvancedSection = "settings_advanced_section"
+        case settingsAboutSection = "settings_about_section"
+        case settingsTestConnection = "settings_test_connection"
+        case settingsConnectionHint = "settings_connection_hint"
+        case settingsNoAdditionalOptions = "settings_no_additional_options"
+        case settingsAboutBody = "settings_about_body"
         case settingsCancel = "settings_cancel"
         case settingsSave = "settings_save"
         case settingsSaving = "settings_saving"
@@ -74,6 +83,9 @@ public enum AppLocalization {
         case logCountZero = "log_count_zero"
         case logCountTotal = "log_count_total"
         case logCountVisible = "log_count_visible"
+        case logTimeColumn = "log_time_column"
+        case logSourceColumn = "log_source_column"
+        case logMessageColumn = "log_message_column"
 
         var fallbackValue: String {
             switch self {
@@ -111,6 +123,24 @@ public enum AppLocalization {
                 return "When enabled, the app opens automatically at system login."
             case .settingsLaunchAtLoginUnavailable:
                 return "Currently unavailable"
+            case .settingsConnectionSection:
+                return "Connection"
+            case .settingsGeneralSection:
+                return "General"
+            case .settingsAppearanceSection:
+                return "Appearance"
+            case .settingsAdvancedSection:
+                return "Advanced"
+            case .settingsAboutSection:
+                return "About"
+            case .settingsTestConnection:
+                return "Test Connection"
+            case .settingsConnectionHint:
+                return "Enter the URLs and token to connect to your Moonraker instance."
+            case .settingsNoAdditionalOptions:
+                return "No additional options in this section yet."
+            case .settingsAboutBody:
+                return "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools."
             case .settingsCancel:
                 return "Cancel"
             case .settingsSave:
@@ -213,6 +243,12 @@ public enum AppLocalization {
                 return "Total %lld entries"
             case .logCountVisible:
                 return "Showing %lld / %lld entries"
+            case .logTimeColumn:
+                return "Time"
+            case .logSourceColumn:
+                return "Source"
+            case .logMessageColumn:
+                return "Message"
             }
         }
     }

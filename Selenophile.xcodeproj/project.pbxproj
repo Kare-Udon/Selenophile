@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BEAD752DE2AE04B6CBB1162 /* SelenophileTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4887CB42E5A65CC40C50553 /* SelenophileTheme.swift */; };
 		0FC2DA1B0F19BFCFEE4270B3 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62644B5C5D22734C2542E4D /* WidgetSnapshot.swift */; };
 		10C1CBFB8CF36AC30061CFD5 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98D6C91D5F8B98AA12C2444 /* AppLanguage.swift */; };
 		150E5AF3D135CF19797A780C /* AppLocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0288D672E90FBB4A1193CE /* AppLocalizationTests.swift */; };
@@ -250,6 +251,7 @@
 		B107EEF376C0D261F3775438 /* libSelenophileKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSelenophileKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2AF887ECA373FF3EC8C2BC4 /* AppLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalization.swift; sourceTree = "<group>"; };
 		B36D35C9576BACFAD3A27034 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B4887CB42E5A65CC40C50553 /* SelenophileTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelenophileTheme.swift; sourceTree = "<group>"; };
 		B90B6D77A25BE019E863E8A9 /* AppConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigTests.swift; sourceTree = "<group>"; };
 		B98D6C91D5F8B98AA12C2444 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		B9D75DB916E7F7B8DC1A07E5 /* SelenophileKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SelenophileKitTests-Info.plist"; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 				E8CCFB8003B2471E9BCCFC82 /* MenuBarStatusIconRenderer.swift */,
 				AB1C2A4B55080140BAA9017F /* MenuContentView.swift */,
 				DD29BEF3BC6E8986AE25F1B8 /* SelenophileApp.swift */,
+				B4887CB42E5A65CC40C50553 /* SelenophileTheme.swift */,
 				BD47869D8271A934D5B7A712 /* SettingsView.swift */,
 			);
 			path = Selenophile;
@@ -782,6 +785,7 @@
 				2B3182874B6790EF8D195CA7 /* MenuBarStatusIconRenderer.swift in Sources */,
 				1EE3208E11C5F4CB79A5B01A /* MenuContentView.swift in Sources */,
 				ACEFB8C0BAABA20BD010790C /* SelenophileApp.swift in Sources */,
+				0BEAD752DE2AE04B6CBB1162 /* SelenophileTheme.swift in Sources */,
 				8602CA7A18E954BA43B859D5 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -947,7 +951,6 @@
 				CODE_SIGN_IDENTITY = "-";
 				EXECUTABLE_PREFIX = lib;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PACKAGE_RESOURCE_BUNDLE_NAME = Selenophile_SelenophileKit;
 				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit;
 				PRODUCT_NAME = SelenophileKit;
 				SDKROOT = macosx;
@@ -1053,6 +1056,7 @@
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				INFOPLIST_FILE = "Derived/InfoPlists/Selenophile_SelenophileKit-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PACKAGE_RESOURCE_TARGET_KIND = resource;
 				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit.generated.resources;
 				PRODUCT_NAME = Selenophile_SelenophileKit;
 				SDKROOT = macosx;
@@ -1072,6 +1076,7 @@
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				INFOPLIST_FILE = "Derived/InfoPlists/Selenophile_SelenophileKit-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PACKAGE_RESOURCE_TARGET_KIND = resource;
 				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit.generated.resources;
 				PRODUCT_NAME = Selenophile_SelenophileKit;
 				SDKROOT = macosx;
@@ -1148,7 +1153,6 @@
 				CODE_SIGN_IDENTITY = "-";
 				EXECUTABLE_PREFIX = lib;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PACKAGE_RESOURCE_BUNDLE_NAME = Selenophile_SelenophileKit;
 				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile.SelenophileKit;
 				PRODUCT_NAME = SelenophileKit;
 				SDKROOT = macosx;

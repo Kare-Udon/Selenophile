@@ -5,8 +5,8 @@ import SelenophileKit
 
 @MainActor
 final class MenuBarStatusController: NSObject {
-    private static let popoverWidth: CGFloat = 388
-    private static let popoverHeight: CGFloat = 640
+    private static let popoverWidth: CGFloat = 494
+    private static let popoverHeight: CGFloat = 760
 
     private let store: PrinterStatusStore
     private let appLanguageStore: AppLanguageStore

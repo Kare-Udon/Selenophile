@@ -1,5 +1,5 @@
-import SwiftUI
 import AppKit
+import SwiftUI
 import SelenophileKit
 
 struct MenuContentView: View {
@@ -8,14 +8,16 @@ struct MenuContentView: View {
     let onOpenSettings: () -> Void
     let onOpenLogs: () -> Void
     let onPreferredPopoverHeightChange: (CGFloat) -> Void
+
     @AppStorage("menu.cameraSnapshotCollapsed") private var isCameraSnapshotCollapsed = false
     @State private var activePreview: MenuPreview?
     @State private var baseContentHeight: CGFloat = 0
     @State private var hoveredActionHint: String?
     @State private var hoverHintTask: Task<Void, Never>?
-    private let cameraSnapshotImageHeight: CGFloat = 172
-    private let contentPadding: CGFloat = 36
-    private let cameraSnapshotSpacing: CGFloat = 14
+
+    private let cameraSnapshotImageHeight: CGFloat = 146
+    private let contentPadding: CGFloat = 40
+    private let cameraSnapshotSpacing: CGFloat = 16
 
     private var uiLanguage: AppLanguage {
         appLanguageStore.selectedLanguage.resolved(preferredLanguages: Locale.preferredLanguages)
@@ -34,15 +36,17 @@ struct MenuContentView: View {
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(18)
-        .frame(width: 388, alignment: .topLeading)
-        .background(backgroundGradient)
+        .frame(width: 494, alignment: .topLeading)
+        .background {
+            SelenophileWindowBackground()
+        }
         .onAppear {
             syncPopoverHeightForCurrentState()
         }
     }
 
     private var baseContent: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 16) {
             staticMenuContent
             actionRow
         }
@@ -59,10 +63,10 @@ struct MenuContentView: View {
     }
 
     private var staticMenuContent: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 16) {
             headerCard
-            primaryMetrics
-            secondaryMetrics
+            timeCards
+            detailMetrics
             if let lastError = store.displayErrorMessage?.nonEmpty {
                 errorBanner(lastError)
             }
@@ -72,234 +76,250 @@ struct MenuContentView: View {
         }
     }
 
-    private var backgroundGradient: some View {
-        LinearGradient(
-            colors: [
-                Color(red: 0.969, green: 0.976, blue: 0.992),
-                Color(red: 0.925, green: 0.941, blue: 0.972)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
-
     private var headerCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(l10n(.menuLivePrint))
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Color(red: 0.36, green: 0.40, blue: 0.47))
-                        .textCase(.uppercase)
-                        .tracking(2)
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 10) {
+                    SelenophileSectionLabel(text: l10n(.menuLivePrint))
 
                     Text(store.printerStatus.progressText)
-                        .font(.system(size: 31, weight: .bold, design: .rounded))
-                        .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
+                        .font(.system(size: 42, weight: .bold, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.primaryText)
 
-                    GeometryReader { proxy in
-                        ZStack(alignment: .leading) {
-                            Capsule()
-                                .fill(Color.black.opacity(0.08))
-                            Capsule()
-                                .fill(
-                                    LinearGradient(
-                                        colors: [
-                                            Color(red: 0.07, green: 0.10, blue: 0.15),
-                                            Color(red: 1.0, green: 0.48, blue: 0.29)
-                                        ],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                                .frame(width: max(proxy.size.width * store.printerStatus.normalizedProgress, 10))
-                        }
-                    }
-                    .frame(width: 104, height: 6)
+                    progressBar
+                        .frame(height: 8)
                 }
 
-                Spacer(minLength: 10)
+                Spacer(minLength: 14)
 
-                thumbnailTile
+                VStack(alignment: .trailing, spacing: 10) {
+                    connectionBadge
+                    thumbnailTile
+                }
             }
 
-            HStack(alignment: .center, spacing: 10) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(l10n(.menuTask))
                     .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .textCase(.uppercase)
+                    .tracking(1.4)
 
                 taskNameView
-
-                Spacer(minLength: 8)
-
-                Text(store.connectionBadgeLabel)
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
-                    .tracking(1.2)
-                    .foregroundStyle(connectionBadgeForeground)
-                    .padding(.horizontal, 11)
-                    .padding(.vertical, 7)
-                    .background(connectionBadgeBackground)
-                    .clipShape(Capsule())
             }
         }
-        .padding(16)
-        .background(cardBackground)
+        .padding(18)
+        .selenophileCard()
         .popover(item: $activePreview) { preview in
             previewPopover(preview)
         }
     }
 
-    private var primaryMetrics: some View {
-        HStack(spacing: 10) {
-            metricCard(
+    private var progressBar: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(Color.white.opacity(0.08))
+
+                Capsule()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                SelenophileTheme.Colors.accent,
+                                SelenophileTheme.Colors.accentGlow
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: max(proxy.size.width * store.printerStatus.normalizedProgress, 14))
+            }
+        }
+    }
+
+    private var connectionBadge: some View {
+        SelenophileStatusBadge(
+            text: store.connectionBadgeLabel.uppercased(),
+            foreground: connectionBadgeForeground,
+            background: connectionBadgeBackground
+        )
+    }
+
+    private var timeCards: some View {
+        HStack(spacing: 12) {
+            summaryMetricCard(
                 title: l10n(.menuElapsedTime),
                 value: store.printerStatus.printDuration.formattedAsClock,
-                valueColor: Color.white,
-                background: AnyShapeStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
+                symbol: "clock",
+                accent: SelenophileTheme.Colors.warning,
+                emphasized: false
             )
-            metricCard(
+
+            summaryMetricCard(
                 title: l10n(.menuRemainingTime),
                 value: slicerRemainingTime.formattedAsClock,
-                valueColor: Color(red: 0.15, green: 0.08, blue: 0.04),
-                background: AnyShapeStyle(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 1.0, green: 0.48, blue: 0.29),
-                            Color(red: 1.0, green: 0.64, blue: 0.35)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                symbol: "hourglass",
+                accent: SelenophileTheme.Colors.accent,
+                emphasized: true
             )
         }
     }
 
-    private var secondaryMetrics: some View {
-        LazyVGrid(
-            columns: [
-                GridItem(.flexible(), spacing: 8),
-                GridItem(.flexible(), spacing: 8)
-            ],
-            spacing: 8
-        ) {
-            detailMetricTile(l10n(.menuNozzle), store.printerStatus.extruder.temperatureText)
-            detailMetricTile(l10n(.menuBed), store.printerStatus.bed.temperatureText)
-            detailMetricTile(l10n(.menuLayer), store.printerStatus.layer?.layerText ?? "--")
-            detailMetricTile(l10n(.menuPrintSpeed), store.printerStatus.feedRateMultiplier.feedRateText)
+    private func summaryMetricCard(
+        title: String,
+        value: String,
+        symbol: String,
+        accent: Color,
+        emphasized: Bool
+    ) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: symbol)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(accent)
+                .frame(width: 22, height: 22)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(title)
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .textCase(.uppercase)
+                    .tracking(1.2)
+
+                Text(value)
+                    .font(.system(size: 19, weight: .bold, design: .monospaced))
+                    .foregroundStyle(emphasized ? accent : SelenophileTheme.Colors.primaryText)
+            }
+
+            Spacer(minLength: 0)
         }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .selenophileCard(fill: SelenophileTheme.Colors.surfaceRaised)
+    }
+
+    private var detailMetrics: some View {
+        LazyVGrid(
+            columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4),
+            spacing: 10
+        ) {
+            detailMetricTile(symbol: "thermometer.medium", title: l10n(.menuNozzle), value: store.printerStatus.extruder.temperatureText)
+            detailMetricTile(symbol: "heat.waves", title: l10n(.menuBed), value: store.printerStatus.bed.temperatureText)
+            detailMetricTile(symbol: "square.stack.3d.up", title: l10n(.menuLayer), value: store.printerStatus.layer?.layerText ?? "--")
+            detailMetricTile(symbol: "gauge.with.dots.needle.100percent", title: l10n(.menuPrintSpeed), value: store.printerStatus.feedRateMultiplier.feedRateText)
+        }
+    }
+
+    private func detailMetricTile(symbol: String, title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Image(systemName: symbol)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(SelenophileTheme.Colors.accent)
+
+            Text(title)
+                .font(.system(size: 10, weight: .medium, design: .rounded))
+                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                .textCase(.uppercase)
+                .tracking(1.1)
+
+            Text(value)
+                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .foregroundStyle(SelenophileTheme.Colors.primaryText)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, minHeight: 94, alignment: .topLeading)
         .padding(14)
-        .background(cardBackground)
+        .selenophileCard(
+            cornerRadius: SelenophileTheme.Metrics.mediumCorner,
+            fill: SelenophileTheme.Colors.surfaceRaised
+        )
     }
 
     private func errorBanner(_ message: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(Color(red: 0.78, green: 0.18, blue: 0.14))
+                .foregroundStyle(SelenophileTheme.Colors.danger)
+
             Text(message)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundStyle(Color(red: 0.52, green: 0.10, blue: 0.10))
-                .lineLimit(1)
-                .truncationMode(.tail)
+                .foregroundStyle(SelenophileTheme.Colors.primaryText)
+                .lineLimit(2)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(12)
-        .frame(height: 44, alignment: .topLeading)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(red: 0.99, green: 0.93, blue: 0.92))
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .selenophileCard(
+            cornerRadius: SelenophileTheme.Metrics.mediumCorner,
+            fill: SelenophileTheme.Colors.danger.opacity(0.15),
+            strokeOpacity: 0.45
         )
     }
 
     private var actionRow: some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(spacing: 12) {
             HStack(spacing: 10) {
-                menuIconButton(
-                    systemName: "arrow.clockwise",
-                    titleKey: .menuReconnect,
-                    kind: .secondary
-                ) {
+                labeledActionButton(systemName: "arrow.clockwise", title: l10n(.menuReconnect)) {
                     store.reconnectNow()
                 }
                 .disabled(store.connectionState == .connecting || store.connectionState == .reconnecting)
 
-                menuIconButton(
-                    systemName: "text.alignleft",
-                    titleKey: .menuOpenLogs,
-                    kind: .secondary
-                ) {
+                labeledActionButton(systemName: "text.alignleft", title: l10n(.menuOpenLogs)) {
                     onOpenLogs()
                 }
-
-                menuIconButton(
-                    systemName: "gearshape.fill",
-                    titleKey: .menuOpenSettings,
-                    kind: .primary
-                ) {
-                    onOpenSettings()
-                }
-
-                menuIconButton(
-                    systemName: "power",
-                    titleKey: .menuQuit,
-                    kind: .ghost
-                ) {
-                    NSApplication.shared.terminate(nil)
-                }
-                .keyboardShortcut("q")
             }
 
             Spacer(minLength: 8)
 
-            HStack(spacing: 8) {
-                Button {
-                    let nextCollapsed = !isCameraSnapshotCollapsed
-                    isCameraSnapshotCollapsed = nextCollapsed
-                    onPreferredPopoverHeightChange(nextCollapsed ? collapsedPopoverHeight : expandedPopoverHeight)
-                } label: {
-                    Image(systemName: isCameraSnapshotCollapsed ? "chevron.down" : "chevron.up")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                        .frame(width: 28, height: 28)
-                        .background(Color.white.opacity(0.9), in: Capsule())
+            HStack(spacing: 10) {
+                iconActionButton(systemName: "gearshape.fill", title: l10n(.menuOpenSettings), kind: .secondary) {
+                    onOpenSettings()
                 }
-                .buttonStyle(.plain)
 
-                Button(store.isFetchingCameraSnapshot ? l10n(.menuRefreshing) : l10n(.menuRefresh)) {
-                    Task { _ = await store.fetchCameraSnapshot() }
+                iconActionButton(systemName: "power", title: l10n(.menuQuit), kind: .destructive) {
+                    NSApplication.shared.terminate(nil)
                 }
-                .buttonStyle(MenuActionButtonStyle(kind: .secondary))
-                .disabled(store.isFetchingCameraSnapshot || store.configuration == nil)
+                .keyboardShortcut("q")
             }
         }
     }
 
-    private func menuIconButton(
+    private func labeledActionButton(
         systemName: String,
-        titleKey: AppLocalization.Key,
-        kind: MenuActionButtonStyle.Kind,
+        title: String,
         action: @escaping () -> Void
     ) -> some View {
-        let title = l10n(titleKey)
-
-        return Button(action: action) {
-            Image(systemName: systemName)
-                .font(.system(size: 12, weight: .semibold))
-                .frame(width: 28, height: 28)
+        Button(action: action) {
+            Label(title, systemImage: systemName)
+                .labelStyle(.titleAndIcon)
+                .frame(height: 20)
         }
-        .buttonStyle(MenuActionButtonStyle(kind: kind, isCompact: true))
+        .buttonStyle(SelenophileButtonStyle(kind: .secondary))
+    }
+
+    private func iconActionButton(
+        systemName: String,
+        title: String,
+        kind: SelenophileButtonStyle.Kind,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 13, weight: .semibold))
+                .frame(width: 18, height: 18)
+        }
+        .buttonStyle(SelenophileButtonStyle(kind: kind, compact: true))
         .menuToolTip(title)
         .accessibilityLabel(title)
         .overlay(alignment: .top) {
             if hoveredActionHint == title {
                 Text(title)
                     .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 5)
                     .background(
                         Capsule()
-                            .fill(Color(red: 0.07, green: 0.10, blue: 0.15).opacity(0.96))
+                            .fill(SelenophileTheme.Colors.surfaceMuted.opacity(0.98))
                     )
                     .offset(y: -30)
                     .fixedSize()
@@ -331,43 +351,66 @@ struct MenuContentView: View {
         cameraSnapshotCardContent
             .fixedSize(horizontal: false, vertical: true)
             .allowsHitTesting(!isCameraSnapshotCollapsed)
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-        .frame(height: isCameraSnapshotCollapsed ? 0 : cameraSnapshotExpandedHeight, alignment: .topLeading)
-        .clipped()
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .frame(height: isCameraSnapshotCollapsed ? 0 : cameraSnapshotExpandedHeight, alignment: .topLeading)
+            .clipped()
     }
 
     private var cameraSnapshotCardContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(l10n(.menuCameraSnapshot))
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
-                        .textCase(.uppercase)
-                        .tracking(1.6)
+                Label {
+                    SelenophileSectionLabel(text: l10n(.menuCameraSnapshot))
+                } icon: {
+                    Image(systemName: "camera")
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                 }
 
-                Spacer()
+                Spacer(minLength: 12)
+
+                Button(store.isFetchingCameraSnapshot ? l10n(.menuRefreshing) : l10n(.menuRefresh)) {
+                    Task { _ = await store.fetchCameraSnapshot() }
+                }
+                .buttonStyle(SelenophileButtonStyle(kind: .ghost))
+                .disabled(store.isFetchingCameraSnapshot || store.configuration == nil)
+
+                Button {
+                    let nextCollapsed = !isCameraSnapshotCollapsed
+                    isCameraSnapshotCollapsed = nextCollapsed
+                    onPreferredPopoverHeightChange(nextCollapsed ? collapsedPopoverHeight : expandedPopoverHeight)
+                } label: {
+                    Image(systemName: isCameraSnapshotCollapsed ? "chevron.down" : "chevron.up")
+                        .font(.system(size: 11, weight: .bold))
+                        .frame(width: 18, height: 18)
+                }
+                .buttonStyle(SelenophileButtonStyle(kind: .ghost, compact: true))
             }
 
             cameraSnapshotMediaContent
 
+            HStack {
+                Text(snapshotUpdatedLabel)
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+
+                Spacer(minLength: 10)
+            }
+
             if let error = store.cameraSnapshotErrorMessage?.nonEmpty {
                 Text(error)
                     .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color(red: 0.60, green: 0.16, blue: 0.12))
+                    .foregroundStyle(SelenophileTheme.Colors.danger)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-        .padding(14)
-        .background(cardBackground)
+        .padding(16)
+        .selenophileCard()
     }
 
     private var cameraSnapshotMediaContent: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(red: 0.93, green: 0.95, blue: 0.98))
+            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
+                .fill(SelenophileTheme.Colors.surfaceMuted)
 
             if let snapshotImage {
                 Image(nsImage: snapshotImage)
@@ -377,11 +420,12 @@ struct MenuContentView: View {
             } else {
                 VStack(spacing: 10) {
                     Image(systemName: store.isFetchingCameraSnapshot ? "camera.aperture" : "webcam")
-                        .font(.system(size: 22, weight: .medium))
-                        .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
+                        .font(.system(size: 24, weight: .medium))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+
                     Text(cameraSnapshotPlaceholder)
                         .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                 }
                 .padding(.horizontal, 18)
                 .allowsHitTesting(false)
@@ -396,11 +440,18 @@ struct MenuContentView: View {
             }
         }
         .frame(height: cameraSnapshotImageHeight)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(Color.white.opacity(0.7), lineWidth: 1)
+            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
+                .stroke(SelenophileTheme.Colors.border, lineWidth: 1)
         }
+    }
+
+    private var snapshotUpdatedLabel: String {
+        guard let updatedAt = store.lastUpdatedAt else {
+            return l10n(.menuRefreshToGetSnapshot)
+        }
+        return "Last updated: \(updatedAt.menuTimestamp)"
     }
 
     private var snapshotImage: NSImage? {
@@ -410,7 +461,7 @@ struct MenuContentView: View {
 
     private var cameraSnapshotExpandedHeight: CGFloat {
         let errorHeight: CGFloat = store.cameraSnapshotErrorMessage?.nonEmpty == nil ? 0 : 38
-        return 226 + errorHeight
+        return 242 + errorHeight
     }
 
     private var collapsedPopoverHeight: CGFloat {
@@ -434,36 +485,6 @@ struct MenuContentView: View {
             return l10n(.menuFetchingCameraSnapshot)
         }
         return l10n(.menuRefreshToGetSnapshot)
-    }
-
-    private var cardBackground: some View {
-        RoundedRectangle(cornerRadius: 20, style: .continuous)
-            .fill(.white.opacity(0.96))
-            .overlay {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.white.opacity(0.75), lineWidth: 1)
-            }
-            .shadow(color: Color.black.opacity(0.08), radius: 18, x: 0, y: 10)
-    }
-
-    private var connectionBadgeBackground: some ShapeStyle {
-        if store.isWaitingForManualReconnect {
-            return AnyShapeStyle(Color(red: 0.67, green: 0.24, blue: 0.14))
-        }
-        switch store.connectionState {
-        case .connected:
-            return AnyShapeStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
-        case .connecting, .reconnecting:
-            return AnyShapeStyle(Color(red: 0.18, green: 0.36, blue: 0.66))
-        case .failed, .disconnected:
-            return AnyShapeStyle(Color(red: 0.78, green: 0.18, blue: 0.14))
-        case .unconfigured:
-            return AnyShapeStyle(Color.black.opacity(0.12))
-        }
-    }
-
-    private var connectionBadgeForeground: Color {
-        store.connectionState == .unconfigured ? Color(red: 0.32, green: 0.36, blue: 0.42) : .white
     }
 
     private var thumbnailImage: NSImage? {
@@ -494,34 +515,10 @@ struct MenuContentView: View {
         }
     }
 
-    private var taskNameView: some View {
-        Group {
-            if let filename = store.printerStatus.filename {
-                Button {
-                    activePreview = .taskName(filename)
-                } label: {
-                    Text(filename)
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
-                        .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(l10n(.menuViewTaskNameAccessibility))
-            } else {
-                Text(l10n(.menuNoPrintTask))
-                    .font(.system(size: 17, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-            }
-        }
-    }
-
     private var thumbnailTileBody: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color(red: 0.95, green: 0.96, blue: 0.98))
+        ZStack(alignment: .topTrailing) {
+            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
+                .fill(SelenophileTheme.Colors.surfaceRaised)
 
             if let thumbnailImage {
                 Image(nsImage: thumbnailImage)
@@ -529,16 +526,24 @@ struct MenuContentView: View {
                     .interpolation(.high)
                     .scaledToFill()
             } else {
-                VStack(spacing: 6) {
-                    Image(systemName: store.isFetchingCurrentPrintThumbnail ? "photo" : "square.stack.3d.up")
-                        .font(.system(size: 18, weight: .medium))
-                        .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
+                VStack(spacing: 8) {
+                    Image(systemName: store.isFetchingCurrentPrintThumbnail ? "photo" : "cube.transparent")
+                        .font(.system(size: 22, weight: .medium))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+
                     Text(thumbnailPlaceholderText)
                         .font(.system(size: 10, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                 }
-                .padding(8)
+                .padding(10)
             }
+
+            Image(systemName: "arrow.up.left.and.arrow.down.right")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                .padding(8)
+                .background(Color.black.opacity(0.28), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .padding(10)
 
             if store.isFetchingCurrentPrintThumbnail {
                 ProgressView()
@@ -547,12 +552,12 @@ struct MenuContentView: View {
                     .background(.ultraThinMaterial, in: Capsule())
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(Color.white.opacity(0.75), lineWidth: 1)
+            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
+                .stroke(SelenophileTheme.Colors.border, lineWidth: 1)
         }
-        .frame(width: 86, height: 86)
+        .frame(width: 136, height: 116)
     }
 
     private var thumbnailPlaceholderText: String {
@@ -565,94 +570,114 @@ struct MenuContentView: View {
         return l10n(.menuThumbnailPlaceholderEmpty)
     }
 
+    private var taskNameView: some View {
+        Group {
+            if let filename = store.printerStatus.filename {
+                Button {
+                    activePreview = .taskName(filename)
+                } label: {
+                    Text(filename)
+                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.primaryText)
+                        .lineLimit(2)
+                        .truncationMode(.tail)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(l10n(.menuViewTaskNameAccessibility))
+            } else {
+                Text(l10n(.menuNoPrintTask))
+                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+
     @ViewBuilder
     private func previewPopover(_ preview: MenuPreview) -> some View {
         switch preview {
         case .thumbnail:
-            VStack(alignment: .leading, spacing: 12) {
-                Text(l10n(.menuPrintThumbnailTitle))
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
-
+            previewPanel(width: 344, title: l10n(.menuPrintThumbnailTitle)) {
                 if let thumbnailImage {
                     Image(nsImage: thumbnailImage)
                         .resizable()
                         .interpolation(.high)
                         .scaledToFit()
-                        .frame(maxWidth: 360, maxHeight: 360)
-                        .background(Color.white.opacity(0.92), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .frame(maxWidth: 280, maxHeight: 260)
+                        .padding(14)
+                        .frame(maxWidth: .infinity)
+                        .background(SelenophileTheme.Colors.surfaceRaised, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 } else {
                     Text(l10n(.menuNoThumbnailPreview))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundStyle(Color(red: 0.38, green: 0.43, blue: 0.50))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                 }
             }
-            .padding(16)
-            .frame(width: 384, alignment: .leading)
 
         case .taskName(let fullName):
-            VStack(alignment: .leading, spacing: 12) {
-                Text(l10n(.menuTaskFullName))
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.07, green: 0.10, blue: 0.15))
-
+            previewPanel(width: 312, title: l10n(.menuTaskFullName)) {
                 Text(fullName)
-                    .font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color(red: 0.14, green: 0.17, blue: 0.22))
+                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
                     .textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Text(l10n(.menuCopySelectableText))
                     .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
             }
-            .padding(16)
-            .frame(width: 320, alignment: .leading)
         }
     }
 
-    private func metricCard(
+    private func previewPanel<Content: View>(
+        width: CGFloat,
         title: String,
-        value: String,
-        valueColor: Color,
-        background: AnyShapeStyle
+        @ViewBuilder content: () -> Content
     ) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(title)
-                .font(.system(size: 11, weight: .medium, design: .rounded))
-                .foregroundStyle(valueColor.opacity(0.66))
-            Text(value)
-                .font(.system(size: 21, weight: .bold, design: .monospaced))
-                .foregroundStyle(valueColor)
-                .lineLimit(1)
-                .fixedSize(horizontal: true, vertical: false)
+        VStack(alignment: .leading, spacing: 14) {
+            SelenophileSectionLabel(text: title)
+            content()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(background)
-        )
+        .padding(16)
+        .frame(width: width, alignment: .leading)
+        .background {
+            SelenophileWindowBackground()
+        }
     }
 
-    private func detailMetricTile(_ title: String, _ value: String) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(title)
-                .font(.system(size: 11, weight: .medium, design: .rounded))
-                .foregroundStyle(Color(red: 0.43, green: 0.47, blue: 0.53))
-
-            Text(value)
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(Color(red: 0.14, green: 0.17, blue: 0.22))
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
+    private var connectionBadgeBackground: Color {
+        if store.isWaitingForManualReconnect {
+            return SelenophileTheme.Colors.danger.opacity(0.16)
         }
-        .frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
-        .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color(red: 0.965, green: 0.972, blue: 0.984))
-        )
+
+        switch store.connectionState {
+        case .connected:
+            return SelenophileTheme.Colors.success.opacity(0.16)
+        case .connecting, .reconnecting:
+            return SelenophileTheme.Colors.accent.opacity(0.16)
+        case .failed, .disconnected:
+            return SelenophileTheme.Colors.danger.opacity(0.16)
+        case .unconfigured:
+            return Color.white.opacity(0.08)
+        }
+    }
+
+    private var connectionBadgeForeground: Color {
+        if store.isWaitingForManualReconnect {
+            return SelenophileTheme.Colors.danger
+        }
+
+        switch store.connectionState {
+        case .connected:
+            return SelenophileTheme.Colors.success
+        case .connecting, .reconnecting:
+            return SelenophileTheme.Colors.accentGlow
+        case .failed, .disconnected:
+            return SelenophileTheme.Colors.danger
+        case .unconfigured:
+            return SelenophileTheme.Colors.secondaryText
+        }
     }
 
     private var slicerRemainingTime: TimeInterval? {
@@ -676,60 +701,6 @@ private enum MenuPreview: Identifiable {
             return "thumbnail"
         case .taskName(let name):
             return "taskName:\(name)"
-        }
-    }
-}
-
-private struct MenuActionButtonStyle: ButtonStyle {
-    enum Kind {
-        case primary
-        case secondary
-        case ghost
-    }
-
-    let kind: Kind
-    var isCompact = false
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: isCompact ? 11 : 12, weight: .semibold, design: .rounded))
-            .foregroundStyle(foregroundColor)
-            .padding(.horizontal, isCompact ? 0 : 12)
-            .padding(.vertical, isCompact ? 0 : 9)
-            .background(background(configuration.isPressed))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-    }
-
-    private var foregroundColor: Color {
-        switch kind {
-        case .primary:
-            return .white
-        case .secondary:
-            return Color(red: 0.07, green: 0.10, blue: 0.15)
-        case .ghost:
-            return Color(red: 0.25, green: 0.29, blue: 0.35)
-        }
-    }
-
-    private func background(_ isPressed: Bool) -> AnyView {
-        switch kind {
-        case .primary:
-            return AnyView(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isPressed ? Color(red: 0.04, green: 0.07, blue: 0.12) : Color(red: 0.07, green: 0.10, blue: 0.15))
-            )
-        case .secondary:
-            return AnyView(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isPressed ? Color.white.opacity(0.72) : Color.white)
-                    .shadow(color: Color.black.opacity(0.06), radius: 10, x: 0, y: 6)
-            )
-        case .ghost:
-            return AnyView(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isPressed ? Color.black.opacity(0.12) : Color.black.opacity(0.07))
-            )
         }
     }
 }

@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var launchAtLoginEnabled: Bool
     @State private var isUpdatingLaunchAtLogin = false
     @State private var isSaving = false
+    @State private var selectedSection: SettingsSection = .connection
 
     init(
         store: PrinterStatusStore,
@@ -39,27 +40,23 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            heroCard
-            formCard
-            launchAtLoginCard
-            if let error = store.displayErrorMessage, !error.isEmpty {
-                errorBanner(error)
+        HStack(spacing: 0) {
+            sidebar
+
+            VStack(spacing: 0) {
+                contentHeader
+                Divider()
+                    .overlay(SelenophileTheme.Colors.divider)
+                settingsContent
+                Divider()
+                    .overlay(SelenophileTheme.Colors.divider)
+                footerActions
             }
-            actions
         }
-        .padding(22)
-        .frame(width: 460)
-        .background(
-            LinearGradient(
-                colors: [
-                    Color(red: 0.969, green: 0.976, blue: 0.992),
-                    Color(red: 0.925, green: 0.941, blue: 0.972)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        )
+        .frame(width: 840, height: 580)
+        .background {
+            SelenophileWindowBackground()
+        }
         .onAppear {
             refreshLaunchAtLoginState()
             onLanguageSelectionPreview(selectedAppLanguage)
@@ -67,7 +64,7 @@ struct SettingsView: View {
     }
 
     @MainActor
-    private func save() async {
+    private func submit(closeOnSuccess: Bool) async {
         isSaving = true
         let token = apiToken.trimmingCharacters(in: .whitespacesAndNewlines)
         let success = await store.saveConfiguration(
@@ -79,7 +76,7 @@ struct SettingsView: View {
             appLanguage: selectedAppLanguage
         )
         isSaving = false
-        if success {
+        if success && closeOnSuccess {
             onClose()
         }
     }
@@ -113,178 +110,313 @@ struct SettingsView: View {
         isUpdatingLaunchAtLogin = false
     }
 
-    private var heroCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(l10n(.settingsHeroBadge))
-                .font(.system(size: 11, weight: .semibold, design: .rounded))
-                .foregroundStyle(Color.white.opacity(0.68))
-                .textCase(.uppercase)
-                .tracking(2)
+    private var sidebar: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Selenophile")
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
 
-            Text(l10n(.settingsHeroTitle))
-                .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                Text("FOR MOONRAKER")
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .tracking(1.8)
+            }
 
-            Text(l10n(.settingsHeroSubtitle))
+            VStack(spacing: 8) {
+                ForEach(SettingsSection.allCases, id: \.self) { section in
+                    sidebarButton(for: section)
+                }
+            }
+
+            Spacer(minLength: 0)
+
+            VStack(alignment: .leading, spacing: 14) {
+                Text(l10n(.settingsAboutBody))
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                ForEach([
+                    "Monitor progress, temps, layers, and speed",
+                    "Quick access to logs and settings",
+                    "Secure connection to your Moonraker instance"
+                ], id: \.self) { item in
+                    Label(item, systemImage: "checkmark.shield")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                }
+            }
+            .padding(16)
+            .selenophileCard(
+                cornerRadius: SelenophileTheme.Metrics.mediumCorner,
+                fill: SelenophileTheme.Colors.surfaceMuted
+            )
+        }
+        .padding(22)
+        .frame(width: 228, alignment: .topLeading)
+        .background(
+            SelenophileTheme.Colors.surfaceMuted.opacity(0.82)
+        )
+        .overlay(alignment: .trailing) {
+            Rectangle()
+                .fill(SelenophileTheme.Colors.divider)
+                .frame(width: 1)
+        }
+    }
+
+    private func sidebarButton(for section: SettingsSection) -> some View {
+        Button {
+            selectedSection = section
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: section.symbolName)
+                    .font(.system(size: 15, weight: .semibold))
+                    .frame(width: 18, height: 18)
+
+                Text(section.title(in: uiLanguage))
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+
+                Spacer(minLength: 0)
+            }
+            .foregroundStyle(
+                selectedSection == section
+                    ? SelenophileTheme.Colors.primaryText
+                    : SelenophileTheme.Colors.secondaryText
+            )
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(
+                        selectedSection == section
+                            ? SelenophileTheme.Colors.surfaceRaised
+                            : Color.clear
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var contentHeader: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 6) {
+                SelenophileSectionLabel(text: selectedSection.title(in: uiLanguage))
+
+                Text(headerTitle)
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
+            }
+
+            Spacer(minLength: 12)
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 22)
+    }
+
+    private var headerTitle: String {
+        switch selectedSection {
+        case .connection:
+            return l10n(.settingsHeroTitle)
+        case .general:
+            return l10n(.settingsGeneralSection)
+        case .appearance:
+            return l10n(.settingsAppearanceSection)
+        case .advanced:
+            return l10n(.settingsAdvancedSection)
+        case .about:
+            return l10n(.settingsAboutSection)
+        }
+    }
+
+    @ViewBuilder
+    private var settingsContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                switch selectedSection {
+                case .connection:
+                    connectionSection
+                case .general:
+                    generalSection
+                case .appearance:
+                    placeholderSection(title: l10n(.settingsAppearanceSection))
+                case .advanced:
+                    placeholderSection(title: l10n(.settingsAdvancedSection))
+                case .about:
+                    aboutSection
+                }
+
+                if let error = store.displayErrorMessage, !error.isEmpty {
+                    errorBanner(error)
+                }
+            }
+            .padding(24)
+        }
+    }
+
+    private var connectionSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            settingsCard {
+                formField(title: l10n(.settingsMoonrakerURLLabel)) {
+                    TextField(l10n(.settingsMoonrakerURLPlaceholder), text: $serverURLString)
+                        .textFieldStyle(SelenophileTextFieldStyle())
+                }
+
+                formField(title: l10n(.settingsAPITokenLabel)) {
+                    SecureField(l10n(.settingsAPITokenPlaceholder), text: $apiToken)
+                        .textFieldStyle(SelenophileTextFieldStyle())
+                }
+
+                formField(title: l10n(.settingsCameraSnapshotURLLabel)) {
+                    TextField(l10n(.settingsCameraSnapshotURLPlaceholder), text: $cameraSnapshotURL)
+                        .textFieldStyle(SelenophileTextFieldStyle())
+                }
+
+                Text(l10n(.settingsConnectionHint))
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private var generalSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            settingsCard {
+                formField(title: l10n(.settingsLanguageLabel)) {
+                    languagePicker
+                }
+
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(l10n(.settingsLaunchAtLoginLabel))
+                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(l10n(.settingsLaunchAtLoginDescription))
+                                .font(.system(size: 12, weight: .medium, design: .rounded))
+                                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            if !(launchAtLoginControl?.isAvailable ?? false) {
+                                Text(l10n(.settingsLaunchAtLoginUnavailable))
+                                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                                    .foregroundStyle(SelenophileTheme.Colors.tertiaryText)
+                            }
+                        }
+
+                        Spacer(minLength: 12)
+
+                        Toggle("", isOn: Binding(
+                            get: { launchAtLoginEnabled },
+                            set: { newValue in
+                                Task { await updateLaunchAtLoginEnabled(newValue) }
+                            }
+                        ))
+                        .labelsHidden()
+                        .toggleStyle(SwitchToggleStyle(tint: SelenophileTheme.Colors.accent))
+                        .disabled(!(launchAtLoginControl?.isAvailable ?? false) || isUpdatingLaunchAtLogin)
+                    }
+                }
+            }
+        }
+    }
+
+    private func placeholderSection(title: String) -> some View {
+        settingsCard {
+            Text(title)
+                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+            Text(l10n(.settingsNoAdditionalOptions))
                 .font(.system(size: 13, weight: .medium, design: .rounded))
-                .foregroundStyle(Color.white.opacity(0.78))
+                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+        }
+    }
+
+    private var aboutSection: some View {
+        settingsCard {
+            Text("Selenophile")
+                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+            Text(l10n(.settingsAboutBody))
+                .font(.system(size: 13, weight: .medium, design: .rounded))
+                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func settingsCard<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            content()
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.07, green: 0.10, blue: 0.15),
-                            Color(red: 0.16, green: 0.27, blue: 0.48)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-        )
+        .selenophileCard()
     }
 
-    private var formCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(l10n(.settingsMoonrakerURLLabel))
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                TextField(l10n(.settingsMoonrakerURLPlaceholder), text: $serverURLString)
-                    .textFieldStyle(SetupFieldStyle())
-            }
+    private func formField<Content: View>(
+        title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
 
-            VStack(alignment: .leading, spacing: 8) {
-                Text(l10n(.settingsAPITokenLabel))
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                SecureField(l10n(.settingsAPITokenPlaceholder), text: $apiToken)
-                    .textFieldStyle(SetupFieldStyle())
-            }
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(l10n(.settingsCameraSnapshotURLLabel))
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                TextField(l10n(.settingsCameraSnapshotURLPlaceholder), text: $cameraSnapshotURL)
-                    .textFieldStyle(SetupFieldStyle())
-                Text(l10n(.settingsCameraSnapshotHelp))
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color(red: 0.45, green: 0.49, blue: 0.56))
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(l10n(.settingsLanguageLabel))
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.28, green: 0.32, blue: 0.38))
-                languagePicker
-            }
+            content()
         }
-        .padding(18)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(.white.opacity(0.96))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .stroke(Color.white.opacity(0.75), lineWidth: 1)
-                }
-                .shadow(color: Color.black.opacity(0.08), radius: 16, x: 0, y: 10)
-        )
-    }
-
-    private var launchAtLoginCard: some View {
-        let isAvailable = launchAtLoginControl?.isAvailable ?? false
-
-        return VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top, spacing: 14) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(l10n(.settingsLaunchAtLoginLabel))
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Color(red: 0.11, green: 0.14, blue: 0.18))
-
-                    Text(l10n(.settingsLaunchAtLoginDescription))
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundStyle(Color(red: 0.45, green: 0.49, blue: 0.56))
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-
-                Spacer(minLength: 12)
-
-                Toggle("", isOn: Binding(
-                    get: { launchAtLoginEnabled },
-                    set: { newValue in
-                        Task { await updateLaunchAtLoginEnabled(newValue) }
-                    }
-                ))
-                .labelsHidden()
-                .toggleStyle(SwitchToggleStyle())
-                .disabled(!isAvailable || isUpdatingLaunchAtLogin)
-            }
-
-            if !isAvailable {
-                Text(l10n(.settingsLaunchAtLoginUnavailable))
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color(red: 0.58, green: 0.62, blue: 0.69))
-            }
-        }
-        .padding(18)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(.white.opacity(0.96))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .stroke(Color.white.opacity(0.75), lineWidth: 1)
-                }
-                .shadow(color: Color.black.opacity(0.08), radius: 16, x: 0, y: 10)
-        )
     }
 
     private func errorBanner(_ error: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(Color(red: 0.78, green: 0.18, blue: 0.14))
+                .foregroundStyle(SelenophileTheme.Colors.danger)
+
             Text(error)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundStyle(Color(red: 0.52, green: 0.10, blue: 0.10))
+                .foregroundStyle(SelenophileTheme.Colors.primaryText)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(red: 0.99, green: 0.93, blue: 0.92))
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .selenophileCard(
+            cornerRadius: SelenophileTheme.Metrics.mediumCorner,
+            fill: SelenophileTheme.Colors.danger.opacity(0.15),
+            strokeOpacity: 0.45
         )
     }
 
-    private var actions: some View {
-        HStack {
-            Spacer()
+    private var footerActions: some View {
+        HStack(spacing: 12) {
+            Spacer(minLength: 0)
 
-            Button(l10n(.settingsCancel)) {
-                onCancel()
+            Button(isSaving ? l10n(.settingsSaving) : l10n(.settingsTestConnection)) {
+                Task { await submit(closeOnSuccess: false) }
             }
-            .buttonStyle(SetupActionButtonStyle(kind: .secondary))
-            .disabled(isSaving && store.configuration == nil)
+            .buttonStyle(SelenophileButtonStyle(kind: .secondary))
+            .disabled(isSaving)
 
             Button(isSaving ? l10n(.settingsSaving) : l10n(.settingsSave)) {
-                Task { await save() }
+                Task { await submit(closeOnSuccess: true) }
             }
-            .buttonStyle(SetupActionButtonStyle(kind: .primary))
+            .buttonStyle(SelenophileButtonStyle(kind: .primary))
             .keyboardShortcut(.defaultAction)
             .disabled(isSaving)
         }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 18)
     }
 
     private var languagePicker: some View {
         ZStack(alignment: .trailing) {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color.white)
+                .fill(SelenophileTheme.Colors.inputFill)
 
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(Color(red: 0.82, green: 0.86, blue: 0.92), lineWidth: 1)
+                .stroke(SelenophileTheme.Colors.inputBorder, lineWidth: 1)
 
             AppLanguagePopUpButton(
                 selection: $selectedAppLanguage,
@@ -298,7 +430,7 @@ struct SettingsView: View {
 
             Image(systemName: "chevron.up.chevron.down")
                 .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(Color(red: 0.45, green: 0.49, blue: 0.56))
+                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                 .padding(.trailing, 14)
                 .allowsHitTesting(false)
         }
@@ -325,61 +457,40 @@ extension SettingsView {
     }
 }
 
-private struct SetupFieldStyle: TextFieldStyle {
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
-            .font(.system(size: 13, weight: .medium, design: .rounded))
-            .foregroundStyle(Color(red: 0.11, green: 0.14, blue: 0.18))
-            .textFieldStyle(.plain)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 11)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color.white)
-            )
-            .overlay {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(Color(red: 0.82, green: 0.86, blue: 0.92), lineWidth: 1)
-            }
-    }
-}
+private enum SettingsSection: CaseIterable {
+    case connection
+    case general
+    case appearance
+    case advanced
+    case about
 
-private struct SetupActionButtonStyle: ButtonStyle {
-    enum Kind {
-        case primary
-        case secondary
+    var symbolName: String {
+        switch self {
+        case .connection:
+            return "link"
+        case .general:
+            return "gearshape"
+        case .appearance:
+            return "paintpalette"
+        case .advanced:
+            return "wrench.and.screwdriver"
+        case .about:
+            return "info.circle"
+        }
     }
 
-    let kind: Kind
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 12, weight: .semibold, design: .rounded))
-            .foregroundStyle(kind == .primary ? Color.white : Color(red: 0.07, green: 0.10, blue: 0.15))
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .background(background(configuration.isPressed))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-    }
-
-    private func background(_ isPressed: Bool) -> AnyView {
-        switch kind {
-        case .primary:
-            return AnyView(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(
-                        isPressed
-                            ? Color(red: 0.05, green: 0.08, blue: 0.13)
-                            : Color(red: 0.07, green: 0.10, blue: 0.15)
-                    )
-            )
-        case .secondary:
-            return AnyView(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isPressed ? Color.white.opacity(0.72) : Color.white)
-                    .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 6)
-            )
+    func title(in language: AppLanguage) -> String {
+        switch self {
+        case .connection:
+            return AppLocalization.localizedString(.settingsConnectionSection, language: language)
+        case .general:
+            return AppLocalization.localizedString(.settingsGeneralSection, language: language)
+        case .appearance:
+            return AppLocalization.localizedString(.settingsAppearanceSection, language: language)
+        case .advanced:
+            return AppLocalization.localizedString(.settingsAdvancedSection, language: language)
+        case .about:
+            return AppLocalization.localizedString(.settingsAboutSection, language: language)
         }
     }
 }
@@ -401,12 +512,7 @@ private struct AppLanguagePopUpButton: NSViewRepresentable {
         button.bezelStyle = .shadowlessSquare
         button.controlSize = .regular
         button.isBordered = false
-        button.contentTintColor = NSColor(
-            calibratedRed: 0.11,
-            green: 0.14,
-            blue: 0.18,
-            alpha: 1
-        )
+        button.contentTintColor = NSColor.white
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             button.heightAnchor.constraint(equalToConstant: 28)
