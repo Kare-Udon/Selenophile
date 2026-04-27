@@ -97,6 +97,7 @@ public final class PrinterStatusStore {
     public var onWidgetSnapshotChange: ((WidgetSnapshot) -> Void)?
     public var onConfigurationChange: ((MoonrakerConfiguration?) -> Void)?
     public private(set) var cameraSnapshotData: Data?
+    public private(set) var cameraSnapshotUpdatedAt: Date?
     public private(set) var cameraSnapshotErrorMessage: String?
     public private(set) var isFetchingCameraSnapshot = false
     public private(set) var currentPrintThumbnailData: Data?
@@ -432,6 +433,7 @@ public final class PrinterStatusStore {
         }
         guard let configuration else {
             cameraSnapshotData = nil
+            cameraSnapshotUpdatedAt = nil
             cameraSnapshotErrorMessage = "请先配置 Moonraker 地址。"
             log(.warning, "相机快照请求失败：尚未配置 Moonraker")
             return false
@@ -449,10 +451,12 @@ public final class PrinterStatusStore {
             let validated = try configuration.validated()
             let snapshot = try await cameraClient.fetchSnapshot(configuration: validated)
             cameraSnapshotData = snapshot
+            cameraSnapshotUpdatedAt = Date()
             log(.info, "相机快照请求成功，大小 \(snapshot.count) 字节")
             return true
         } catch {
             cameraSnapshotData = nil
+            cameraSnapshotUpdatedAt = nil
             cameraSnapshotErrorMessage = error.localizedDescription
             log(.error, "相机快照请求失败：\(error.localizedDescription)")
             return false

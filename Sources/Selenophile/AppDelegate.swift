@@ -17,30 +17,39 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let store: PrinterStatusStore
     let launchAtLoginController: LaunchAtLoginController
     let appLanguageStore: AppLanguageStore
+    let launchConfiguration: AppLaunchConfiguration
     private let widgetSnapshotStore: WidgetSnapshotStore
     private let widgetCenter: any WidgetTimelineReloading
     private var settingsWindowController: NSWindowController?
     private var logWindowController: LogWindowController?
+    private var mainPanelWindowController: MainPanelWindowController?
     private var menuBarStatusController: MenuBarStatusController?
 
     convenience override init() {
-        self.init(logStore: AppLogStore(), appLanguageStore: AppLanguageStore.shared)
+        self.init(
+            logStore: AppLogStore(),
+            appLanguageStore: AppLanguageStore.shared,
+            launchConfiguration: AppLaunchConfiguration(processInfo: .processInfo)
+        )
     }
 
     init(
         logStore: AppLogStore? = nil,
         store: PrinterStatusStore? = nil,
         launchAtLoginController: LaunchAtLoginController = LaunchAtLoginController(),
-        appLanguageStore: AppLanguageStore = AppLanguageStore.shared,
+        appLanguageStore: AppLanguageStore? = nil,
+        launchConfiguration: AppLaunchConfiguration = AppLaunchConfiguration(processInfo: .processInfo),
         widgetSnapshotStore: WidgetSnapshotStore = WidgetSnapshotStore(),
         widgetCenter: any WidgetTimelineReloading = WidgetCenter.shared
     ) {
         let resolvedLogStore = logStore ?? AppLogStore()
         let resolvedStore = store ?? PrinterStatusStore(logStore: resolvedLogStore)
+        let resolvedAppLanguageStore = appLanguageStore ?? AppLanguageStore.shared
         self.logStore = resolvedLogStore
         self.store = resolvedStore
         self.launchAtLoginController = launchAtLoginController
-        self.appLanguageStore = appLanguageStore
+        self.appLanguageStore = resolvedAppLanguageStore
+        self.launchConfiguration = launchConfiguration
         self.widgetSnapshotStore = widgetSnapshotStore
         self.widgetCenter = widgetCenter
         super.init()
@@ -68,6 +77,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         )
 
         publishWidgetSnapshot(store.widgetSnapshot())
+        if launchConfiguration.opensDebugMainPanelWindow {
+            showMainPanelWindow()
+        }
 
         if store.needsInitialConfiguration {
             logStore.log(.info, source: "AppDelegate", message: "检测到未配置 Moonraker，打开设置窗口")
@@ -124,6 +136,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         logWindowController = controller
         controller.showWindow(nil)
         NSApplication.shared.activate(ignoringOtherApps: true)
+    }
+
+    func showMainPanelWindow() {
+        logStore.log(.debug, source: "AppDelegate", message: "打开调试主面板窗口")
+        if let controller = mainPanelWindowController {
+            controller.showPanel()
+            return
+        }
+
+        let controller = MainPanelWindowController(
+            store: store,
+            appLanguageStore: appLanguageStore,
+            onOpenSettings: { [weak self] in
+                self?.showSettingsWindow()
+            },
+            onOpenLogs: { [weak self] in
+                self?.showLogWindow()
+            }
+        )
+        mainPanelWindowController = controller
+        controller.showPanel()
     }
 
     func closeSettingsWindow() {

@@ -7,9 +7,22 @@ CONFIGURATION=${CONFIGURATION:-Debug}
 DERIVED_DATA_PATH="${ROOT_DIR}/.build/tuist-derived"
 APP_PATH="${DERIVED_DATA_PATH}/Build/Products/${CONFIGURATION}/${APP_NAME}.app"
 PROJECT_PATH="${ROOT_DIR}/${APP_NAME}.xcodeproj"
+APP_ARGS=()
 
 log() { printf '%s\n' "$*"; }
 fail() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --debug-ui-window)
+      APP_ARGS+=("$1")
+      shift
+      ;;
+    *)
+      fail "Unknown argument: $1"
+      ;;
+  esac
+done
 
 stop_existing() {
   pkill -f "${APP_NAME}.app/Contents/MacOS/${APP_NAME}" 2>/dev/null || true
@@ -46,7 +59,11 @@ if [[ ! -d "$APP_PATH" ]]; then
 fi
 
 log "==> launching ${APP_NAME}"
-open -n "$APP_PATH"
+if [[ ${#APP_ARGS[@]} -gt 0 ]]; then
+  open -n "$APP_PATH" --args "${APP_ARGS[@]}"
+else
+  open -n "$APP_PATH"
+fi
 
 for _ in {1..20}; do
   if pgrep -f "${APP_NAME}.app/Contents/MacOS/${APP_NAME}" >/dev/null 2>&1; then

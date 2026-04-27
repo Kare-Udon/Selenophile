@@ -47,6 +47,20 @@ swift test
 ./stop-menubar.sh
 ```
 
+### 构建分发 DMG
+
+生成一个可将 `Selenophile.app` 拖到 `Applications` 目录的本地分发 `.dmg`：
+
+```bash
+./Scripts/build_dmg.sh
+```
+
+默认输出到 `dist/Selenophile-0.1.0.dmg`。如需构建通用二进制，可结合现有环境变量：
+
+```bash
+ARCHES="arm64 x86_64" ./Scripts/build_dmg.sh
+```
+
 ## 初始提交建议
 
 适合提交到 git 的内容：

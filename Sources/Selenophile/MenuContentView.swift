@@ -15,9 +15,9 @@ struct MenuContentView: View {
     @State private var hoveredActionHint: String?
     @State private var hoverHintTask: Task<Void, Never>?
 
-    private let cameraSnapshotImageHeight: CGFloat = 146
-    private let contentPadding: CGFloat = 40
-    private let cameraSnapshotSpacing: CGFloat = 16
+    private let cameraSnapshotFallbackAspectRatio: CGFloat = 16.0 / 9.0
+    private let contentPadding: CGFloat = 28
+    private let cameraSnapshotSpacing: CGFloat = 10
 
     private var uiLanguage: AppLanguage {
         appLanguageStore.selectedLanguage.resolved(preferredLanguages: Locale.preferredLanguages)
@@ -35,7 +35,7 @@ struct MenuContentView: View {
                 .padding(.top, cameraSnapshotSpacing)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .padding(18)
+        .padding(16)
         .frame(width: 494, alignment: .topLeading)
         .background {
             SelenophileWindowBackground()
@@ -46,7 +46,7 @@ struct MenuContentView: View {
     }
 
     private var baseContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
             staticMenuContent
             actionRow
         }
@@ -63,7 +63,7 @@ struct MenuContentView: View {
     }
 
     private var staticMenuContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
             headerCard
             timeCards
             detailMetrics
@@ -77,38 +77,41 @@ struct MenuContentView: View {
     }
 
     private var headerCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .top, spacing: 14) {
+                VStack(alignment: .leading, spacing: 8) {
                     SelenophileSectionLabel(text: l10n(.menuLivePrint))
 
                     Text(store.printerStatus.progressText)
-                        .font(.system(size: 42, weight: .bold, design: .rounded))
+                        .font(.system(size: 38, weight: .bold, design: .rounded))
                         .foregroundStyle(SelenophileTheme.Colors.primaryText)
 
                     progressBar
-                        .frame(height: 8)
+                        .frame(height: 7)
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(l10n(.menuTask))
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
+                            .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                            .textCase(.uppercase)
+                            .tracking(1.35)
+
+                        taskNameView
+                    }
+                    .padding(.top, 2)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
 
-                Spacer(minLength: 14)
-
-                VStack(alignment: .trailing, spacing: 10) {
+                VStack(alignment: .trailing, spacing: 0) {
                     connectionBadge
+                        .padding(.bottom, 18)
                     thumbnailTile
                 }
-            }
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(l10n(.menuTask))
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
-                    .textCase(.uppercase)
-                    .tracking(1.4)
-
-                taskNameView
+                .frame(width: 128, alignment: .trailing)
             }
         }
-        .padding(18)
+        .padding(14)
         .selenophileCard()
         .popover(item: $activePreview) { preview in
             previewPopover(preview)
@@ -146,7 +149,7 @@ struct MenuContentView: View {
     }
 
     private var timeCards: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             summaryMetricCard(
                 title: l10n(.menuElapsedTime),
                 value: store.printerStatus.printDuration.formattedAsClock,
@@ -172,18 +175,18 @@ struct MenuContentView: View {
         accent: Color,
         emphasized: Bool
     ) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .center, spacing: 12) {
             Image(systemName: symbol)
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(accent)
-                .frame(width: 22, height: 22)
+                .frame(width: 26, height: 26)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .font(.system(size: 10, weight: .medium, design: .rounded))
                     .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                     .textCase(.uppercase)
-                    .tracking(1.2)
+                    .tracking(1.15)
 
                 Text(value)
                     .font(.system(size: 19, weight: .bold, design: .monospaced))
@@ -192,15 +195,16 @@ struct MenuContentView: View {
 
             Spacer(minLength: 0)
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 13)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
         .selenophileCard(fill: SelenophileTheme.Colors.surfaceRaised)
     }
 
     private var detailMetrics: some View {
         LazyVGrid(
-            columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4),
-            spacing: 10
+            columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4),
+            spacing: 8
         ) {
             detailMetricTile(symbol: "thermometer.medium", title: l10n(.menuNozzle), value: store.printerStatus.extruder.temperatureText)
             detailMetricTile(symbol: "heat.waves", title: l10n(.menuBed), value: store.printerStatus.bed.temperatureText)
@@ -210,25 +214,33 @@ struct MenuContentView: View {
     }
 
     private func detailMetricTile(symbol: String, title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Image(systemName: symbol)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(SelenophileTheme.Colors.accent)
+        VStack(alignment: .leading, spacing: 7) {
+            HStack(alignment: .center, spacing: 6) {
+                Image(systemName: symbol)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(SelenophileTheme.Colors.accent)
+                    .frame(width: 18, height: 18)
 
-            Text(title)
-                .font(.system(size: 10, weight: .medium, design: .rounded))
-                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
-                .textCase(.uppercase)
-                .tracking(1.1)
+                Text(title)
+                    .font(.system(size: 9, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .textCase(.uppercase)
+                    .tracking(1.0)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
 
             Text(value)
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .font(.system(size: 10, weight: .semibold, design: .rounded))
                 .foregroundStyle(SelenophileTheme.Colors.primaryText)
                 .lineLimit(1)
-                .minimumScaleFactor(0.8)
+                .minimumScaleFactor(0.48)
+                .allowsTightening(true)
+                .monospacedDigit()
         }
-        .frame(maxWidth: .infinity, minHeight: 94, alignment: .topLeading)
-        .padding(14)
+        .frame(maxWidth: .infinity, minHeight: 60, alignment: .leading)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 9)
         .selenophileCard(
             cornerRadius: SelenophileTheme.Metrics.mediumCorner,
             fill: SelenophileTheme.Colors.surfaceRaised
@@ -271,9 +283,14 @@ struct MenuContentView: View {
             Spacer(minLength: 8)
 
             HStack(spacing: 10) {
-                iconActionButton(systemName: "gearshape.fill", title: l10n(.menuOpenSettings), kind: .secondary) {
+                iconActionButton(systemName: "gearshape", title: l10n(.menuOpenSettings), kind: .secondary) {
                     onOpenSettings()
                 }
+
+                Rectangle()
+                    .fill(SelenophileTheme.Colors.divider)
+                    .frame(width: 1, height: 30)
+                    .padding(.horizontal, 2)
 
                 iconActionButton(systemName: "power", title: l10n(.menuQuit), kind: .destructive) {
                     NSApplication.shared.terminate(nil)
@@ -286,14 +303,25 @@ struct MenuContentView: View {
     private func labeledActionButton(
         systemName: String,
         title: String,
+        kind: SelenophileButtonStyle.Kind = .secondary,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
-            Label(title, systemImage: systemName)
-                .labelStyle(.titleAndIcon)
-                .frame(height: 20)
+            HStack(spacing: 8) {
+                Image(systemName: systemName)
+                    .font(.system(size: 13, weight: .semibold))
+                    .frame(width: 20, height: 20)
+                    .background(
+                        Circle()
+                            .fill(Color.white.opacity(0.06))
+                    )
+
+                Text(title)
+                    .lineLimit(1)
+            }
+            .frame(height: 20)
         }
-        .buttonStyle(SelenophileButtonStyle(kind: .secondary))
+        .buttonStyle(SelenophileButtonStyle(kind: kind))
     }
 
     private func iconActionButton(
@@ -354,7 +382,7 @@ struct MenuContentView: View {
     }
 
     private var cameraSnapshotCardContent: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: isCameraSnapshotCollapsed ? 0 : 10) {
             HStack(alignment: .center) {
                 Label {
                     SelenophileSectionLabel(text: l10n(.menuCameraSnapshot))
@@ -365,33 +393,44 @@ struct MenuContentView: View {
 
                 Spacer(minLength: 12)
 
-                Button(store.isFetchingCameraSnapshot ? l10n(.menuRefreshing) : l10n(.menuRefresh)) {
-                    Task { _ = await store.fetchCameraSnapshot() }
-                }
-                .buttonStyle(SelenophileButtonStyle(kind: .ghost))
-                .disabled(store.isFetchingCameraSnapshot || store.configuration == nil)
+                HStack(spacing: isCameraSnapshotCollapsed ? 0 : 8) {
+                    if !isCameraSnapshotCollapsed {
+                        Button(store.isFetchingCameraSnapshot ? l10n(.menuRefreshing) : l10n(.menuRefresh)) {
+                            Task { _ = await store.fetchCameraSnapshot() }
+                        }
+                        .buttonStyle(SelenophileButtonStyle(kind: .secondary))
+                        .frame(width: 62)
+                        .contentShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous))
+                        .disabled(store.isFetchingCameraSnapshot || store.configuration == nil)
+                    }
 
-                Button {
-                    let nextCollapsed = !isCameraSnapshotCollapsed
-                    isCameraSnapshotCollapsed = nextCollapsed
-                    onPreferredPopoverHeightChange(nextCollapsed ? collapsedPopoverHeight : expandedPopoverHeight)
-                } label: {
-                    Image(systemName: isCameraSnapshotCollapsed ? "chevron.down" : "chevron.up")
-                        .font(.system(size: 11, weight: .bold))
-                        .frame(width: 18, height: 18)
+                    Button {
+                        let nextCollapsed = !isCameraSnapshotCollapsed
+                        isCameraSnapshotCollapsed = nextCollapsed
+                        onPreferredPopoverHeightChange(nextCollapsed ? collapsedPopoverHeight : expandedPopoverHeight)
+                    } label: {
+                        Image(systemName: isCameraSnapshotCollapsed ? "chevron.down" : "chevron.up")
+                            .font(.system(size: 12, weight: .bold))
+                            .frame(width: 34, height: 34)
+                    }
+                    .buttonStyle(SelenophileButtonStyle(kind: .secondary, compact: true))
+                    .contentShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous))
+                    .accessibilityLabel(l10n(.menuCameraSnapshot))
                 }
-                .buttonStyle(SelenophileButtonStyle(kind: .ghost, compact: true))
+                .zIndex(2)
             }
 
-            cameraSnapshotMediaContent
-
             if !isCameraSnapshotCollapsed {
-                HStack {
-                    Text(snapshotUpdatedLabel)
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                cameraSnapshotMediaContent
 
-                    Spacer(minLength: 10)
+                if let snapshotUpdatedLabel {
+                    HStack {
+                        Text(snapshotUpdatedLabel)
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+
+                        Spacer(minLength: 10)
+                    }
                 }
 
                 if let error = store.cameraSnapshotErrorMessage?.nonEmpty {
@@ -402,7 +441,8 @@ struct MenuContentView: View {
                 }
             }
         }
-        .padding(16)
+        .padding(.horizontal, isCameraSnapshotCollapsed ? 12 : 16)
+        .padding(.vertical, isCameraSnapshotCollapsed ? 8 : 14)
         .selenophileCard()
     }
 
@@ -418,7 +458,9 @@ struct MenuContentView: View {
                     if let snapshotImage {
                         Image(nsImage: snapshotImage)
                             .resizable()
-                            .scaledToFill()
+                            .interpolation(.high)
+                            .aspectRatio(snapshotAspectRatio, contentMode: .fit)
+                            .frame(maxWidth: .infinity)
                             .allowsHitTesting(false)
                     } else {
                         VStack(spacing: 10) {
@@ -442,7 +484,8 @@ struct MenuContentView: View {
                             .allowsHitTesting(false)
                     }
                 }
-                .frame(height: cameraSnapshotImageHeight)
+                .frame(maxWidth: .infinity)
+                .aspectRatio(snapshotAspectRatio, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous))
                 .overlay {
                     RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
@@ -452,9 +495,9 @@ struct MenuContentView: View {
         }
     }
 
-    private var snapshotUpdatedLabel: String {
-        guard let updatedAt = store.lastUpdatedAt else {
-            return l10n(.menuRefreshToGetSnapshot)
+    private var snapshotUpdatedLabel: String? {
+        guard let updatedAt = store.cameraSnapshotUpdatedAt else {
+            return nil
         }
         return "\(l10n(.menuLastUpdatedPrefix)): \(updatedAt.menuTimestamp)"
     }
@@ -464,13 +507,28 @@ struct MenuContentView: View {
         return NSImage(data: data)
     }
 
+    private var snapshotAspectRatio: CGFloat {
+        guard let snapshotImage else {
+            return cameraSnapshotFallbackAspectRatio
+        }
+
+        let size = snapshotImage.size
+        guard size.width > 0, size.height > 0 else {
+            return cameraSnapshotFallbackAspectRatio
+        }
+
+        return size.width / size.height
+    }
+
     private var cameraSnapshotExpandedHeight: CGFloat {
         let errorHeight: CGFloat = store.cameraSnapshotErrorMessage?.nonEmpty == nil ? 0 : 38
-        return 242 + errorHeight
+        let footerHeight: CGFloat = store.cameraSnapshotUpdatedAt == nil ? 0 : 20
+        let imageHeight = availableContentWidth / snapshotAspectRatio
+        return 74 + imageHeight + footerHeight + errorHeight
     }
 
     private var cameraSnapshotCollapsedHeight: CGFloat {
-        76
+        50
     }
 
     private var collapsedPopoverHeight: CGFloat {
@@ -478,7 +536,11 @@ struct MenuContentView: View {
     }
 
     private var expandedPopoverHeight: CGFloat {
-        collapsedPopoverHeight + cameraSnapshotSpacing + cameraSnapshotExpandedHeight
+        baseContentHeight + cameraSnapshotSpacing + cameraSnapshotExpandedHeight + contentPadding
+    }
+
+    private var availableContentWidth: CGFloat {
+        494 - (16 * 2) - (16 * 2)
     }
 
     private func syncPopoverHeightForCurrentState() {
@@ -551,9 +613,9 @@ struct MenuContentView: View {
             Image(systemName: "arrow.up.left.and.arrow.down.right")
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                .padding(7)
+                .background(Color.black.opacity(0.30), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .padding(8)
-                .background(Color.black.opacity(0.28), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .padding(10)
 
             if store.isFetchingCurrentPrintThumbnail {
                 ProgressView()
@@ -567,7 +629,7 @@ struct MenuContentView: View {
             RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
                 .stroke(SelenophileTheme.Colors.border, lineWidth: 1)
         }
-        .frame(width: 136, height: 116)
+        .frame(width: 132, height: 104)
     }
 
     private var thumbnailPlaceholderText: String {
@@ -587,17 +649,19 @@ struct MenuContentView: View {
                     activePreview = .taskName(filename)
                 } label: {
                     Text(filename)
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .font(.system(size: 16, weight: .medium, design: .rounded))
                         .foregroundStyle(SelenophileTheme.Colors.primaryText)
                         .lineLimit(2)
+                        .multilineTextAlignment(.leading)
                         .truncationMode(.tail)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(l10n(.menuViewTaskNameAccessibility))
             } else {
                 Text(l10n(.menuNoPrintTask))
-                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                    .font(.system(size: 16, weight: .medium, design: .rounded))
                     .foregroundStyle(SelenophileTheme.Colors.primaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }

@@ -2,12 +2,12 @@ import SwiftUI
 
 enum SelenophileTheme {
     enum Colors {
-        static let windowTop = Color(red: 0.086, green: 0.094, blue: 0.117)
-        static let windowBottom = Color(red: 0.125, green: 0.133, blue: 0.160)
-        static let surface = Color(red: 0.133, green: 0.141, blue: 0.168)
-        static let surfaceRaised = Color(red: 0.155, green: 0.164, blue: 0.191)
-        static let surfaceMuted = Color(red: 0.109, green: 0.117, blue: 0.141)
-        static let border = Color.white.opacity(0.12)
+        static let windowTop = Color(red: 0.056, green: 0.061, blue: 0.075)
+        static let windowBottom = Color(red: 0.095, green: 0.102, blue: 0.122)
+        static let surface = Color(red: 0.111, green: 0.119, blue: 0.140)
+        static let surfaceRaised = Color(red: 0.132, green: 0.141, blue: 0.164)
+        static let surfaceMuted = Color(red: 0.083, green: 0.090, blue: 0.108)
+        static let border = Color.white.opacity(0.16)
         static let divider = Color.white.opacity(0.08)
         static let primaryText = Color.white.opacity(0.96)
         static let secondaryText = Color.white.opacity(0.64)
@@ -20,13 +20,13 @@ enum SelenophileTheme {
         static let danger = Color(red: 1.0, green: 0.35, blue: 0.29)
         static let inputFill = Color.white.opacity(0.04)
         static let inputBorder = Color.white.opacity(0.12)
-        static let shadow = Color.black.opacity(0.28)
+        static let shadow = Color.black.opacity(0.34)
     }
 
     enum Metrics {
-        static let largeCorner: CGFloat = 22
-        static let mediumCorner: CGFloat = 18
-        static let smallCorner: CGFloat = 14
+        static let largeCorner: CGFloat = 12
+        static let mediumCorner: CGFloat = 8
+        static let smallCorner: CGFloat = 8
     }
 }
 
@@ -44,12 +44,12 @@ struct SelenophileWindowBackground: View {
 
             RadialGradient(
                 colors: [
-                    SelenophileTheme.Colors.accentGlow.opacity(0.18),
+                    SelenophileTheme.Colors.accentGlow.opacity(0.13),
                     .clear
                 ],
                 center: .topLeading,
                 startRadius: 20,
-                endRadius: 360
+                endRadius: 320
             )
             .blendMode(.screen)
         }
@@ -71,7 +71,7 @@ struct SelenophileCardModifier: ViewModifier {
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                             .stroke(SelenophileTheme.Colors.border.opacity(strokeOpacity), lineWidth: 1)
                     }
-                    .shadow(color: SelenophileTheme.Colors.shadow, radius: 24, x: 0, y: 18)
+                    .shadow(color: SelenophileTheme.Colors.shadow, radius: 18, x: 0, y: 12)
             )
     }
 }
@@ -143,9 +143,9 @@ struct SelenophileButtonStyle: ButtonStyle {
             .font(.system(size: compact ? 12 : 13, weight: .semibold, design: .rounded))
             .foregroundStyle(foregroundColor)
             .frame(maxWidth: fullWidth ? .infinity : nil)
-            .padding(.horizontal, compact ? 0 : 16)
-            .padding(.vertical, compact ? 0 : 11)
-            .frame(height: compact ? 38 : 42)
+            .padding(.horizontal, compact ? 0 : 13)
+            .padding(.vertical, compact ? 0 : 8)
+            .frame(width: compact ? 34 : nil, height: compact ? 34 : 36)
             .background(background(configuration.isPressed))
             .clipShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous))
             .overlay {

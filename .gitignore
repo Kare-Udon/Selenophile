@@ -19,6 +19,8 @@ xcuserdata/
 .worktrees/
 
 # Archives and packages
+dist/
+*.dmg
 *.ipa
 *.dSYM
 *.dSYM.zip

@@ -120,6 +120,7 @@ func fetchCameraSnapshotStoresImageData() async throws {
 
     #expect(success)
     #expect(store.cameraSnapshotData == snapshot)
+    #expect(store.cameraSnapshotUpdatedAt != nil)
     #expect(store.cameraSnapshotErrorMessage == nil)
     #expect(!store.isFetchingCameraSnapshot)
 }
@@ -139,6 +140,7 @@ func fetchCameraSnapshotReportsFailure() async throws {
 
     #expect(!success)
     #expect(store.cameraSnapshotData == nil)
+    #expect(store.cameraSnapshotUpdatedAt == nil)
     #expect(store.cameraSnapshotErrorMessage == MoonrakerCameraError.noSnapshotURL.localizedDescription)
     #expect(!store.isFetchingCameraSnapshot)
 }
