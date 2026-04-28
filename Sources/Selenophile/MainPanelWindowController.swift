@@ -4,12 +4,19 @@ import SelenophileKit
 
 @MainActor
 final class MainPanelWindowController: NSWindowController {
-    private static let defaultSize = NSSize(width: 494, height: 760)
-    private static let minimumSize = NSSize(width: 494, height: 640)
+    private static let defaultSize = NSSize(
+        width: MenuContentView.preferredWidth,
+        height: MenuContentView.preferredHeight
+    )
+    private static let minimumSize = NSSize(
+        width: MenuContentView.preferredWidth,
+        height: MenuContentView.minimumHeight
+    )
 
     init(
         store: PrinterStatusStore,
         appLanguageStore: AppLanguageStore,
+        appAppearanceStore: AppAppearanceStore,
         onOpenSettings: @escaping () -> Void,
         onOpenLogs: @escaping () -> Void
     ) {
@@ -37,6 +44,7 @@ final class MainPanelWindowController: NSWindowController {
                     self?.updatePreferredHeight(height)
                 }
             )
+            .selenophileAppearance(appAppearanceStore)
         )
     }
 

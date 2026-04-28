@@ -4,7 +4,11 @@ import SelenophileKit
 
 @MainActor
 final class LogWindowController: NSWindowController {
-    init(logStore: AppLogStore, appLanguageStore: AppLanguageStore) {
+    init(
+        logStore: AppLogStore,
+        appLanguageStore: AppLanguageStore,
+        appAppearanceStore: AppAppearanceStore
+    ) {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 920, height: 520),
             styleMask: [.titled, .closable, .miniaturizable, .resizable],
@@ -16,6 +20,7 @@ final class LogWindowController: NSWindowController {
         window.center()
         window.contentViewController = NSHostingController(
             rootView: LogView(logStore: logStore, appLanguageStore: appLanguageStore)
+                .selenophileAppearance(appAppearanceStore)
         )
 
         super.init(window: window)

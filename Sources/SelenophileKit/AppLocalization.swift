@@ -39,6 +39,18 @@ public enum AppLocalization {
         case settingsSave = "settings_save"
         case settingsSaving = "settings_saving"
         case followSystem = "follow_system"
+        case appearanceModeLabel = "appearance_mode_label"
+        case appearanceModeDescription = "appearance_mode_description"
+        case appearanceLightMode = "appearance_light_mode"
+        case appearanceDarkMode = "appearance_dark_mode"
+        case appearanceDefaultNote = "appearance_default_note"
+        case themePaletteLabel = "theme_palette_label"
+        case themePaletteDescription = "theme_palette_description"
+        case themePaletteDefault = "theme_palette_default"
+        case themePaletteGraphite = "theme_palette_graphite"
+        case themePaletteGitHub = "theme_palette_github"
+        case themePaletteTokyoNight = "theme_palette_tokyo_night"
+        case themePaletteOneDark = "theme_palette_one_dark"
 
         case menuLivePrint = "menu_live_print"
         case menuTask = "menu_task"
@@ -165,6 +177,30 @@ public enum AppLocalization {
                 return "Connecting…"
             case .followSystem:
                 return "Follow System"
+            case .appearanceModeLabel:
+                return "Theme"
+            case .appearanceModeDescription:
+                return "Choose whether Selenophile follows macOS or uses a fixed light or dark appearance."
+            case .appearanceLightMode:
+                return "Light"
+            case .appearanceDarkMode:
+                return "Dark"
+            case .appearanceDefaultNote:
+                return "Dark remains the default for new installs until you choose another theme."
+            case .themePaletteLabel:
+                return "Color Style"
+            case .themePaletteDescription:
+                return "Choose the accent and surface palette used across Selenophile."
+            case .themePaletteDefault:
+                return "Default"
+            case .themePaletteGraphite:
+                return "Graphite"
+            case .themePaletteGitHub:
+                return "GitHub"
+            case .themePaletteTokyoNight:
+                return "Tokyo Night"
+            case .themePaletteOneDark:
+                return "One Dark"
             case .menuLivePrint:
                 return "Live Print"
             case .menuTask:

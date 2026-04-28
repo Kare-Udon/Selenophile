@@ -8,11 +8,14 @@ struct SettingsView: View {
     let onLanguageSelectionPreview: (AppLanguage) -> Void
     let launchAtLoginControl: LaunchAtLoginControl?
     let appLanguageStore: AppLanguageStore
+    let appAppearanceStore: AppAppearanceStore
 
     @State private var serverURLString: String
     @State private var apiToken: String
     @State private var cameraSnapshotURL: String
     @State private var selectedAppLanguage: AppLanguage
+    @State private var selectedAppearanceMode: AppAppearanceMode
+    @State private var selectedThemePalette: AppThemePalette
     @State private var launchAtLoginEnabled: Bool
     @State private var isUpdatingLaunchAtLogin = false
     @State private var isSaving = false
@@ -25,7 +28,8 @@ struct SettingsView: View {
         onCancel: @escaping () -> Void,
         onLanguageSelectionPreview: @escaping (AppLanguage) -> Void = { _ in },
         launchAtLoginControl: LaunchAtLoginControl? = nil,
-        appLanguageStore: AppLanguageStore
+        appLanguageStore: AppLanguageStore,
+        appAppearanceStore: AppAppearanceStore
     ) {
         self.store = store
         self.onClose = onClose
@@ -33,10 +37,13 @@ struct SettingsView: View {
         self.onLanguageSelectionPreview = onLanguageSelectionPreview
         self.launchAtLoginControl = launchAtLoginControl
         self.appLanguageStore = appLanguageStore
+        self.appAppearanceStore = appAppearanceStore
         _serverURLString = State(initialValue: store.configuration?.serverURLString ?? "http://127.0.0.1:7125")
         _apiToken = State(initialValue: store.configuration?.apiToken ?? "")
         _cameraSnapshotURL = State(initialValue: store.configuration?.cameraSnapshotURL ?? "")
         _selectedAppLanguage = State(initialValue: store.configuration?.appLanguage ?? .system)
+        _selectedAppearanceMode = State(initialValue: appAppearanceStore.selectedMode)
+        _selectedThemePalette = State(initialValue: appAppearanceStore.selectedPalette)
         _launchAtLoginEnabled = State(initialValue: launchAtLoginControl?.isEnabled() ?? false)
     }
 
@@ -61,6 +68,8 @@ struct SettingsView: View {
         .onAppear {
             refreshLaunchAtLoginState()
             onLanguageSelectionPreview(selectedAppLanguage)
+            selectedAppearanceMode = appAppearanceStore.selectedMode
+            selectedThemePalette = appAppearanceStore.selectedPalette
         }
     }
 
@@ -68,6 +77,7 @@ struct SettingsView: View {
     private func submit(closeOnSuccess: Bool) async {
         isSaving = true
         connectionTestFeedback = nil
+        appAppearanceStore.save(mode: selectedAppearanceMode, palette: selectedThemePalette)
         let token = apiToken.trimmingCharacters(in: .whitespacesAndNewlines)
         let success = await store.saveConfiguration(
             serverURLString: serverURLString,
@@ -173,28 +183,6 @@ struct SettingsView: View {
             }
 
             Spacer(minLength: 0)
-
-            VStack(alignment: .leading, spacing: 14) {
-                Text(l10n(.settingsAboutBody))
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                ForEach([
-                    l10n(.settingsFeatureStatus),
-                    l10n(.settingsFeatureLogs),
-                    l10n(.settingsFeatureSecurity)
-                ], id: \.self) { item in
-                    Label(item, systemImage: "checkmark.shield")
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
-                }
-            }
-            .padding(16)
-            .selenophileCard(
-                cornerRadius: SelenophileTheme.Metrics.mediumCorner,
-                fill: SelenophileTheme.Colors.surfaceMuted
-            )
         }
         .padding(22)
         .frame(width: 228, alignment: .topLeading)
@@ -229,6 +217,8 @@ struct SettingsView: View {
             )
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(
@@ -282,7 +272,7 @@ struct SettingsView: View {
                 case .general:
                     generalSection
                 case .appearance:
-                    placeholderSection(title: l10n(.settingsAppearanceSection))
+                    appearanceSection
                 case .advanced:
                     placeholderSection(title: l10n(.settingsAdvancedSection))
                 case .about:
@@ -368,6 +358,150 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+
+    private var appearanceSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            settingsCard {
+                formField(title: l10n(.appearanceModeLabel)) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(l10n(.appearanceModeDescription))
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        VStack(spacing: 8) {
+                            ForEach(AppAppearanceMode.supportedSelections, id: \.self) { mode in
+                                appearanceModeRow(mode)
+                            }
+                        }
+
+                        Text(l10n(.appearanceDefaultNote))
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(SelenophileTheme.Colors.tertiaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+
+            settingsCard {
+                formField(title: l10n(.themePaletteLabel)) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(l10n(.themePaletteDescription))
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        VStack(spacing: 8) {
+                            ForEach(AppThemePalette.supportedSelections, id: \.self) { palette in
+                                themePaletteRow(palette)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func appearanceModeRow(_ mode: AppAppearanceMode) -> some View {
+        Button {
+            selectedAppearanceMode = mode
+            appAppearanceStore.preview(mode: mode, palette: selectedThemePalette)
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: selectedAppearanceMode == mode ? "largecircle.fill.circle" : "circle")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(
+                        selectedAppearanceMode == mode
+                            ? SelenophileTheme.Colors.accent
+                            : SelenophileTheme.Colors.secondaryText
+                    )
+
+                Text(l10n(mode.localizationKey))
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 11)
+            .background(
+                RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous)
+                    .fill(
+                        selectedAppearanceMode == mode
+                            ? SelenophileTheme.Colors.accent.opacity(0.12)
+                            : SelenophileTheme.Colors.inputFill
+                    )
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous)
+                    .stroke(
+                        selectedAppearanceMode == mode
+                            ? SelenophileTheme.Colors.accent.opacity(0.45)
+                            : SelenophileTheme.Colors.inputBorder,
+                        lineWidth: 1
+                    )
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func themePaletteRow(_ palette: AppThemePalette) -> some View {
+        Button {
+            selectedThemePalette = palette
+            appAppearanceStore.preview(mode: selectedAppearanceMode, palette: palette)
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: selectedThemePalette == palette ? "largecircle.fill.circle" : "circle")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(
+                        selectedThemePalette == palette
+                            ? SelenophileTheme.Colors.accent
+                            : SelenophileTheme.Colors.secondaryText
+                    )
+
+                Text(l10n(palette.localizationKey))
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+                Spacer(minLength: 0)
+
+                HStack(spacing: 5) {
+                    ForEach(Array(SelenophileTheme.Colors.previewSwatches(
+                        for: palette,
+                        colorScheme: selectedAppearanceMode.resolvedColorScheme()
+                    ).enumerated()), id: \.offset) { _, swatch in
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .fill(swatch)
+                            .frame(width: 16, height: 16)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                    .stroke(SelenophileTheme.Colors.border.opacity(0.45), lineWidth: 1)
+                            }
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 11)
+            .background(
+                RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous)
+                    .fill(
+                        selectedThemePalette == palette
+                            ? SelenophileTheme.Colors.accent.opacity(0.12)
+                            : SelenophileTheme.Colors.inputFill
+                    )
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous)
+                    .stroke(
+                        selectedThemePalette == palette
+                            ? SelenophileTheme.Colors.accent.opacity(0.45)
+                            : SelenophileTheme.Colors.inputBorder,
+                        lineWidth: 1
+                    )
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     private func placeholderSection(title: String) -> some View {
@@ -575,7 +709,7 @@ private struct AppLanguagePopUpButton: NSViewRepresentable {
         button.bezelStyle = .shadowlessSquare
         button.controlSize = .regular
         button.isBordered = false
-        button.contentTintColor = NSColor.white
+        button.contentTintColor = .labelColor
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             button.heightAnchor.constraint(equalToConstant: 28)

@@ -17,6 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let store: PrinterStatusStore
     let launchAtLoginController: LaunchAtLoginController
     let appLanguageStore: AppLanguageStore
+    let appAppearanceStore: AppAppearanceStore
     let launchConfiguration: AppLaunchConfiguration
     private let widgetSnapshotStore: WidgetSnapshotStore
     private let widgetCenter: any WidgetTimelineReloading
@@ -29,6 +30,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         self.init(
             logStore: AppLogStore(),
             appLanguageStore: AppLanguageStore.shared,
+            appAppearanceStore: AppAppearanceStore.shared,
             launchConfiguration: AppLaunchConfiguration(processInfo: .processInfo)
         )
     }
@@ -38,6 +40,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         store: PrinterStatusStore? = nil,
         launchAtLoginController: LaunchAtLoginController = LaunchAtLoginController(),
         appLanguageStore: AppLanguageStore? = nil,
+        appAppearanceStore: AppAppearanceStore? = nil,
         launchConfiguration: AppLaunchConfiguration = AppLaunchConfiguration(processInfo: .processInfo),
         widgetSnapshotStore: WidgetSnapshotStore = WidgetSnapshotStore(),
         widgetCenter: any WidgetTimelineReloading = WidgetCenter.shared
@@ -45,10 +48,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let resolvedLogStore = logStore ?? AppLogStore()
         let resolvedStore = store ?? PrinterStatusStore(logStore: resolvedLogStore)
         let resolvedAppLanguageStore = appLanguageStore ?? AppLanguageStore.shared
+        let resolvedAppAppearanceStore = appAppearanceStore ?? AppAppearanceStore.shared
         self.logStore = resolvedLogStore
         self.store = resolvedStore
         self.launchAtLoginController = launchAtLoginController
         self.appLanguageStore = resolvedAppLanguageStore
+        self.appAppearanceStore = resolvedAppAppearanceStore
         self.launchConfiguration = launchConfiguration
         self.widgetSnapshotStore = widgetSnapshotStore
         self.widgetCenter = widgetCenter
@@ -68,6 +73,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         menuBarStatusController = MenuBarStatusController(
             store: store,
             appLanguageStore: appLanguageStore,
+            appAppearanceStore: appAppearanceStore,
             onOpenSettings: { [weak self] in
                 self?.showSettingsWindow()
             },
@@ -131,7 +137,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             return
         }
 
-        let controller = LogWindowController(logStore: logStore, appLanguageStore: appLanguageStore)
+        let controller = LogWindowController(
+            logStore: logStore,
+            appLanguageStore: appLanguageStore,
+            appAppearanceStore: appAppearanceStore
+        )
         controller.window?.title = logWindowTitle()
         logWindowController = controller
         controller.showWindow(nil)
@@ -148,6 +158,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let controller = MainPanelWindowController(
             store: store,
             appLanguageStore: appLanguageStore,
+            appAppearanceStore: appAppearanceStore,
             onOpenSettings: { [weak self] in
                 self?.showSettingsWindow()
             },
@@ -173,10 +184,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         refreshLocalizedWindowTitles()
     }
 
+    func restorePersistedAppearanceSelection() {
+        appAppearanceStore.restorePersistedMode()
+    }
+
     func windowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow else { return }
         guard window === settingsWindowController?.window else { return }
         restorePersistedLanguageSelection()
+        restorePersistedAppearanceSelection()
     }
 
     private func publishWidgetSnapshot(_ snapshot: WidgetSnapshot) {
@@ -205,6 +221,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             },
             onCancel: { [weak self] in
                 self?.restorePersistedLanguageSelection()
+                self?.restorePersistedAppearanceSelection()
                 self?.closeSettingsWindow()
             },
             onLanguageSelectionPreview: { [weak self] language in
@@ -228,8 +245,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                     }
                 }
             ),
-            appLanguageStore: appLanguageStore
+            appLanguageStore: appLanguageStore,
+            appAppearanceStore: appAppearanceStore
         )
         .environment(\.locale, appLanguageStore.locale)
+        .selenophileAppearance(appAppearanceStore)
     }
 }

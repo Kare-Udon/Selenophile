@@ -5,26 +5,29 @@ import SelenophileKit
 
 @MainActor
 final class MenuBarStatusController: NSObject {
-    private static let popoverWidth: CGFloat = 494
-    private static let popoverHeight: CGFloat = 760
+    private static let popoverWidth: CGFloat = MenuContentView.preferredWidth
+    private static let popoverHeight: CGFloat = MenuContentView.preferredHeight
 
     private let store: PrinterStatusStore
     private let appLanguageStore: AppLanguageStore
+    private let appAppearanceStore: AppAppearanceStore
     private let onOpenSettings: () -> Void
     private let onOpenLogs: () -> Void
     private let statusItem: NSStatusItem
     private let popover = NSPopover()
     private let iconRenderer = MenuBarStatusIconRenderer()
-    private var hostingController: NSHostingController<MenuContentView>?
+    private var hostingController: NSHostingController<AnyView>?
 
     init(
         store: PrinterStatusStore,
         appLanguageStore: AppLanguageStore,
+        appAppearanceStore: AppAppearanceStore,
         onOpenSettings: @escaping () -> Void,
         onOpenLogs: @escaping () -> Void
     ) {
         self.store = store
         self.appLanguageStore = appLanguageStore
+        self.appAppearanceStore = appAppearanceStore
         self.onOpenSettings = onOpenSettings
         self.onOpenLogs = onOpenLogs
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -66,14 +69,17 @@ final class MenuBarStatusController: NSObject {
         popover.behavior = .transient
         popover.animates = false
         let hostingController = NSHostingController(
-            rootView: MenuContentView(
-                store: store,
-                appLanguageStore: appLanguageStore,
-                onOpenSettings: onOpenSettings,
-                onOpenLogs: onOpenLogs,
-                onPreferredPopoverHeightChange: { [weak self] height in
-                    self?.updatePopoverHeight(height)
-                }
+            rootView: AnyView(
+                MenuContentView(
+                    store: store,
+                    appLanguageStore: appLanguageStore,
+                    onOpenSettings: onOpenSettings,
+                    onOpenLogs: onOpenLogs,
+                    onPreferredPopoverHeightChange: { [weak self] height in
+                        self?.updatePopoverHeight(height)
+                    }
+                )
+                .selenophileAppearance(appAppearanceStore)
             )
         )
         self.hostingController = hostingController
@@ -123,6 +129,7 @@ final class MenuBarStatusController: NSObject {
             _ = store.hasActivePrint
             _ = store.printerStatus
             _ = appLanguageStore.selectedLanguage
+            _ = appAppearanceStore.selectedMode
         } onChange: { [weak self] in
             Task { @MainActor [weak self] in
                 self?.refreshStatusItem()
