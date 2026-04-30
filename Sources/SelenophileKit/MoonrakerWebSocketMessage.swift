@@ -100,7 +100,10 @@ public struct MoonrakerStatusPayload: Decodable, Sendable {
             layer: printStats?.layerStatus,
             bed: heaterBed?.temperatureStatus,
             extruder: extruder?.temperatureStatus,
-            feedRateMultiplier: gcodeMove?.speedFactor
+            feedRateMultiplier: gcodeMove?.speedFactor,
+            layerPatch: printStats?.layerStatusPatch,
+            bedPatch: heaterBed?.temperatureStatusPatch,
+            extruderPatch: extruder?.temperatureStatusPatch
         )
     }
 
@@ -151,6 +154,15 @@ public struct PrintStatsPayload: Decodable, Sendable {
         guard let current = info?.currentLayer else { return nil }
         return LayerStatus(current: current, total: info?.totalLayer)
     }
+
+    var layerStatusPatch: LayerStatusPatch? {
+        guard let info,
+              info.currentLayer != nil || info.totalLayer != nil
+        else {
+            return nil
+        }
+        return LayerStatusPatch(current: info.currentLayer, total: info.totalLayer)
+    }
 }
 
 public struct PrintStatsInfoPayload: Decodable, Sendable {
@@ -179,6 +191,11 @@ public struct HeaterPayload: Decodable, Sendable {
     public var temperatureStatus: TemperatureStatus? {
         guard let temperature, let target else { return nil }
         return TemperatureStatus(actual: temperature, target: target)
+    }
+
+    var temperatureStatusPatch: TemperatureStatusPatch? {
+        guard temperature != nil || target != nil else { return nil }
+        return TemperatureStatusPatch(actual: temperature, target: target)
     }
 }
 
