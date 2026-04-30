@@ -263,8 +263,6 @@ struct SettingsView: View {
             return l10n(.settingsGeneralSection)
         case .appearance:
             return l10n(.settingsAppearanceSection)
-        case .advanced:
-            return l10n(.settingsAdvancedSection)
         case .about:
             return l10n(.settingsAboutSection)
         }
@@ -281,8 +279,6 @@ struct SettingsView: View {
                     generalSection
                 case .appearance:
                     appearanceSection
-                case .advanced:
-                    placeholderSection(title: l10n(.settingsAdvancedSection))
                 case .about:
                     aboutSection
                 }
@@ -522,28 +518,67 @@ struct SettingsView: View {
         .buttonStyle(.plain)
     }
 
-    private func placeholderSection(title: String) -> some View {
-        settingsCard {
-            Text(title)
-                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                .foregroundStyle(SelenophileTheme.Colors.primaryText)
+    private var aboutSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            settingsCard {
+                Text("Selenophile")
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
 
-            Text(l10n(.settingsNoAdditionalOptions))
-                .font(.system(size: 13, weight: .medium, design: .rounded))
-                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                Text(l10n(.settingsAboutBody))
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            settingsCard {
+                Text(l10n(.settingsAboutDependenciesTitle))
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+                Text(l10n(.settingsAboutDependenciesIntro))
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                VStack(spacing: 10) {
+                    ForEach(AboutDependency.allCases, id: \.name) { dependency in
+                        dependencyRow(dependency)
+                    }
+                }
+            }
         }
     }
 
-    private var aboutSection: some View {
-        settingsCard {
-            Text("Selenophile")
-                .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundStyle(SelenophileTheme.Colors.primaryText)
+    private func dependencyRow(_ dependency: AboutDependency) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: dependency.symbolName)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(SelenophileTheme.Colors.accent)
+                .frame(width: 18, height: 18)
+                .padding(.top, 2)
 
-            Text(l10n(.settingsAboutBody))
-                .font(.system(size: 13, weight: .medium, design: .rounded))
-                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 5) {
+                Link(dependency.name, destination: dependency.url)
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.accent)
+
+                Text(l10n(dependency.descriptionKey))
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous)
+                .fill(SelenophileTheme.Colors.inputFill)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous)
+                .stroke(SelenophileTheme.Colors.inputBorder, lineWidth: 1)
         }
     }
 
@@ -677,7 +712,6 @@ private enum SettingsSection: CaseIterable {
     case connection
     case general
     case appearance
-    case advanced
     case about
 
     var symbolName: String {
@@ -688,8 +722,6 @@ private enum SettingsSection: CaseIterable {
             return "gearshape"
         case .appearance:
             return "paintpalette"
-        case .advanced:
-            return "wrench.and.screwdriver"
         case .about:
             return "info.circle"
         }
@@ -703,10 +735,92 @@ private enum SettingsSection: CaseIterable {
             return AppLocalization.localizedString(.settingsGeneralSection, language: language)
         case .appearance:
             return AppLocalization.localizedString(.settingsAppearanceSection, language: language)
-        case .advanced:
-            return AppLocalization.localizedString(.settingsAdvancedSection, language: language)
         case .about:
             return AppLocalization.localizedString(.settingsAboutSection, language: language)
+        }
+    }
+}
+
+private enum AboutDependency: CaseIterable {
+    case swift
+    case swiftUI
+    case appKit
+    case widgetKit
+    case serviceManagement
+    case moonraker
+    case tuist
+
+    var name: String {
+        switch self {
+        case .swift:
+            return "Swift / Swift Package Manager"
+        case .swiftUI:
+            return "SwiftUI"
+        case .appKit:
+            return "AppKit"
+        case .widgetKit:
+            return "WidgetKit"
+        case .serviceManagement:
+            return "ServiceManagement"
+        case .moonraker:
+            return "Moonraker API"
+        case .tuist:
+            return "Tuist"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .swift, .swiftUI:
+            return "swift"
+        case .appKit:
+            return "macwindow"
+        case .widgetKit:
+            return "rectangle.grid.2x2"
+        case .serviceManagement:
+            return "power"
+        case .moonraker:
+            return "network"
+        case .tuist:
+            return "hammer"
+        }
+    }
+
+    var url: URL {
+        switch self {
+        case .swift:
+            return URL(string: "https://www.swift.org/package-manager/")!
+        case .swiftUI:
+            return URL(string: "https://developer.apple.com/xcode/swiftui/")!
+        case .appKit:
+            return URL(string: "https://developer.apple.com/documentation/appkit")!
+        case .widgetKit:
+            return URL(string: "https://developer.apple.com/documentation/widgetkit")!
+        case .serviceManagement:
+            return URL(string: "https://developer.apple.com/documentation/servicemanagement")!
+        case .moonraker:
+            return URL(string: "https://moonraker.readthedocs.io/")!
+        case .tuist:
+            return URL(string: "https://tuist.dev/")!
+        }
+    }
+
+    var descriptionKey: AppLocalization.Key {
+        switch self {
+        case .swift:
+            return .settingsDependencySwift
+        case .swiftUI:
+            return .settingsDependencySwiftUI
+        case .appKit:
+            return .settingsDependencyAppKit
+        case .widgetKit:
+            return .settingsDependencyWidgetKit
+        case .serviceManagement:
+            return .settingsDependencyServiceManagement
+        case .moonraker:
+            return .settingsDependencyMoonraker
+        case .tuist:
+            return .settingsDependencyTuist
         }
     }
 }

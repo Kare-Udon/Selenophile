@@ -29,6 +29,15 @@ public enum AppLocalization {
         case settingsConnectionHint = "settings_connection_hint"
         case settingsNoAdditionalOptions = "settings_no_additional_options"
         case settingsAboutBody = "settings_about_body"
+        case settingsAboutDependenciesTitle = "settings_about_dependencies_title"
+        case settingsAboutDependenciesIntro = "settings_about_dependencies_intro"
+        case settingsDependencySwift = "settings_dependency_swift"
+        case settingsDependencySwiftUI = "settings_dependency_swiftui"
+        case settingsDependencyAppKit = "settings_dependency_appkit"
+        case settingsDependencyWidgetKit = "settings_dependency_widgetkit"
+        case settingsDependencyServiceManagement = "settings_dependency_service_management"
+        case settingsDependencyMoonraker = "settings_dependency_moonraker"
+        case settingsDependencyTuist = "settings_dependency_tuist"
         case settingsFeatureStatus = "settings_feature_status"
         case settingsFeatureLogs = "settings_feature_logs"
         case settingsFeatureSecurity = "settings_feature_security"
@@ -159,7 +168,25 @@ public enum AppLocalization {
             case .settingsNoAdditionalOptions:
                 return "No additional options in this section yet."
             case .settingsAboutBody:
-                return "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools."
+                return "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status and camera previews."
+            case .settingsAboutDependenciesTitle:
+                return "Dependencies"
+            case .settingsAboutDependenciesIntro:
+                return "Selenophile does not use third-party runtime Swift packages. It is built on Apple frameworks, the Swift toolchain, Moonraker API integration, and Tuist for project generation."
+            case .settingsDependencySwift:
+                return "Language, standard library, package manifest, and command-line build/test workflow."
+            case .settingsDependencySwiftUI:
+                return "Declarative views for the menu panel, settings window, logs, and widgets."
+            case .settingsDependencyAppKit:
+                return "macOS menu bar integration, popovers, windows, and native controls."
+            case .settingsDependencyWidgetKit:
+                return "Publishes the current printer snapshot to macOS widgets."
+            case .settingsDependencyServiceManagement:
+                return "Controls the Launch at Login setting through macOS login item APIs."
+            case .settingsDependencyMoonraker:
+                return "Provides the printer status, metadata, thumbnails, and camera data consumed by Selenophile."
+            case .settingsDependencyTuist:
+                return "Generates and maintains the Xcode project used for app and widget packaging."
             case .settingsFeatureStatus:
                 return "Monitor progress, temps, layers, and speed"
             case .settingsFeatureLogs:

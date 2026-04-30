@@ -38,6 +38,14 @@ func appLocalizationUsesPlainSaveActionsForSettingsFooter() {
 }
 
 @Test
+func appLocalizationDescribesAboutDependencies() {
+    #expect(AppLocalization.localizedString(.settingsAboutDependenciesTitle, language: .english) == "Dependencies")
+    #expect(AppLocalization.localizedString(.settingsAboutDependenciesTitle, language: .simplifiedChinese) == "项目依赖")
+    #expect(AppLocalization.localizedString(.settingsDependencyMoonraker, language: .english).contains("printer status"))
+    #expect(AppLocalization.localizedString(.settingsDependencyMoonraker, language: .simplifiedChinese).contains("打印状态"))
+}
+
+@Test
 func appLocalizationLocalizesJapaneseSettingsSurface() {
     #expect(AppLocalization.localizedString(.settingsConnectionSection, language: .japanese) == "接続")
     #expect(AppLocalization.localizedString(.settingsGeneralSection, language: .japanese) == "一般")
