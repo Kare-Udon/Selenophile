@@ -64,6 +64,17 @@ struct LayerStatusPatch: Equatable, Sendable {
     }
 }
 
+struct PrinterStatusClearedFields: OptionSet, Equatable, Sendable {
+    let rawValue: Int
+
+    static let filename = PrinterStatusClearedFields(rawValue: 1 << 0)
+    static let message = PrinterStatusClearedFields(rawValue: 1 << 1)
+    static let progress = PrinterStatusClearedFields(rawValue: 1 << 2)
+    static let printDuration = PrinterStatusClearedFields(rawValue: 1 << 3)
+    static let estimatedTimeRemaining = PrinterStatusClearedFields(rawValue: 1 << 4)
+    static let layer = PrinterStatusClearedFields(rawValue: 1 << 5)
+}
+
 public enum PrinterState: String, Codable, Equatable, Sendable {
     case standby
     case printing
@@ -108,6 +119,15 @@ public enum PrinterState: String, Codable, Equatable, Sendable {
             return "错误"
         case .unknown:
             return "未知"
+        }
+    }
+
+    var clearsPrintJobFields: Bool {
+        switch self {
+        case .standby, .complete, .cancelled:
+            return true
+        case .printing, .paused, .error, .unknown:
+            return false
         }
     }
 }
@@ -159,13 +179,15 @@ public struct PrinterStatus: Equatable, Sendable {
     public func applying(delta: PrinterStatusDelta) -> PrinterStatus {
         PrinterStatus(
             state: delta.state ?? state,
-            filename: delta.filename ?? filename,
-            message: delta.message ?? message,
-            progress: delta.progress ?? progress,
-            printDuration: delta.printDuration ?? printDuration,
-            estimatedTimeRemaining: delta.estimatedTimeRemaining ?? estimatedTimeRemaining,
+            filename: delta.clearedFields.contains(.filename) ? nil : delta.filename ?? filename,
+            message: delta.clearedFields.contains(.message) ? nil : delta.message ?? message,
+            progress: delta.clearedFields.contains(.progress) ? nil : delta.progress ?? progress,
+            printDuration: delta.clearedFields.contains(.printDuration) ? nil : delta.printDuration ?? printDuration,
+            estimatedTimeRemaining: delta.clearedFields.contains(.estimatedTimeRemaining)
+                ? nil
+                : delta.estimatedTimeRemaining ?? estimatedTimeRemaining,
             slicerEstimatedPrintTime: slicerEstimatedPrintTime,
-            layer: delta.layerPatch?.applying(to: layer) ?? delta.layer ?? layer,
+            layer: delta.clearedFields.contains(.layer) ? nil : delta.layerPatch?.applying(to: layer) ?? delta.layer ?? layer,
             bed: delta.bedPatch?.applying(to: bed) ?? delta.bed ?? bed,
             extruder: delta.extruderPatch?.applying(to: extruder) ?? delta.extruder ?? extruder,
             feedRateMultiplier: delta.feedRateMultiplier ?? feedRateMultiplier
@@ -187,6 +209,7 @@ public struct PrinterStatusDelta: Equatable, Sendable {
     var layerPatch: LayerStatusPatch?
     var bedPatch: TemperatureStatusPatch?
     var extruderPatch: TemperatureStatusPatch?
+    var clearedFields: PrinterStatusClearedFields
 
     public init(
         state: PrinterState? = nil,
@@ -213,7 +236,8 @@ public struct PrinterStatusDelta: Equatable, Sendable {
             feedRateMultiplier: feedRateMultiplier,
             layerPatch: layer.map(LayerStatusPatch.init(status:)),
             bedPatch: bed.map(TemperatureStatusPatch.init(status:)),
-            extruderPatch: extruder.map(TemperatureStatusPatch.init(status:))
+            extruderPatch: extruder.map(TemperatureStatusPatch.init(status:)),
+            clearedFields: []
         )
     }
 
@@ -230,7 +254,8 @@ public struct PrinterStatusDelta: Equatable, Sendable {
         feedRateMultiplier: Double? = nil,
         layerPatch: LayerStatusPatch? = nil,
         bedPatch: TemperatureStatusPatch? = nil,
-        extruderPatch: TemperatureStatusPatch? = nil
+        extruderPatch: TemperatureStatusPatch? = nil,
+        clearedFields: PrinterStatusClearedFields = []
     ) {
         self.state = state
         self.filename = filename
@@ -245,5 +270,6 @@ public struct PrinterStatusDelta: Equatable, Sendable {
         self.layerPatch = layerPatch
         self.bedPatch = bedPatch
         self.extruderPatch = extruderPatch
+        self.clearedFields = clearedFields
     }
 }
