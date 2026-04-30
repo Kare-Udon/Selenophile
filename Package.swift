@@ -22,7 +22,10 @@ let package = Package(
         .executableTarget(
             name: "Selenophile",
             dependencies: ["SelenophileKit"],
-            path: "Sources/Selenophile"
+            path: "Sources/Selenophile",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
             name: "SelenophileTests",

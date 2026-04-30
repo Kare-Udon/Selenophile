@@ -18,6 +18,7 @@
 		1EE3208E11C5F4CB79A5B01A /* MenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1C2A4B55080140BAA9017F /* MenuContentView.swift */; };
 		2205530F941B0BC6BBCBD5F7 /* AppLanguageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F935BCEFFF22B89E352C12 /* AppLanguageTests.swift */; };
 		26F2ECC19DE258A61B27DEB5 /* AppLanguageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453328176320E6CADD04C72 /* AppLanguageStoreTests.swift */; };
+		2A1D2CE8BEE751F62B1DB14C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07FA86E251B4546DE608D177 /* Assets.xcassets */; };
 		2B3182874B6790EF8D195CA7 /* MenuBarStatusIconRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CCFB8003B2471E9BCCFC82 /* MenuBarStatusIconRenderer.swift */; };
 		2BC49AE3848C81A1A34FB914 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C5685BDF05F023DB4C961B /* AppConfig.swift */; };
 		2BCFE7C3E9E8791C04096382 /* PrinterStatusStoreWidgetSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35653F3A6117A9952C61A4 /* PrinterStatusStoreWidgetSnapshotTests.swift */; };
@@ -49,6 +50,7 @@
 		8E11B7F38AA9E8B607865240 /* MoonrakerCameraClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */; };
 		915CCDC32044BDEE2CA73F72 /* TuistBundle+SelenophileKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460EF2E119A26F8C75B4C7BD /* TuistBundle+SelenophileKit.swift */; };
 		9185FEDEAA2CA0EBCED55376 /* TuistStrings+SelenophileKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C075EE9B310FAD9213210A /* TuistStrings+SelenophileKit.swift */; };
+		923F3A7B9ACF81A3EA2DC2F2 /* TuistBundle+Selenophile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7C126E7C6CDA65FF0899B2 /* TuistBundle+Selenophile.swift */; };
 		9347FE31DC88FF7C26582FDE /* Selenophile_SelenophileKit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
 		943069046312EF6BD5E252CF /* PrinterStatusStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */; };
 		9525D3A114B7707096E5D6BF /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE8328D080EA70F6A54B62A /* LogView.swift */; };
@@ -58,6 +60,7 @@
 		A20D425494F29CE9FEB61A13 /* AppDelegateWidgetPublishingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FDE309A115EB8BAAE8AAC98 /* AppDelegateWidgetPublishingTests.swift */; };
 		A3C9014389F09DD25DD96C5F /* WidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F85AA34259590E42CC6873B /* WidgetProvider.swift */; };
 		A6F31B3FC669A8C9C8E3BC13 /* AppAppearanceStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7006656655EC7822BCE9464 /* AppAppearanceStoreTests.swift */; };
+		A873830AEA330B8257FE0063 /* TuistAssets+Selenophile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197302479B7596C437660642 /* TuistAssets+Selenophile.swift */; };
 		ACEFB8C0BAABA20BD010790C /* SelenophileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29BEF3BC6E8986AE25F1B8 /* SelenophileApp.swift */; };
 		AEF23105F89E5A51826CC998 /* AppAppearanceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E3524CBF03A5FE5AAC000 /* AppAppearanceStore.swift */; };
 		B2856DB2DD1202D22C5BF685 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7D9E616DAF1908E5FF8F60 /* WidgetView.swift */; };
@@ -209,6 +212,8 @@
 /* Begin PBXFileReference section */
 		0432269A62567FD638255C2E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		04803325601911E33F3F355F /* MenuBarStatusController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusController.swift; sourceTree = "<group>"; };
+		07FA86E251B4546DE608D177 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		197302479B7596C437660642 /* TuistAssets+Selenophile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+Selenophile.swift"; sourceTree = "<group>"; };
 		1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerClient.swift; sourceTree = "<group>"; };
 		1B87F7BD374296A3F99A9695 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1FE4150D69A79CAFBFCA51E7 /* AppLaunchConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLaunchConfiguration.swift; sourceTree = "<group>"; };
@@ -239,6 +244,7 @@
 		583E23784191594B532151C7 /* AppAppearanceMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearanceMode.swift; sourceTree = "<group>"; };
 		5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogStoreTests.swift; sourceTree = "<group>"; };
 		5CA7B1EC1EE77EA53F2AB80E /* AppLaunchConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLaunchConfigurationTests.swift; sourceTree = "<group>"; };
+		5E7C126E7C6CDA65FF0899B2 /* TuistBundle+Selenophile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistBundle+Selenophile.swift"; sourceTree = "<group>"; };
 		5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconConfigurationTests.swift; sourceTree = "<group>"; };
 		6586DD64BFB26A97E156CECC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6B0776BB50D239CFA4E7A210 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -380,6 +386,8 @@
 		55E247473283DB84038D6009 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				197302479B7596C437660642 /* TuistAssets+Selenophile.swift */,
+				5E7C126E7C6CDA65FF0899B2 /* TuistBundle+Selenophile.swift */,
 				460EF2E119A26F8C75B4C7BD /* TuistBundle+SelenophileKit.swift */,
 				78C075EE9B310FAD9213210A /* TuistStrings+SelenophileKit.swift */,
 			);
@@ -437,6 +445,7 @@
 		C08FD0AC7A9F5AC9F0CB288E /* Selenophile */ = {
 			isa = PBXGroup;
 			children = (
+				CA8661A51F8351E73DBB24DA /* Resources */,
 				712E3524CBF03A5FE5AAC000 /* AppAppearanceStore.swift */,
 				6586DD64BFB26A97E156CECC /* AppDelegate.swift */,
 				87322F049EA4FB355413FB0B /* AppLanguageStore.swift */,
@@ -454,6 +463,14 @@
 				BD47869D8271A934D5B7A712 /* SettingsView.swift */,
 			);
 			path = Selenophile;
+			sourceTree = "<group>";
+		};
+		CA8661A51F8351E73DBB24DA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				07FA86E251B4546DE608D177 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		CC61C5C2BF451F1DBCCE3594 /* SelenophileKitTests */ = {
@@ -749,6 +766,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A1D2CE8BEE751F62B1DB14C /* Assets.xcassets in Resources */,
 				18B7DC022C07F2B4D7E5331A /* Selenophile_SelenophileKit.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -807,6 +825,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A873830AEA330B8257FE0063 /* TuistAssets+Selenophile.swift in Sources */,
+				923F3A7B9ACF81A3EA2DC2F2 /* TuistBundle+Selenophile.swift in Sources */,
 				AEF23105F89E5A51826CC998 /* AppAppearanceStore.swift in Sources */,
 				3C49686F45434182BDAF398A /* AppDelegate.swift in Sources */,
 				808E78ACD9C7DB9786D1D010 /* AppLanguageStore.swift in Sources */,

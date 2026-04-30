@@ -31,6 +31,7 @@ let project = Project(
                 ]
             ),
             sources: ["Sources/Selenophile/**"],
+            resources: ["Sources/Selenophile/Resources/**"],
             dependencies: [
                 .target(name: "SelenophileKit"),
             ]
