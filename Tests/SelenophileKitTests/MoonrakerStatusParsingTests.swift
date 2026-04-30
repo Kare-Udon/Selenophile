@@ -155,6 +155,59 @@ func statusUpdateNotificationMergesPartialHeaterAndLayerUpdatesOntoExistingStatu
 }
 
 @Test
+func statusUpdateNotificationClearsStalePrintFieldsWhenJobEnds() throws {
+    let base = PrinterStatus(
+        state: .printing,
+        filename: "benchy.gcode",
+        message: "Layer 18",
+        progress: 0.55,
+        printDuration: 900,
+        estimatedTimeRemaining: 720,
+        layer: LayerStatus(current: 18, total: 196),
+        bed: TemperatureStatus(actual: 59.1, target: 60),
+        extruder: TemperatureStatus(actual: 214.8, target: 220),
+        feedRateMultiplier: 1.0
+    )
+
+    let data = Data(
+        """
+        {
+          "jsonrpc": "2.0",
+          "method": "notify_status_update",
+          "params": [
+            {
+              "print_stats": {
+                "state": "complete",
+                "filename": null,
+                "message": null,
+                "print_duration": null,
+                "info": {}
+              },
+              "display_status": {},
+              "virtual_sdcard": {}
+            },
+            3235.1
+          ]
+        }
+        """.utf8
+    )
+
+    let message = try JSONDecoder().decode(MoonrakerWebSocketMessage.self, from: data)
+    let delta = try #require(message.printerStatusDelta)
+    let merged = base.applying(delta: delta)
+
+    #expect(merged.state == .complete)
+    #expect(merged.filename == nil)
+    #expect(merged.message == nil)
+    #expect(merged.progress == nil)
+    #expect(merged.printDuration == nil)
+    #expect(merged.estimatedTimeRemaining == nil)
+    #expect(merged.layer == nil)
+    #expect(merged.extruder == TemperatureStatus(actual: 214.8, target: 220))
+    #expect(merged.bed == TemperatureStatus(actual: 59.1, target: 60))
+}
+
+@Test
 func unrelatedNotificationDoesNotFailDecoding() throws {
     let data = Data(
         """

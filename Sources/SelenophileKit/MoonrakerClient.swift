@@ -171,6 +171,9 @@ public actor MoonrakerClient: MoonrakerClientProtocol {
         while webSocketTask === task {
             do {
                 let message = try await task.receive()
+                guard webSocketTask === task else {
+                    break
+                }
                 switch message {
                 case .string(let text):
                     try await handleIncoming(text: text)

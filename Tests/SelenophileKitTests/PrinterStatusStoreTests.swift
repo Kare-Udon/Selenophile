@@ -102,6 +102,34 @@ func userFacingStatusAndErrorAreTranslatedAfterRetryExhaustion() async {
 
 @MainActor
 @Test
+func disconnectDoesNotScheduleReconnectForClientDisconnectedEvent() async {
+    let client = DisconnectEmittingMoonrakerClient()
+    let store = PrinterStatusStore(
+        client: client,
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        ),
+        retryPolicy: MoonrakerRetryPolicy(maxAttempts: 3, delay: { _ in .zero }),
+        sleep: { _ in }
+    )
+
+    store.start()
+    try? await Task.sleep(for: .milliseconds(100))
+    #expect(store.connectionState == .connected)
+
+    store.disconnect()
+    try? await Task.sleep(for: .milliseconds(100))
+
+    #expect(store.connectionState == .disconnected)
+    #expect(store.retryAttemptCount == 0)
+    #expect(store.nextRetryAt == nil)
+    #expect(!store.isWaitingForManualReconnect)
+    #expect(await client.disconnectCallCount() == 1)
+    #expect(await client.connectCallCount() == 1)
+}
+
+@MainActor
+@Test
 func fetchCameraSnapshotStoresImageData() async throws {
     let snapshot = Data([0x01, 0x02, 0x03])
     let store = PrinterStatusStore(
@@ -495,6 +523,54 @@ private actor NoopMoonrakerClient: MoonrakerClientProtocol {
         relativePath: String
     ) async throws -> Data {
         Data()
+    }
+}
+
+private actor DisconnectEmittingMoonrakerClient: MoonrakerClientProtocol {
+    private var eventHandler: (@Sendable (MoonrakerClientEvent) -> Void)?
+    private var connectCalls = 0
+    private var disconnectCalls = 0
+
+    func connect(
+        configuration: MoonrakerValidatedConfiguration,
+        onEvent: @escaping @Sendable (MoonrakerClientEvent) -> Void
+    ) async {
+        connectCalls += 1
+        eventHandler = onEvent
+        onEvent(.connected)
+    }
+
+    func disconnect() async {
+        disconnectCalls += 1
+        eventHandler?(.disconnected("已断开连接"))
+    }
+
+    func rescanGCodeMetadata(
+        configuration: MoonrakerValidatedConfiguration,
+        filename: String
+    ) async throws {}
+
+    func fetchGCodeMetadata(
+        configuration: MoonrakerValidatedConfiguration,
+        filename: String
+    ) async throws -> MoonrakerFileMetadata {
+        MoonrakerFileMetadata(filename: filename, estimatedTime: nil, thumbnails: nil)
+    }
+
+    func fetchGCodeThumbnail(
+        configuration: MoonrakerValidatedConfiguration,
+        filename: String,
+        relativePath: String
+    ) async throws -> Data {
+        Data()
+    }
+
+    func connectCallCount() -> Int {
+        connectCalls
+    }
+
+    func disconnectCallCount() -> Int {
+        disconnectCalls
     }
 }
 

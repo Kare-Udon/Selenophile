@@ -122,6 +122,7 @@ public final class PrinterStatusStore {
     private var metadataFetchToken: UUID?
     private var metadataRescanFilename: String?
     private var currentPrintThumbnailRetryCount: Int = 0
+    private var isDisconnectingIntentionally = false
 
     public init(
         client: MoonrakerClientProtocol = MoonrakerClient(),
@@ -417,6 +418,7 @@ public final class PrinterStatusStore {
         currentPrintThumbnailData = nil
         currentPrintThumbnailErrorMessage = nil
         isFetchingCurrentPrintThumbnail = false
+        isDisconnectingIntentionally = true
         connectionState = configuration == nil ? .unconfigured : .disconnected
         nextRetryAt = nil
         isWaitingForManualReconnect = false
@@ -489,6 +491,7 @@ public final class PrinterStatusStore {
         currentPrintThumbnailData = nil
         currentPrintThumbnailErrorMessage = nil
         isFetchingCurrentPrintThumbnail = false
+        isDisconnectingIntentionally = false
         connectionState = isReconnect ? .reconnecting : .connecting
         lastErrorMessage = nil
         nextRetryAt = nil
@@ -542,6 +545,12 @@ public final class PrinterStatusStore {
         case .disconnected(let message):
             if shouldIgnoreTransientDisconnection(message) {
                 log(.debug, "忽略连接阶段的瞬时断开事件")
+                return
+            }
+            if isDisconnectingIntentionally {
+                isDisconnectingIntentionally = false
+                log(.debug, "忽略主动断开后的客户端断开事件")
+                emitWidgetSnapshot()
                 return
             }
             connectionState = configuration == nil ? .unconfigured : .disconnected
