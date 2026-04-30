@@ -20,6 +20,50 @@ public struct LayerStatus: Equatable, Sendable {
     }
 }
 
+struct TemperatureStatusPatch: Equatable, Sendable {
+    var actual: Double?
+    var target: Double?
+
+    init(actual: Double?, target: Double?) {
+        self.actual = actual
+        self.target = target
+    }
+
+    init(status: TemperatureStatus) {
+        self.actual = status.actual
+        self.target = status.target
+    }
+
+    func applying(to status: TemperatureStatus?) -> TemperatureStatus? {
+        let actual = actual ?? status?.actual
+        let target = target ?? status?.target
+        guard let actual, let target else { return status }
+        return TemperatureStatus(actual: actual, target: target)
+    }
+}
+
+struct LayerStatusPatch: Equatable, Sendable {
+    var current: Int?
+    var total: Int?
+
+    init(current: Int?, total: Int?) {
+        self.current = current
+        self.total = total
+    }
+
+    init(status: LayerStatus) {
+        self.current = status.current
+        self.total = status.total
+    }
+
+    func applying(to status: LayerStatus?) -> LayerStatus? {
+        let current = current ?? status?.current
+        let total = total ?? status?.total
+        guard let current else { return status }
+        return LayerStatus(current: current, total: total)
+    }
+}
+
 public enum PrinterState: String, Codable, Equatable, Sendable {
     case standby
     case printing
@@ -121,9 +165,9 @@ public struct PrinterStatus: Equatable, Sendable {
             printDuration: delta.printDuration ?? printDuration,
             estimatedTimeRemaining: delta.estimatedTimeRemaining ?? estimatedTimeRemaining,
             slicerEstimatedPrintTime: slicerEstimatedPrintTime,
-            layer: delta.layer ?? layer,
-            bed: delta.bed ?? bed,
-            extruder: delta.extruder ?? extruder,
+            layer: delta.layerPatch?.applying(to: layer) ?? delta.layer ?? layer,
+            bed: delta.bedPatch?.applying(to: bed) ?? delta.bed ?? bed,
+            extruder: delta.extruderPatch?.applying(to: extruder) ?? delta.extruder ?? extruder,
             feedRateMultiplier: delta.feedRateMultiplier ?? feedRateMultiplier
         )
     }
@@ -140,6 +184,9 @@ public struct PrinterStatusDelta: Equatable, Sendable {
     public var bed: TemperatureStatus?
     public var extruder: TemperatureStatus?
     public var feedRateMultiplier: Double?
+    var layerPatch: LayerStatusPatch?
+    var bedPatch: TemperatureStatusPatch?
+    var extruderPatch: TemperatureStatusPatch?
 
     public init(
         state: PrinterState? = nil,
@@ -153,6 +200,38 @@ public struct PrinterStatusDelta: Equatable, Sendable {
         extruder: TemperatureStatus? = nil,
         feedRateMultiplier: Double? = nil
     ) {
+        self.init(
+            state: state,
+            filename: filename,
+            message: message,
+            progress: progress,
+            printDuration: printDuration,
+            estimatedTimeRemaining: estimatedTimeRemaining,
+            layer: layer,
+            bed: bed,
+            extruder: extruder,
+            feedRateMultiplier: feedRateMultiplier,
+            layerPatch: layer.map(LayerStatusPatch.init(status:)),
+            bedPatch: bed.map(TemperatureStatusPatch.init(status:)),
+            extruderPatch: extruder.map(TemperatureStatusPatch.init(status:))
+        )
+    }
+
+    init(
+        state: PrinterState? = nil,
+        filename: String? = nil,
+        message: String? = nil,
+        progress: Double? = nil,
+        printDuration: TimeInterval? = nil,
+        estimatedTimeRemaining: TimeInterval? = nil,
+        layer: LayerStatus? = nil,
+        bed: TemperatureStatus? = nil,
+        extruder: TemperatureStatus? = nil,
+        feedRateMultiplier: Double? = nil,
+        layerPatch: LayerStatusPatch? = nil,
+        bedPatch: TemperatureStatusPatch? = nil,
+        extruderPatch: TemperatureStatusPatch? = nil
+    ) {
         self.state = state
         self.filename = filename
         self.message = message
@@ -163,5 +242,8 @@ public struct PrinterStatusDelta: Equatable, Sendable {
         self.bed = bed
         self.extruder = extruder
         self.feedRateMultiplier = feedRateMultiplier
+        self.layerPatch = layerPatch
+        self.bedPatch = bedPatch
+        self.extruderPatch = extruderPatch
     }
 }
