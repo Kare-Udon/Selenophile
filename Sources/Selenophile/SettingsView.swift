@@ -81,15 +81,15 @@ struct SettingsView: View {
     private func submit(closeOnSuccess: Bool) async {
         isSaving = true
         connectionTestFeedback = nil
-        appAppearanceStore.save(mode: selectedAppearanceMode, palette: selectedThemePalette)
-        let token = apiToken.trimmingCharacters(in: .whitespacesAndNewlines)
-        let success = await store.saveConfiguration(
+        let success = await SettingsViewSubmission.save(
+            store: store,
+            appAppearanceStore: appAppearanceStore,
             serverURLString: serverURLString,
-            apiToken: token.isEmpty ? nil : token,
-            cameraSnapshotURL: cameraSnapshotURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                ? nil
-                : cameraSnapshotURL.trimmingCharacters(in: .whitespacesAndNewlines),
-            appLanguage: selectedAppLanguage
+            apiToken: apiToken,
+            cameraSnapshotURL: cameraSnapshotURL,
+            appLanguage: selectedAppLanguage,
+            appearanceMode: selectedAppearanceMode,
+            themePalette: selectedThemePalette
         )
         isSaving = false
         if success && closeOnSuccess {
@@ -367,6 +367,8 @@ struct SettingsView: View {
                         ))
                         .labelsHidden()
                         .toggleStyle(SwitchToggleStyle(tint: SelenophileTheme.Colors.accent))
+                        .accessibilityLabel(l10n(.settingsLaunchAtLoginLabel))
+                        .accessibilityHint(l10n(.settingsLaunchAtLoginDescription))
                         .disabled(!(launchAtLoginControl?.isAvailable ?? false) || isUpdatingLaunchAtLogin)
                     }
                 }
@@ -688,6 +690,37 @@ private struct ConnectionTestFeedback: Equatable {
 private enum ConnectionProbeOutcome: Equatable {
     case success
     case failure(String)
+}
+
+@MainActor
+enum SettingsViewSubmission {
+    @discardableResult
+    static func save(
+        store: PrinterStatusStore,
+        appAppearanceStore: AppAppearanceStore,
+        serverURLString: String,
+        apiToken: String,
+        cameraSnapshotURL: String,
+        appLanguage: AppLanguage,
+        appearanceMode: AppAppearanceMode,
+        themePalette: AppThemePalette
+    ) async -> Bool {
+        let token = apiToken.trimmingCharacters(in: .whitespacesAndNewlines)
+        let snapshotURL = cameraSnapshotURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        let success = await store.saveConfiguration(
+            serverURLString: serverURLString,
+            apiToken: token.isEmpty ? nil : token,
+            cameraSnapshotURL: snapshotURL.isEmpty ? nil : snapshotURL,
+            appLanguage: appLanguage
+        )
+
+        guard success else {
+            return false
+        }
+
+        appAppearanceStore.save(mode: appearanceMode, palette: themePalette)
+        return true
+    }
 }
 
 extension SettingsView {
