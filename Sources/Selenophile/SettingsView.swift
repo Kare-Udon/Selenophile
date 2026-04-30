@@ -791,7 +791,7 @@ private enum AboutDependency: CaseIterable {
         case .swift:
             return URL(string: "https://www.swift.org/package-manager/")!
         case .swiftUI:
-            return URL(string: "https://developer.apple.com/xcode/swiftui/")!
+            return URL(string: "https://developer.apple.com/documentation/swiftui")!
         case .appKit:
             return URL(string: "https://developer.apple.com/documentation/appkit")!
         case .widgetKit:
