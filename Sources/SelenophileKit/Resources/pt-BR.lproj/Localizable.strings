@@ -97,3 +97,12 @@
 "log_source_column" = "Source";
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
+"settings_about_dependencies_title" = "Dependências";
+"settings_about_dependencies_intro" = "O Selenophile não usa pacotes Swift de terceiros em tempo de execução. Ele é construído com frameworks da Apple, a toolchain Swift, integração com a API Moonraker e Tuist para gerar o projeto.";
+"settings_dependency_swift" = "Fornece a linguagem, biblioteca padrão, manifesto do pacote e fluxo de build/teste pela linha de comando.";
+"settings_dependency_swiftui" = "Views declarativas para o painel do menu, janela de ajustes, logs e widgets.";
+"settings_dependency_appkit" = "Integração com a barra de menus do macOS, popovers, janelas e controles nativos.";
+"settings_dependency_widgetkit" = "Publica o snapshot atual da impressora nos widgets do macOS.";
+"settings_dependency_service_management" = "Controla a opção de iniciar no login pelas APIs de itens de login do macOS.";
+"settings_dependency_moonraker" = "Fornece status da impressora, metadados, miniaturas e dados da câmera usados pelo Selenophile.";
+"settings_dependency_tuist" = "Gera e mantém o projeto Xcode usado para empacotar o app e o widget.";

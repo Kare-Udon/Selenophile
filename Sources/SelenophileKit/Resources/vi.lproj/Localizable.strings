@@ -97,3 +97,12 @@
 "log_source_column" = "Source";
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
+"settings_about_dependencies_title" = "Phụ thuộc";
+"settings_about_dependencies_intro" = "Selenophile không dùng package Swift bên thứ ba khi chạy. Ứng dụng dựa trên framework của Apple, toolchain Swift, tích hợp Moonraker API và Tuist để tạo dự án.";
+"settings_dependency_swift" = "Cung cấp ngôn ngữ, thư viện chuẩn, package manifest và quy trình build/test bằng dòng lệnh.";
+"settings_dependency_swiftui" = "Cung cấp giao diện khai báo cho bảng menu, cửa sổ cài đặt, nhật ký và widget.";
+"settings_dependency_appkit" = "Cung cấp tích hợp thanh menu macOS, popover, cửa sổ và điều khiển gốc.";
+"settings_dependency_widgetkit" = "Xuất snapshot máy in hiện tại ra widget macOS.";
+"settings_dependency_service_management" = "Điều khiển cài đặt mở khi đăng nhập qua API login item của macOS.";
+"settings_dependency_moonraker" = "Cung cấp trạng thái máy in, metadata, ảnh thu nhỏ và dữ liệu camera mà Selenophile sử dụng.";
+"settings_dependency_tuist" = "Tạo và duy trì dự án Xcode dùng để đóng gói app và widget.";

@@ -97,3 +97,12 @@
 "log_source_column" = "來源";
 "log_message_column" = "訊息";
 "menu_last_updated_prefix" = "上次更新";
+"settings_about_dependencies_title" = "專案依賴";
+"settings_about_dependencies_intro" = "Selenophile 沒有使用第三方執行期 Swift package。專案基於 Apple 系統框架、Swift 工具鏈、Moonraker API 整合，並使用 Tuist 產生工程。";
+"settings_dependency_swift" = "提供語言、標準函式庫、Package manifest，以及命令列建置和測試流程。";
+"settings_dependency_swiftui" = "用於選單面板、設定視窗、記錄視窗和 Widget 的宣告式介面。";
+"settings_dependency_appkit" = "用於 macOS 選單列整合、彈出層、視窗和原生控制項。";
+"settings_dependency_widgetkit" = "將目前印表機快照發布到 macOS Widget。";
+"settings_dependency_service_management" = "透過 macOS 登入項目 API 控制開機自啟設定。";
+"settings_dependency_moonraker" = "提供 Selenophile 使用的列印狀態、metadata、縮圖和相機資料。";
+"settings_dependency_tuist" = "產生並維護用於 App 和 Widget 打包的 Xcode 工程。";
