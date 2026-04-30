@@ -3,7 +3,7 @@
 "fallback_probe_title" = "Priksa cadangan";
 "settings_hero_badge" = "Setelan Moonraker";
 "settings_hero_title" = "Sambungna sumber status cetakmu";
-"settings_hero_subtitle" = "Lebokna URL Moonraker, token opsional, lan URL snapshot kamera. Nalika disimpen, sambungan bakal dites.";
+"settings_hero_subtitle" = "Lebokna URL Moonraker, token opsional, lan URL snapshot kamera. Gunakna Test Connection kanggo mriksa sadurunge nyimpen.";
 "settings_moonraker_url_label" = "URL Moonraker";
 "settings_moonraker_url_placeholder" = "http://127.0.0.1:7125";
 "settings_api_token_label" = "Token API (opsional)";
@@ -16,8 +16,8 @@
 "settings_launch_at_login_description" = "Yen diaktifake, aplikasi bakal mbukak otomatis nalika mlebu sistem.";
 "settings_launch_at_login_unavailable" = "Saiki durung kasedhiya";
 "settings_cancel" = "Batal";
-"settings_save" = "Tes sambungan lan simpen";
-"settings_saving" = "Nyambung…";
+"settings_save" = "Simpen";
+"settings_saving" = "Nyimpen…";
 "follow_system" = "Tindakake sistem";
 "appearance_mode_label" = "Theme";
 "appearance_mode_description" = "Choose whether Selenophile follows macOS or uses a fixed light or dark appearance.";
@@ -84,6 +84,7 @@
 "settings_advanced_section" = "Advanced";
 "settings_about_section" = "About";
 "settings_test_connection" = "Test Connection";
+"settings_testing_connection" = "Nguji…";
 "settings_connection_hint" = "Enter the URLs and token to connect to your Moonraker instance.";
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools.";

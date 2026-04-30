@@ -1,8 +1,6 @@
 import Foundation
 
 public enum AppLocalization {
-    private final class BundleToken {}
-
     public enum Key: String, CaseIterable, Sendable {
         case settingsWindowTitle = "settings_window_title"
         case logWindowTitle = "log_window_title"
@@ -27,6 +25,7 @@ public enum AppLocalization {
         case settingsAdvancedSection = "settings_advanced_section"
         case settingsAboutSection = "settings_about_section"
         case settingsTestConnection = "settings_test_connection"
+        case settingsTestingConnection = "settings_testing_connection"
         case settingsConnectionHint = "settings_connection_hint"
         case settingsNoAdditionalOptions = "settings_no_additional_options"
         case settingsAboutBody = "settings_about_body"
@@ -118,7 +117,7 @@ public enum AppLocalization {
             case .settingsHeroTitle:
                 return "Connect your print status source"
             case .settingsHeroSubtitle:
-                return "Enter your Moonraker URL, optional token, and camera snapshot URL. Saving tests the connection."
+                return "Enter your Moonraker URL, optional token, and camera snapshot URL. Use Test Connection to verify it before saving."
             case .settingsMoonrakerURLLabel:
                 return "Moonraker URL"
             case .settingsMoonrakerURLPlaceholder:
@@ -153,6 +152,8 @@ public enum AppLocalization {
                 return "About"
             case .settingsTestConnection:
                 return "Test Connection"
+            case .settingsTestingConnection:
+                return "Testing…"
             case .settingsConnectionHint:
                 return "Enter the URLs and token to connect to your Moonraker instance."
             case .settingsNoAdditionalOptions:
@@ -172,9 +173,9 @@ public enum AppLocalization {
             case .settingsCancel:
                 return "Cancel"
             case .settingsSave:
-                return "Test Connection and Save"
+                return "Save"
             case .settingsSaving:
-                return "Connecting…"
+                return "Saving…"
             case .followSystem:
                 return "Follow System"
             case .appearanceModeLabel:
@@ -391,11 +392,7 @@ public enum AppLocalization {
     }
 
     private static func localizationBaseBundle() -> Bundle {
-#if SWIFT_PACKAGE
-        return .module
-#else
-        return Bundle(for: BundleToken.self)
-#endif
+        .module
     }
 
     private static func defaultCandidateBundles() -> [Bundle] {

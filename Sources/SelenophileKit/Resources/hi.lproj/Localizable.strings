@@ -3,7 +3,7 @@
 "fallback_probe_title" = "फ़ॉलबैक जाँच";
 "settings_hero_badge" = "Moonraker सेटअप";
 "settings_hero_title" = "अपना प्रिंट स्थिति स्रोत कनेक्ट करें";
-"settings_hero_subtitle" = "अपना Moonraker URL, वैकल्पिक टोकन और कैमरा स्नैपशॉट URL दर्ज करें। सहेजते समय कनेक्शन की जाँच की जाएगी।";
+"settings_hero_subtitle" = "अपना Moonraker URL, वैकल्पिक टोकन और कैमरा स्नैपशॉट URL दर्ज करें। सहेजने से पहले Test Connection से जाँचें।";
 "settings_moonraker_url_label" = "Moonraker URL";
 "settings_moonraker_url_placeholder" = "http://127.0.0.1:7125";
 "settings_api_token_label" = "API टोकन (वैकल्पिक)";
@@ -16,8 +16,8 @@
 "settings_launch_at_login_description" = "सक्षम होने पर, सिस्टम लॉगिन के समय ऐप अपने आप खुल जाएगा।";
 "settings_launch_at_login_unavailable" = "अभी उपलब्ध नहीं";
 "settings_cancel" = "रद्द करें";
-"settings_save" = "कनेक्शन जाँचें और सहेजें";
-"settings_saving" = "कनेक्ट हो रहा है…";
+"settings_save" = "सहेजें";
+"settings_saving" = "सहेजा जा रहा है…";
 "follow_system" = "सिस्टम का अनुसरण करें";
 "appearance_mode_label" = "Theme";
 "appearance_mode_description" = "Choose whether Selenophile follows macOS or uses a fixed light or dark appearance.";
@@ -84,6 +84,7 @@
 "settings_advanced_section" = "Advanced";
 "settings_about_section" = "About";
 "settings_test_connection" = "Test Connection";
+"settings_testing_connection" = "जाँच हो रही है…";
 "settings_connection_hint" = "Enter the URLs and token to connect to your Moonraker instance.";
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools.";

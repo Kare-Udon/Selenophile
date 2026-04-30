@@ -3,7 +3,7 @@
 "fallback_probe_title" = "மாற்று சோதனை";
 "settings_hero_badge" = "Moonraker அமைப்பு";
 "settings_hero_title" = "உங்கள் அச்சு நிலை மூலத்தை இணைக்கவும்";
-"settings_hero_subtitle" = "உங்கள் Moonraker URL, விருப்ப டோக்கன் மற்றும் கேமரா ஸ்னாப்ஷாட் URL-ஐ உள்ளிடுங்கள். சேமிக்கும் போது இணைப்பு சோதிக்கப்படும்.";
+"settings_hero_subtitle" = "உங்கள் Moonraker URL, விருப்ப டோக்கன் மற்றும் கேமரா ஸ்னாப்ஷாட் URL-ஐ உள்ளிடுங்கள். சேமிக்கும் முன் Test Connection மூலம் சரிபார்க்கவும்.";
 "settings_moonraker_url_label" = "Moonraker URL";
 "settings_moonraker_url_placeholder" = "http://127.0.0.1:7125";
 "settings_api_token_label" = "API டோக்கன் (விருப்பம்)";
@@ -16,8 +16,8 @@
 "settings_launch_at_login_description" = "இதை இயக்கினால், சிஸ்டத்தில் உள்நுழையும் போது பயன்பாடு தானாக திறக்கும்.";
 "settings_launch_at_login_unavailable" = "இப்போது கிடைக்கவில்லை";
 "settings_cancel" = "ரத்து செய்";
-"settings_save" = "இணைப்பைச் சோதித்து சேமி";
-"settings_saving" = "இணைக்கப்படுகிறது…";
+"settings_save" = "சேமி";
+"settings_saving" = "சேமிக்கப்படுகிறது…";
 "follow_system" = "சிஸ்டத்தை பின்பற்று";
 "appearance_mode_label" = "Theme";
 "appearance_mode_description" = "Choose whether Selenophile follows macOS or uses a fixed light or dark appearance.";
@@ -84,6 +84,7 @@
 "settings_advanced_section" = "Advanced";
 "settings_about_section" = "About";
 "settings_test_connection" = "Test Connection";
+"settings_testing_connection" = "சோதிக்கிறது…";
 "settings_connection_hint" = "Enter the URLs and token to connect to your Moonraker instance.";
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools.";

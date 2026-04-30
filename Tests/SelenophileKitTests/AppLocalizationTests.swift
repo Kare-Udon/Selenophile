@@ -29,6 +29,27 @@ func appLocalizationProvidesFollowSystemLabel() {
 }
 
 @Test
+func appLocalizationUsesPlainSaveActionsForSettingsFooter() {
+    #expect(AppLocalization.localizedString(.settingsSave, language: .english) == "Save")
+    #expect(AppLocalization.localizedString(.settingsSaving, language: .english) == "Saving…")
+    #expect(AppLocalization.localizedString(.settingsTestingConnection, language: .english) == "Testing…")
+    #expect(AppLocalization.localizedString(.settingsSave, language: .simplifiedChinese) == "保存")
+    #expect(AppLocalization.localizedString(.settingsSave, language: .japanese) == "保存")
+}
+
+@Test
+func appLocalizationLocalizesJapaneseSettingsSurface() {
+    #expect(AppLocalization.localizedString(.settingsConnectionSection, language: .japanese) == "接続")
+    #expect(AppLocalization.localizedString(.settingsGeneralSection, language: .japanese) == "一般")
+    #expect(AppLocalization.localizedString(.settingsAppearanceSection, language: .japanese) == "外観")
+    #expect(AppLocalization.localizedString(.settingsTestConnection, language: .japanese) == "接続をテスト")
+    #expect(AppLocalization.localizedString(.settingsTestingConnection, language: .japanese) == "テスト中…")
+    #expect(AppLocalization.localizedString(.settingsConnectionHint, language: .japanese) == "Moonraker インスタンスに接続するための URL とトークンを入力してください。")
+    #expect(AppLocalization.localizedString(.appearanceModeLabel, language: .japanese) == "テーマ")
+    #expect(AppLocalization.localizedString(.themePaletteLabel, language: .japanese) == "カラースタイル")
+}
+
+@Test
 func appLocalizationLoadsTranslationsFromEmbeddedResourceBundle() throws {
     let rootURL = FileManager.default.temporaryDirectory
         .appendingPathComponent(UUID().uuidString, isDirectory: true)

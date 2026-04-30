@@ -3,7 +3,7 @@
 "fallback_probe_title" = "Fallback Probe";
 "settings_hero_badge" = "Moonraker 設定";
 "settings_hero_title" = "連接你的列印狀態來源";
-"settings_hero_subtitle" = "輸入 Moonraker 位址、可選權杖與相機快照位址，儲存後會立即測試連線。";
+"settings_hero_subtitle" = "輸入 Moonraker 位址、可選權杖與相機快照位址。儲存前可使用測試連線進行驗證。";
 "settings_moonraker_url_label" = "Moonraker URL";
 "settings_moonraker_url_placeholder" = "http://127.0.0.1:7125";
 "settings_api_token_label" = "API Token（可選）";
@@ -16,8 +16,8 @@
 "settings_launch_at_login_description" = "啟用後，應用程式會在系統登入時自動開啟。";
 "settings_launch_at_login_unavailable" = "目前不可用";
 "settings_cancel" = "取消";
-"settings_save" = "測試連線並儲存";
-"settings_saving" = "連線中…";
+"settings_save" = "儲存";
+"settings_saving" = "儲存中…";
 "follow_system" = "跟隨系統";
 "appearance_mode_label" = "主題";
 "appearance_mode_description" = "選擇 Selenophile 跟隨 macOS 外觀，或固定使用淺色、深色主題。";
@@ -84,6 +84,7 @@
 "settings_advanced_section" = "進階";
 "settings_about_section" = "關於";
 "settings_test_connection" = "測試連線";
+"settings_testing_connection" = "測試中…";
 "settings_connection_hint" = "輸入 URL 和 token 以連線到你的 Moonraker 實例。";
 "settings_no_additional_options" = "這個分區目前沒有額外選項。";
 "settings_about_body" = "Selenophile 以更精緻的一覽視圖呈現你的 3D 列印狀態，包含即時狀態、相機預覽和詳細除錯工具。";

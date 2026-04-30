@@ -3,7 +3,7 @@
 "fallback_probe_title" = "대체 확인";
 "settings_hero_badge" = "Moonraker 설정";
 "settings_hero_title" = "프린트 상태 소스를 연결하세요";
-"settings_hero_subtitle" = "Moonraker URL, 선택 사항인 토큰, 카메라 스냅샷 URL을 입력하세요. 저장 시 연결을 테스트합니다.";
+"settings_hero_subtitle" = "Moonraker URL, 선택 사항인 토큰, 카메라 스냅샷 URL을 입력하세요. 저장하기 전에 연결 테스트로 확인할 수 있습니다.";
 "settings_moonraker_url_label" = "Moonraker URL";
 "settings_moonraker_url_placeholder" = "http://127.0.0.1:7125";
 "settings_api_token_label" = "API 토큰(선택)";
@@ -16,8 +16,8 @@
 "settings_launch_at_login_description" = "활성화하면 시스템 로그인 시 앱이 자동으로 열립니다.";
 "settings_launch_at_login_unavailable" = "현재 사용할 수 없음";
 "settings_cancel" = "취소";
-"settings_save" = "연결 테스트 후 저장";
-"settings_saving" = "연결 중…";
+"settings_save" = "저장";
+"settings_saving" = "저장 중…";
 "follow_system" = "시스템 따르기";
 "appearance_mode_label" = "Theme";
 "appearance_mode_description" = "Choose whether Selenophile follows macOS or uses a fixed light or dark appearance.";
@@ -84,6 +84,7 @@
 "settings_advanced_section" = "Advanced";
 "settings_about_section" = "About";
 "settings_test_connection" = "Test Connection";
+"settings_testing_connection" = "테스트 중…";
 "settings_connection_hint" = "Enter the URLs and token to connect to your Moonraker instance.";
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools.";

@@ -19,6 +19,7 @@ struct SettingsView: View {
     @State private var launchAtLoginEnabled: Bool
     @State private var isUpdatingLaunchAtLogin = false
     @State private var isSaving = false
+    @State private var isTestingConnection = false
     @State private var selectedSection: SettingsSection = .connection
     @State private var connectionTestFeedback: ConnectionTestFeedback?
 
@@ -71,6 +72,9 @@ struct SettingsView: View {
             selectedAppearanceMode = appAppearanceStore.selectedMode
             selectedThemePalette = appAppearanceStore.selectedPalette
         }
+        .onChange(of: appLanguageStore.selectedLanguage) { _, language in
+            selectedAppLanguage = language
+        }
     }
 
     @MainActor
@@ -95,11 +99,11 @@ struct SettingsView: View {
 
     @MainActor
     private func runConnectionTest() async {
-        isSaving = true
+        isTestingConnection = true
         connectionTestFeedback = nil
 
         defer {
-            isSaving = false
+            isTestingConnection = false
         }
 
         let trimmedToken = apiToken.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -135,7 +139,11 @@ struct SettingsView: View {
     }
 
     private var uiLanguage: AppLanguage {
-        selectedAppLanguage.resolved(preferredLanguages: Locale.preferredLanguages)
+        languageForLocalizedText(preferredLanguages: Locale.preferredLanguages)
+    }
+
+    func languageForLocalizedText(preferredLanguages: [String] = Locale.preferredLanguages) -> AppLanguage {
+        appLanguageStore.effectiveLanguage(preferredLanguages: preferredLanguages)
     }
 
     private func l10n(_ key: AppLocalization.Key) -> String {
@@ -309,10 +317,20 @@ struct SettingsView: View {
                         .textFieldStyle(SelenophileTextFieldStyle())
                 }
 
-                Text(l10n(.settingsConnectionHint))
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
-                    .fixedSize(horizontal: false, vertical: true)
+                HStack(alignment: .center, spacing: 12) {
+                    Text(l10n(.settingsConnectionHint))
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Spacer(minLength: 12)
+
+                    Button(isTestingConnection ? l10n(.settingsTestingConnection) : l10n(.settingsTestConnection)) {
+                        Task { await runConnectionTest() }
+                    }
+                    .buttonStyle(SelenophileButtonStyle(kind: .secondary))
+                    .disabled(isSaving || isTestingConnection)
+                }
             }
         }
     }
@@ -580,18 +598,19 @@ struct SettingsView: View {
         HStack(spacing: 12) {
             Spacer(minLength: 0)
 
-            Button(isSaving ? l10n(.settingsSaving) : l10n(.settingsTestConnection)) {
-                Task { await runConnectionTest() }
+            Button(l10n(.settingsCancel)) {
+                onCancel()
             }
             .buttonStyle(SelenophileButtonStyle(kind: .secondary))
-            .disabled(isSaving)
+            .keyboardShortcut(.cancelAction)
+            .disabled(isSaving || isTestingConnection)
 
             Button(isSaving ? l10n(.settingsSaving) : l10n(.settingsSave)) {
                 Task { await submit(closeOnSuccess: true) }
             }
             .buttonStyle(SelenophileButtonStyle(kind: .primary))
             .keyboardShortcut(.defaultAction)
-            .disabled(isSaving)
+            .disabled(isSaving || isTestingConnection)
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 18)

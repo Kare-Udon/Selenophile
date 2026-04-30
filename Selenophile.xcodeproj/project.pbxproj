@@ -61,6 +61,7 @@
 		ACEFB8C0BAABA20BD010790C /* SelenophileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29BEF3BC6E8986AE25F1B8 /* SelenophileApp.swift */; };
 		AEF23105F89E5A51826CC998 /* AppAppearanceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 712E3524CBF03A5FE5AAC000 /* AppAppearanceStore.swift */; };
 		B2856DB2DD1202D22C5BF685 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7D9E616DAF1908E5FF8F60 /* WidgetView.swift */; };
+		B6AE652DC8001F9DACE89EB8 /* SettingsViewLocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63E80CF759B2D8018B777D /* SettingsViewLocalizationTests.swift */; };
 		C1E2C203443135721BA805FD /* libSelenophileKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B107EEF376C0D261F3775438 /* libSelenophileKit.a */; };
 		C62AF00E6AD26DA0CCE50E9D /* AppLogStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */; };
 		CA2D27574E353F2634FD82B7 /* SelenophileWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7276F7D6D5890B2C79C2BE /* SelenophileWidget.swift */; };
@@ -229,6 +230,7 @@
 		4658E3BBF9F768585C241C5A /* WidgetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCardView.swift; sourceTree = "<group>"; };
 		4B7EE020F7B0F6B9D4BA43DD /* SelenophileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SelenophileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Selenophile_SelenophileKit.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D63E80CF759B2D8018B777D /* SettingsViewLocalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewLocalizationTests.swift; sourceTree = "<group>"; };
 		4FDE309A115EB8BAAE8AAC98 /* AppDelegateWidgetPublishingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateWidgetPublishingTests.swift; sourceTree = "<group>"; };
 		506F4F8AFC4FCA787FB1BC92 /* AppAppearanceModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearanceModeTests.swift; sourceTree = "<group>"; };
 		5072E5BCAD76C2EC7D4C6707 /* pa */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pa; path = pa.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -414,6 +416,7 @@
 				5CA7B1EC1EE77EA53F2AB80E /* AppLaunchConfigurationTests.swift */,
 				7217A6E35E9FB82AD745AF04 /* LaunchAtLoginControllerTests.swift */,
 				5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */,
+				4D63E80CF759B2D8018B777D /* SettingsViewLocalizationTests.swift */,
 			);
 			path = SelenophileTests;
 			sourceTree = "<group>";
@@ -832,6 +835,7 @@
 				8AA31762D1CA239A9857C2D1 /* AppLaunchConfigurationTests.swift in Sources */,
 				4616EE2A75CCE4D530D97AA5 /* LaunchAtLoginControllerTests.swift in Sources */,
 				1B1ABEE13C3BE492FE57159B /* MenuBarIconConfigurationTests.swift in Sources */,
+				B6AE652DC8001F9DACE89EB8 /* SettingsViewLocalizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3,7 +3,7 @@
 "fallback_probe_title" = "Fallback Probe";
 "settings_hero_badge" = "Moonraker Setup";
 "settings_hero_title" = "Connect your print status source";
-"settings_hero_subtitle" = "Enter your Moonraker URL, optional token, and camera snapshot URL. Saving tests the connection.";
+"settings_hero_subtitle" = "Enter your Moonraker URL, optional token, and camera snapshot URL. Use Test Connection to verify it before saving.";
 "settings_moonraker_url_label" = "Moonraker URL";
 "settings_moonraker_url_placeholder" = "http://127.0.0.1:7125";
 "settings_api_token_label" = "API Token (optional)";
@@ -16,8 +16,8 @@
 "settings_launch_at_login_description" = "When enabled, the app opens automatically at system login.";
 "settings_launch_at_login_unavailable" = "Currently unavailable";
 "settings_cancel" = "Cancel";
-"settings_save" = "Test Connection and Save";
-"settings_saving" = "Connecting…";
+"settings_save" = "Save";
+"settings_saving" = "Saving…";
 "follow_system" = "Follow System";
 "appearance_mode_label" = "Theme";
 "appearance_mode_description" = "Choose whether Selenophile follows macOS or uses a fixed light or dark appearance.";
@@ -84,6 +84,7 @@
 "settings_advanced_section" = "Advanced";
 "settings_about_section" = "About";
 "settings_test_connection" = "Test Connection";
+"settings_testing_connection" = "Testing…";
 "settings_connection_hint" = "Enter the URLs and token to connect to your Moonraker instance.";
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools.";

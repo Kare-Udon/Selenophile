@@ -3,7 +3,7 @@
 "fallback_probe_title" = "Kiểm tra dự phòng";
 "settings_hero_badge" = "Thiết lập Moonraker";
 "settings_hero_title" = "Kết nối nguồn trạng thái in của bạn";
-"settings_hero_subtitle" = "Nhập URL Moonraker, mã thông báo tùy chọn và URL ảnh chụp camera. Khi lưu sẽ kiểm tra kết nối.";
+"settings_hero_subtitle" = "Nhập URL Moonraker, mã thông báo tùy chọn và URL ảnh chụp camera. Dùng Kiểm tra kết nối để xác minh trước khi lưu.";
 "settings_moonraker_url_label" = "URL Moonraker";
 "settings_moonraker_url_placeholder" = "http://127.0.0.1:7125";
 "settings_api_token_label" = "Mã thông báo API (tùy chọn)";
@@ -16,8 +16,8 @@
 "settings_launch_at_login_description" = "Khi bật, ứng dụng sẽ tự động mở khi bạn đăng nhập hệ thống.";
 "settings_launch_at_login_unavailable" = "Hiện không khả dụng";
 "settings_cancel" = "Hủy";
-"settings_save" = "Kiểm tra kết nối và lưu";
-"settings_saving" = "Đang kết nối…";
+"settings_save" = "Lưu";
+"settings_saving" = "Đang lưu…";
 "follow_system" = "Theo hệ thống";
 "appearance_mode_label" = "Theme";
 "appearance_mode_description" = "Choose whether Selenophile follows macOS or uses a fixed light or dark appearance.";
@@ -84,6 +84,7 @@
 "settings_advanced_section" = "Advanced";
 "settings_about_section" = "About";
 "settings_test_connection" = "Test Connection";
+"settings_testing_connection" = "Đang kiểm tra…";
 "settings_connection_hint" = "Enter the URLs and token to connect to your Moonraker instance.";
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools.";

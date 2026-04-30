@@ -3,7 +3,7 @@
 "fallback_probe_title" = "Проверка резервного варианта";
 "settings_hero_badge" = "Настройка Moonraker";
 "settings_hero_title" = "Подключите источник статуса печати";
-"settings_hero_subtitle" = "Введите URL Moonraker, необязательный токен и URL снимка камеры. При сохранении соединение будет проверено.";
+"settings_hero_subtitle" = "Введите URL Moonraker, необязательный токен и URL снимка камеры. Используйте проверку соединения перед сохранением.";
 "settings_moonraker_url_label" = "URL Moonraker";
 "settings_moonraker_url_placeholder" = "http://127.0.0.1:7125";
 "settings_api_token_label" = "API-токен (необязательно)";
@@ -16,8 +16,8 @@
 "settings_launch_at_login_description" = "Если включено, приложение будет автоматически открываться при входе в систему.";
 "settings_launch_at_login_unavailable" = "Сейчас недоступно";
 "settings_cancel" = "Отмена";
-"settings_save" = "Проверить соединение и сохранить";
-"settings_saving" = "Подключение…";
+"settings_save" = "Сохранить";
+"settings_saving" = "Сохранение…";
 "follow_system" = "Следовать системе";
 "appearance_mode_label" = "Theme";
 "appearance_mode_description" = "Choose whether Selenophile follows macOS or uses a fixed light or dark appearance.";
@@ -84,6 +84,7 @@
 "settings_advanced_section" = "Advanced";
 "settings_about_section" = "About";
 "settings_test_connection" = "Test Connection";
+"settings_testing_connection" = "Проверка…";
 "settings_connection_hint" = "Enter the URLs and token to connect to your Moonraker instance.";
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status, camera previews, and detailed debugging tools.";
