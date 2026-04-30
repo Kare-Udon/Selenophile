@@ -97,3 +97,12 @@
 "log_source_column" = "Source";
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
+"settings_about_dependencies_title" = "انحصارات";
+"settings_about_dependencies_intro" = "Selenophile runtime پر کوئی third-party Swift package استعمال نہیں کرتا۔ یہ Apple frameworks، Swift toolchain، Moonraker API integration، اور project generation کے لیے Tuist پر بنایا گیا ہے۔";
+"settings_dependency_swift" = "زبان، standard library، package manifest، اور command-line build/test workflow فراہم کرتا ہے۔";
+"settings_dependency_swiftui" = "menu panel، settings window، logs، اور widgets کے لیے declarative views فراہم کرتا ہے۔";
+"settings_dependency_appkit" = "macOS menu bar integration، popovers، windows، اور native controls فراہم کرتا ہے۔";
+"settings_dependency_widgetkit" = "موجودہ printer snapshot کو macOS widgets میں شائع کرتا ہے۔";
+"settings_dependency_service_management" = "macOS login item APIs کے ذریعے Launch at Login setting کو کنٹرول کرتا ہے۔";
+"settings_dependency_moonraker" = "Selenophile کے استعمال کردہ printer status، metadata، thumbnails، اور camera data فراہم کرتا ہے۔";
+"settings_dependency_tuist" = "App اور Widget packaging کے لیے Xcode project بناتا اور برقرار رکھتا ہے۔";

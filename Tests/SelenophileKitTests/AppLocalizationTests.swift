@@ -46,6 +46,31 @@ func appLocalizationDescribesAboutDependencies() {
 }
 
 @Test
+func appLocalizationProvidesAboutDependencyTranslationsForEveryLanguage() {
+    let dependencyKeys: [AppLocalization.Key] = [
+        .settingsAboutDependenciesTitle,
+        .settingsAboutDependenciesIntro,
+        .settingsDependencySwift,
+        .settingsDependencySwiftUI,
+        .settingsDependencyAppKit,
+        .settingsDependencyWidgetKit,
+        .settingsDependencyServiceManagement,
+        .settingsDependencyMoonraker,
+        .settingsDependencyTuist
+    ]
+    let translatedLanguages = AppLanguage.supportedSelections.filter {
+        $0 != .system && $0 != .english
+    }
+
+    for language in translatedLanguages {
+        for key in dependencyKeys {
+            let localized = AppLocalization.localizedString(key, language: language)
+            #expect(localized != key.fallbackValue)
+        }
+    }
+}
+
+@Test
 func appLocalizationLocalizesJapaneseSettingsSurface() {
     #expect(AppLocalization.localizedString(.settingsConnectionSection, language: .japanese) == "接続")
     #expect(AppLocalization.localizedString(.settingsGeneralSection, language: .japanese) == "一般")

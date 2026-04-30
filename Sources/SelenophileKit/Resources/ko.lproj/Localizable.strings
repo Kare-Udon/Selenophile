@@ -97,3 +97,12 @@
 "log_source_column" = "Source";
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
+"settings_about_dependencies_title" = "의존성";
+"settings_about_dependencies_intro" = "Selenophile은 런타임에 타사 Swift 패키지를 사용하지 않습니다. Apple 프레임워크, Swift 툴체인, Moonraker API 통합, 프로젝트 생성을 위한 Tuist를 기반으로 합니다.";
+"settings_dependency_swift" = "언어, 표준 라이브러리, package manifest, 명령줄 빌드 및 테스트 흐름을 제공합니다.";
+"settings_dependency_swiftui" = "메뉴 패널, 설정 창, 로그, 위젯을 위한 선언형 화면을 제공합니다.";
+"settings_dependency_appkit" = "macOS 메뉴 막대 통합, 팝오버, 창, 네이티브 컨트롤을 제공합니다.";
+"settings_dependency_widgetkit" = "현재 프린터 snapshot을 macOS 위젯에 게시합니다.";
+"settings_dependency_service_management" = "macOS 로그인 항목 API를 통해 로그인 시 실행 설정을 제어합니다.";
+"settings_dependency_moonraker" = "Selenophile이 사용하는 프린터 상태, 메타데이터, 썸네일, 카메라 데이터를 제공합니다.";
+"settings_dependency_tuist" = "앱과 위젯 패키징에 쓰이는 Xcode 프로젝트를 생성하고 유지합니다.";

@@ -97,3 +97,12 @@
 "log_source_column" = "Source";
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
+"settings_about_dependencies_title" = "التبعيات";
+"settings_about_dependencies_intro" = "يعتمد Selenophile على أطر Apple وسلسلة أدوات Swift وتكامل Moonraker API و Tuist لتوليد المشروع، ولا يستخدم حزم Swift خارجية وقت التشغيل.";
+"settings_dependency_swift" = "يوفر اللغة والمكتبة القياسية وملف الحزمة وسير عمل البناء والاختبار من سطر الأوامر.";
+"settings_dependency_swiftui" = "يوفر واجهات تعريفية للوحة القائمة ونافذة الإعدادات والسجلات والودجت.";
+"settings_dependency_appkit" = "يوفر تكامل شريط قوائم macOS والنوافذ المنبثقة والنوافذ وعناصر التحكم الأصلية.";
+"settings_dependency_widgetkit" = "ينشر لقطة الطابعة الحالية إلى ودجت macOS.";
+"settings_dependency_service_management" = "يتحكم في إعداد التشغيل عند تسجيل الدخول عبر واجهات عناصر تسجيل الدخول في macOS.";
+"settings_dependency_moonraker" = "يوفر حالة الطابعة والبيانات الوصفية والصور المصغرة وبيانات الكاميرا التي يستخدمها Selenophile.";
+"settings_dependency_tuist" = "ينشئ ويحافظ على مشروع Xcode المستخدم لحزم التطبيق والودجت.";

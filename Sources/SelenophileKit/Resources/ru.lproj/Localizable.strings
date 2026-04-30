@@ -97,3 +97,12 @@
 "log_source_column" = "Source";
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
+"settings_about_dependencies_title" = "Зависимости";
+"settings_about_dependencies_intro" = "Selenophile не использует сторонние Swift-пакеты во время выполнения. Он построен на фреймворках Apple, инструментах Swift, интеграции с API Moonraker и Tuist для генерации проекта.";
+"settings_dependency_swift" = "Предоставляет язык, стандартную библиотеку, манифест пакета и поток сборки и тестирования из командной строки.";
+"settings_dependency_swiftui" = "Декларативные представления для панели меню, окна настроек, журналов и виджетов.";
+"settings_dependency_appkit" = "Интеграция с меню macOS, popover-окна, окна и нативные элементы управления.";
+"settings_dependency_widgetkit" = "Публикует текущий снимок принтера в виджеты macOS.";
+"settings_dependency_service_management" = "Управляет запуском при входе через API элементов входа macOS.";
+"settings_dependency_moonraker" = "Предоставляет состояние принтера, метаданные, миниатюры и данные камеры, которые использует Selenophile.";
+"settings_dependency_tuist" = "Генерирует и поддерживает проект Xcode для упаковки приложения и виджета.";

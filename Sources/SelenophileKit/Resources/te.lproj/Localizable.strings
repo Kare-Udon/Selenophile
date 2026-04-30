@@ -97,3 +97,12 @@
 "log_source_column" = "Source";
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
+"settings_about_dependencies_title" = "ఆధారాలు";
+"settings_about_dependencies_intro" = "Selenophile runtime లో third-party Swift package ను ఉపయోగించదు. ఇది Apple frameworks, Swift toolchain, Moonraker API integration మరియు project generation కోసం Tuist పై నిర్మించబడింది.";
+"settings_dependency_swift" = "భాష, standard library, package manifest మరియు command-line build/test workflow ను అందిస్తుంది.";
+"settings_dependency_swiftui" = "menu panel, settings window, logs మరియు widgets కోసం declarative views అందిస్తుంది.";
+"settings_dependency_appkit" = "macOS menu bar integration, popovers, windows మరియు native controls అందిస్తుంది.";
+"settings_dependency_widgetkit" = "ప్రస్తుత printer snapshot ను macOS widgets కు ప్రచురిస్తుంది.";
+"settings_dependency_service_management" = "macOS login item APIs ద్వారా Launch at Login setting ను నియంత్రిస్తుంది.";
+"settings_dependency_moonraker" = "Selenophile ఉపయోగించే printer status, metadata, thumbnails మరియు camera data అందిస్తుంది.";
+"settings_dependency_tuist" = "App మరియు Widget packaging కోసం ఉపయోగించే Xcode project ను రూపొందించి నిర్వహిస్తుంది.";
