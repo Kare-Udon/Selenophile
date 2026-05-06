@@ -10,6 +10,7 @@ struct MenuBarIconConfiguration: Equatable {
         connectionState: MoonrakerConnectionState,
         isWaitingForManualReconnect: Bool,
         hasActivePrint: Bool,
+        printerState: PrinterState = .standby,
         progress: Double
     ) {
         let clampedProgress = min(max(progress, 0), 1)
@@ -24,6 +25,13 @@ struct MenuBarIconConfiguration: Equatable {
         if connectionState == .failed || connectionState == .disconnected {
             visibleProgress = clampedProgress
             overlaySymbolName = "bolt.horizontal.circle.fill"
+            showsCenterCore = false
+            return
+        }
+
+        if connectionState == .connected && printerState == .cancelled {
+            visibleProgress = clampedProgress
+            overlaySymbolName = "xmark.circle.fill"
             showsCenterCore = false
             return
         }

@@ -22,11 +22,27 @@ func idlePrinterUsesIdleGlyph() {
         connectionState: .connected,
         isWaitingForManualReconnect: false,
         hasActivePrint: false,
+        printerState: .standby,
         progress: 0.42
     )
 
     #expect(configuration.visibleProgress == 1)
     #expect(configuration.overlaySymbolName == "moon.stars.fill")
+    #expect(!configuration.showsCenterCore)
+}
+
+@Test
+func cancelledPrinterUsesCancellationGlyphAndDoesNotLookComplete() {
+    let configuration = MenuBarIconConfiguration(
+        connectionState: .connected,
+        isWaitingForManualReconnect: false,
+        hasActivePrint: false,
+        printerState: .cancelled,
+        progress: 0
+    )
+
+    #expect(configuration.visibleProgress == 0)
+    #expect(configuration.overlaySymbolName == "xmark.circle.fill")
     #expect(!configuration.showsCenterCore)
 }
 

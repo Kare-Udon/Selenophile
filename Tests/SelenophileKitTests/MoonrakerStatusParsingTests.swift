@@ -208,6 +208,52 @@ func statusUpdateNotificationClearsStalePrintFieldsWhenJobEnds() throws {
 }
 
 @Test
+func cancelledStatusClearsStaleProgressAndDisplayMessage() throws {
+    let data = Data(
+        """
+        {
+          "jsonrpc": "2.0",
+          "result": {
+            "eventtime": 3602141.08472985,
+            "status": {
+              "print_stats": {
+                "filename": "Phone Stand Type D v5_0.2mm_PLA_Generic Klipper Printer_4h57m.gcode",
+                "print_duration": 1670.136094675865,
+                "state": "cancelled",
+                "message": "",
+                "info": {
+                  "total_layer": null,
+                  "current_layer": null
+                }
+              },
+              "display_status": {
+                "progress": 0.0,
+                "message": "Layer 5/224"
+              },
+              "virtual_sdcard": {
+                "progress": 0.0,
+                "is_active": false
+              }
+            }
+          },
+          "id": 2
+        }
+        """.utf8
+    )
+
+    let response = try JSONDecoder().decode(MoonrakerWebSocketMessage.self, from: data)
+    let status = try #require(response.printerStatusSnapshot)
+
+    #expect(status.state == .cancelled)
+    #expect(status.filename == nil)
+    #expect(status.message == nil)
+    #expect(status.progress == nil)
+    #expect(status.printDuration == nil)
+    #expect(status.estimatedTimeRemaining == nil)
+    #expect(status.layer == nil)
+}
+
+@Test
 func unrelatedNotificationDoesNotFailDecoding() throws {
     let data = Data(
         """

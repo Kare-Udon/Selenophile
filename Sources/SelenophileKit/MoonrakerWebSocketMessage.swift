@@ -75,14 +75,15 @@ public struct MoonrakerStatusPayload: Decodable, Sendable {
     }
 
     public var printerStatus: PrinterStatus {
-        PrinterStatus(
+        let clearsPrintJobFields = stateClearsPrintJobFields
+        return PrinterStatus(
             state: printStats?.state ?? .unknown,
-            filename: printStats?.filename,
+            filename: clearsPrintJobFields ? nil : printStats?.normalizedFilename,
             message: preferredMessage,
             progress: preferredProgress,
-            printDuration: printStats?.printDuration,
+            printDuration: clearsPrintJobFields ? nil : printStats?.printDuration,
             estimatedTimeRemaining: estimatedRemaining,
-            layer: printStats?.layerStatus,
+            layer: clearsPrintJobFields ? nil : printStats?.layerStatus,
             bed: heaterBed?.temperatureStatus,
             extruder: extruder?.temperatureStatus,
             feedRateMultiplier: gcodeMove?.speedFactor
@@ -109,14 +110,20 @@ public struct MoonrakerStatusPayload: Decodable, Sendable {
     }
 
     private var preferredProgress: Double? {
-        displayStatus?.progress ?? virtualSDCard?.progress
+        guard !stateClearsPrintJobFields else { return nil }
+        return displayStatus?.progress ?? virtualSDCard?.progress
     }
 
     private var preferredMessage: String? {
+        guard !stateClearsPrintJobFields else { return nil }
         if let displayMessage = displayStatus?.message?.nonEmpty {
             return displayMessage
         }
         return printStats?.message?.nonEmpty
+    }
+
+    private var stateClearsPrintJobFields: Bool {
+        printStats?.state?.clearsPrintJobFields == true
     }
 
     private var estimatedRemaining: TimeInterval? {
@@ -134,7 +141,7 @@ public struct MoonrakerStatusPayload: Decodable, Sendable {
         var fields: PrinterStatusClearedFields = []
 
         if let printStats {
-            if printStats.state?.clearsPrintJobFields == true {
+            if stateClearsPrintJobFields {
                 fields.formUnion([
                     .filename,
                     .message,

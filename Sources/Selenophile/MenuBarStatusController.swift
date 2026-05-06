@@ -107,6 +107,7 @@ final class MenuBarStatusController: NSObject {
             connectionState: store.connectionState,
             isWaitingForManualReconnect: store.isWaitingForManualReconnect,
             hasActivePrint: store.hasActivePrint,
+            printerState: store.printerStatus.state,
             progress: store.printerStatus.normalizedProgress
         )
         button.image = iconRenderer.makeImage(configuration: configuration)
