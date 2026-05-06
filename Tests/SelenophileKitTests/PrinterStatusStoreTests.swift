@@ -13,7 +13,7 @@ func connectingIgnoresIntentionalDisconnectPlaceholder() {
     )
 
     store.connectionState = .connecting
-    store.handle(event: .disconnected("已断开连接"))
+    store.handle(event: .disconnected("Disconnected"))
 
     #expect(store.connectionState == .connecting)
     #expect(store.lastErrorMessage == nil)
@@ -23,10 +23,10 @@ func connectingIgnoresIntentionalDisconnectPlaceholder() {
 @Test
 func stopsAutoRetryAfterMaximumFailures() async {
     let client = ScriptedMoonrakerClient(eventsPerConnect: [
-        [.failed("连接超时")],
-        [.failed("连接超时")],
-        [.failed("连接超时")],
-        [.failed("连接超时")],
+        [.failed("Connection timed out")],
+        [.failed("Connection timed out")],
+        [.failed("Connection timed out")],
+        [.failed("Connection timed out")],
     ])
     let store = PrinterStatusStore(
         client: client,
@@ -50,9 +50,9 @@ func stopsAutoRetryAfterMaximumFailures() async {
 @Test
 func manualReconnectResetsRetryBudget() async {
     let client = ScriptedMoonrakerClient(eventsPerConnect: [
-        [.failed("连接超时")],
-        [.failed("连接超时")],
-        [.failed("连接超时")],
+        [.failed("Connection timed out")],
+        [.failed("Connection timed out")],
+        [.failed("Connection timed out")],
         [.connected],
     ])
     let store = PrinterStatusStore(
@@ -557,7 +557,7 @@ func saveConfigurationPersistsSelectedAppLanguage() async throws {
 @Test
 func saveConfigurationAndConnectionFailuresAreLogged() async {
     let logStore = AppLogStore(maxEntries: 20, dateProvider: { Date(timeIntervalSince1970: 0) })
-    let client = ScriptedMoonrakerClient(eventsPerConnect: [[.failed("连接超时")]])
+    let client = ScriptedMoonrakerClient(eventsPerConnect: [[.failed("Connection timed out")]])
     let store = PrinterStatusStore(
         client: client,
         persistence: InMemoryMoonrakerConfigurationStore(),
@@ -574,9 +574,9 @@ func saveConfigurationAndConnectionFailuresAreLogged() async {
 
     try? await Task.sleep(for: .milliseconds(100))
 
-    #expect(logStore.entries.contains(where: { $0.message.contains("配置已保存") }))
-    #expect(logStore.entries.contains(where: { $0.message.contains("开始连接 Moonraker") }))
-    #expect(logStore.entries.contains(where: { $0.message.contains("连接失败") }))
+    #expect(logStore.entries.contains(where: { $0.message.contains("Configuration saved") }))
+    #expect(logStore.entries.contains(where: { $0.message.contains("Connecting to Moonraker") }))
+    #expect(logStore.entries.contains(where: { $0.message.contains("Connection failed") }))
 }
 
 private actor NoopMoonrakerClient: MoonrakerClientProtocol {
@@ -624,7 +624,7 @@ private actor DisconnectEmittingMoonrakerClient: MoonrakerClientProtocol {
 
     func disconnect() async {
         disconnectCalls += 1
-        eventHandler?(.disconnected("已断开连接"))
+        eventHandler?(.disconnected("Disconnected"))
     }
 
     func rescanGCodeMetadata(

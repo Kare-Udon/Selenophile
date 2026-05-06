@@ -69,7 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        logStore.log(.info, source: "AppDelegate", message: "应用已启动")
+        logStore.log(.info, source: "AppDelegate", message: "Application launched")
         menuBarStatusController = MenuBarStatusController(
             store: store,
             appLanguageStore: appLanguageStore,
@@ -88,7 +88,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
 
         if store.needsInitialConfiguration {
-            logStore.log(.info, source: "AppDelegate", message: "检测到未配置 Moonraker，打开设置窗口")
+            logStore.log(.info, source: "AppDelegate", message: "Moonraker is not configured; opening Settings")
             showSettingsWindow()
         } else {
             store.start()
@@ -100,7 +100,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func showSettingsWindow() {
-        logStore.log(.debug, source: "AppDelegate", message: "打开设置窗口")
+        logStore.log(.debug, source: "AppDelegate", message: "Opening Settings window")
         let settingsView = makeSettingsView()
 
         if let window = settingsWindowController?.window {
@@ -129,7 +129,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func showLogWindow() {
-        logStore.log(.debug, source: "AppDelegate", message: "打开日志窗口")
+        logStore.log(.debug, source: "AppDelegate", message: "Opening Logs window")
         if let window = logWindowController?.window {
             window.title = logWindowTitle()
             window.makeKeyAndOrderFront(nil)
@@ -149,7 +149,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func showMainPanelWindow() {
-        logStore.log(.debug, source: "AppDelegate", message: "打开调试主面板窗口")
+        logStore.log(.debug, source: "AppDelegate", message: "Opening debug main panel window")
         if let controller = mainPanelWindowController {
             controller.showPanel()
             return
@@ -241,7 +241,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                         self.logStore.log(
                             .error,
                             source: "LaunchAtLogin",
-                            message: "更新开机自启失败：\(error.localizedDescription)"
+                            message: "Failed to update launch-at-login setting: \(AppLogStore.diagnosticDescription(for: error))"
                         )
                     }
                 }

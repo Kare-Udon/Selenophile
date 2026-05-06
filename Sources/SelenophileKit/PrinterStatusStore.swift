@@ -396,11 +396,11 @@ public final class PrinterStatusStore {
     public func start() {
         guard let configuration else {
             connectionState = .unconfigured
-            log(.warning, "启动连接失败：尚未配置 Moonraker")
+            log(.warning, "Connection start skipped: Moonraker is not configured")
             emitWidgetSnapshot()
             return
         }
-        log(.info, "开始连接 Moonraker")
+        log(.info, "Connecting to Moonraker")
         connect(using: configuration, isReconnect: false)
     }
 
@@ -411,7 +411,7 @@ public final class PrinterStatusStore {
     private func reconnectNow(resetRetryBudget: Bool) {
         guard let configuration else {
             connectionState = .unconfigured
-            log(.warning, "手动重连失败：尚未配置 Moonraker")
+            log(.warning, "Manual reconnect skipped: Moonraker is not configured")
             emitWidgetSnapshot()
             return
         }
@@ -421,7 +421,7 @@ public final class PrinterStatusStore {
         }
         nextRetryAt = nil
         isWaitingForManualReconnect = false
-        log(.info, resetRetryBudget ? "触发手动重连" : "开始执行自动重连")
+        log(.info, resetRetryBudget ? "Manual reconnect requested" : "Running automatic reconnect")
         connect(using: configuration, isReconnect: true)
     }
 
@@ -446,14 +446,14 @@ public final class PrinterStatusStore {
             retryAttemptCount = 0
             nextRetryAt = nil
             isWaitingForManualReconnect = false
-            log(.info, "配置已保存：\(configuration.serverURLString)")
-            log(.info, "开始连接 Moonraker")
+            log(.info, "Configuration saved: \(configuration.serverURLString)")
+            log(.info, "Connecting to Moonraker")
             connect(using: configuration, isReconnect: false)
             return true
         } catch {
             lastErrorMessage = error.localizedDescription
             connectionState = .failed
-            log(.error, "配置保存失败：\(error.localizedDescription)")
+            log(.error, "Failed to save configuration: \(AppLogStore.diagnosticDescription(for: error))")
             emitWidgetSnapshot()
             return false
         }
@@ -481,7 +481,7 @@ public final class PrinterStatusStore {
         connectionState = configuration == nil ? .unconfigured : .disconnected
         nextRetryAt = nil
         isWaitingForManualReconnect = false
-        log(.info, "已主动断开连接")
+        log(.info, "Disconnected by user request")
         emitWidgetSnapshot()
         Task { await client.disconnect() }
     }
@@ -489,20 +489,20 @@ public final class PrinterStatusStore {
     @discardableResult
     public func fetchCameraSnapshot() async -> Bool {
         guard !isFetchingCameraSnapshot else {
-            log(.debug, "忽略重复的相机快照请求")
+            log(.debug, "Ignored duplicate camera snapshot request")
             return false
         }
         guard let configuration else {
             cameraSnapshotData = nil
             cameraSnapshotUpdatedAt = nil
             cameraSnapshotErrorMessage = "请先配置 Moonraker 地址。"
-            log(.warning, "相机快照请求失败：尚未配置 Moonraker")
+            log(.warning, "Camera snapshot request skipped: Moonraker is not configured")
             return false
         }
 
         isFetchingCameraSnapshot = true
         cameraSnapshotErrorMessage = nil
-        log(.info, "开始请求相机快照")
+        log(.info, "Requesting camera snapshot")
 
         defer {
             isFetchingCameraSnapshot = false
@@ -513,13 +513,13 @@ public final class PrinterStatusStore {
             let snapshot = try await cameraClient.fetchSnapshot(configuration: validated)
             cameraSnapshotData = snapshot
             cameraSnapshotUpdatedAt = Date()
-            log(.info, "相机快照请求成功，大小 \(snapshot.count) 字节")
+            log(.info, "Camera snapshot request succeeded: \(snapshot.count) bytes")
             return true
         } catch {
             cameraSnapshotData = nil
             cameraSnapshotUpdatedAt = nil
             cameraSnapshotErrorMessage = error.localizedDescription
-            log(.error, "相机快照请求失败：\(error.localizedDescription)")
+            log(.error, "Camera snapshot request failed: \(AppLogStore.diagnosticDescription(for: error))")
             return false
         }
     }
@@ -560,7 +560,7 @@ public final class PrinterStatusStore {
         if !isReconnect {
             isWaitingForManualReconnect = false
         }
-        log(.debug, "\(isReconnect ? "准备重连" : "准备连接")：\(configuration.serverURLString)")
+        log(.debug, "\(isReconnect ? "Preparing reconnect" : "Preparing connection"): \(configuration.serverURLString)")
         emitWidgetSnapshot()
 
         connectTask = Task {
@@ -575,7 +575,7 @@ public final class PrinterStatusStore {
                 await MainActor.run {
                     self.connectionState = .failed
                     self.lastErrorMessage = error.localizedDescription
-                    self.log(.error, "连接初始化失败：\(error.localizedDescription)")
+                    self.log(.error, "Connection initialization failed: \(AppLogStore.diagnosticDescription(for: error))")
                     self.scheduleReconnectIfPossible()
                 }
             }
@@ -590,7 +590,7 @@ public final class PrinterStatusStore {
             retryAttemptCount = 0
             nextRetryAt = nil
             isWaitingForManualReconnect = false
-            log(.info, "Moonraker 已连接")
+            log(.info, "Moonraker connected")
             emitWidgetSnapshot()
         case .printerStatus(let status):
             let previousStatus = livePrinterStatus
@@ -603,32 +603,32 @@ public final class PrinterStatusStore {
             let previousStatus = livePrinterStatus
             livePrinterStatus = livePrinterStatus.applying(delta: delta)
             liveLastUpdatedAt = Date()
-            log(.debug, "收到打印状态增量更新")
+            log(.debug, "Received printer status delta update")
             refreshPrintAssetsIfNeeded(for: livePrinterStatus)
             publishStatusUpdate(previousStatus: previousStatus)
         case .disconnected(let message):
             if shouldIgnoreTransientDisconnection(message) {
-                log(.debug, "忽略连接阶段的瞬时断开事件")
+                log(.debug, "Ignored transient disconnect during connection setup")
                 return
             }
             if isDisconnectingIntentionally {
                 isDisconnectingIntentionally = false
-                log(.debug, "忽略主动断开后的客户端断开事件")
+                log(.debug, "Ignored client disconnect after user-requested disconnect")
                 emitWidgetSnapshot()
                 return
             }
             connectionState = configuration == nil ? .unconfigured : .disconnected
             if let message {
                 lastErrorMessage = message
-                log(.warning, "连接已断开：\(message)")
+                log(.warning, "Connection disconnected: \(message)")
             } else {
-                log(.warning, "连接已断开")
+                log(.warning, "Connection disconnected")
             }
             scheduleReconnectIfPossible()
         case .failed(let message):
             connectionState = .failed
             lastErrorMessage = message
-            log(.error, "连接失败：\(message)")
+            log(.error, "Connection failed: \(message)")
             scheduleReconnectIfPossible()
         }
     }
@@ -645,7 +645,7 @@ public final class PrinterStatusStore {
             reconnectTask = nil
             nextRetryAt = nil
             isWaitingForManualReconnect = true
-            log(.error, "自动重试已停止，达到最大次数 \(retryPolicy.maxAttempts)")
+            log(.error, "Automatic reconnect stopped after \(retryPolicy.maxAttempts) attempts")
             emitWidgetSnapshot()
             return
         }
@@ -653,7 +653,7 @@ public final class PrinterStatusStore {
         reconnectTask?.cancel()
         let delay = retryPolicy.delay(failureCount)
         nextRetryAt = Date().addingTimeInterval(delay.timeInterval)
-        log(.warning, "将在 \(Int(delay.timeInterval.rounded())) 秒后自动重试（\(failureCount)/\(retryPolicy.maxAttempts)）")
+        log(.warning, "Automatic reconnect scheduled in \(Int(delay.timeInterval.rounded())) seconds (\(failureCount)/\(retryPolicy.maxAttempts))")
         emitWidgetSnapshot()
         reconnectTask = Task { [weak self] in
             await self?.sleep(delay)
@@ -665,7 +665,7 @@ public final class PrinterStatusStore {
     }
 
     private func shouldIgnoreTransientDisconnection(_ message: String?) -> Bool {
-        (connectionState == .connecting || connectionState == .reconnecting) && message == "已断开连接"
+        (connectionState == .connecting || connectionState == .reconnecting) && message == "Disconnected"
     }
 
     private func retryStatusLine(prefix: String) -> String {
@@ -775,7 +775,7 @@ public final class PrinterStatusStore {
                 isWaitingForManualCurrentPrintThumbnailRetry = true
                 log(
                     .debug,
-                    "打印缩略图自动重试已停止，达到最大次数 \(currentPrintThumbnailRetryLimit)"
+                    "Current print thumbnail retry stopped after \(currentPrintThumbnailRetryLimit) attempts"
                 )
                 return
             }
@@ -832,7 +832,7 @@ public final class PrinterStatusStore {
                     self.currentPrintThumbnailData = nil
                     self.currentPrintThumbnailErrorMessage = nil
                     self.isFetchingCurrentPrintThumbnail = false
-                    self.log(.debug, "获取 slicer 估时失败：\(error.localizedDescription)")
+                    self.log(.debug, "Failed to fetch slicer estimate: \(AppLogStore.diagnosticDescription(for: error))")
                 }
             }
         }
@@ -882,7 +882,7 @@ public final class PrinterStatusStore {
                 self.isFetchingCurrentPrintThumbnail = false
                 self.currentPrintThumbnailRetryCount = 0
                 self.isWaitingForManualCurrentPrintThumbnailRetry = false
-                self.log(.info, "打印缩略图请求成功，大小 \(data.count) 字节")
+                self.log(.info, "Current print thumbnail request succeeded: \(data.count) bytes")
             }
         } catch {
             if Task.isCancelled {
@@ -897,7 +897,7 @@ public final class PrinterStatusStore {
                 if self.currentPrintThumbnailRetryCount >= self.currentPrintThumbnailRetryLimit {
                     self.isWaitingForManualCurrentPrintThumbnailRetry = true
                 }
-                self.log(.debug, "获取打印缩略图失败：\(error.localizedDescription)")
+                self.log(.debug, "Failed to fetch current print thumbnail: \(AppLogStore.diagnosticDescription(for: error))")
             }
         }
     }
@@ -947,7 +947,7 @@ public final class PrinterStatusStore {
                 if self.currentPrintThumbnailRetryCount >= self.currentPrintThumbnailRetryLimit {
                     self.isWaitingForManualCurrentPrintThumbnailRetry = true
                 }
-                self.log(.debug, "重扫打印缩略图失败：\(error.localizedDescription)")
+                self.log(.debug, "Failed to rescan current print thumbnail metadata: \(AppLogStore.diagnosticDescription(for: error))")
             }
             return nil
         }
@@ -1004,8 +1004,8 @@ public final class PrinterStatusStore {
         } else {
             progressText = "--"
         }
-        let filename = status.filename ?? "无任务"
-        log(.info, "收到状态更新：\(status.state.localizedLabel)，进度 \(progressText)，任务 \(filename)")
+        let filename = status.filename ?? "no active job"
+        log(.info, "Received status update: state \(status.state.rawValue), progress \(progressText), job \(filename)")
     }
 }
 

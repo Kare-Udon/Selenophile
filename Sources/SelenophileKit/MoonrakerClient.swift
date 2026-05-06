@@ -94,7 +94,7 @@ public actor MoonrakerClient: MoonrakerClientProtocol {
     }
 
     public func disconnect() async {
-        cleanupCurrentTask(notifyDisconnection: true, reason: "已断开连接")
+        cleanupCurrentTask(notifyDisconnection: true, reason: "Disconnected")
     }
 
     public func rescanGCodeMetadata(
