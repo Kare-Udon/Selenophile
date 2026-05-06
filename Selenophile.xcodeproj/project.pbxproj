@@ -46,6 +46,7 @@
 		7A87F268386E2019BC57B5D0 /* Selenophile_SelenophileKit.bundle in Dependencies */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
 		808E78ACD9C7DB9786D1D010 /* AppLanguageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87322F049EA4FB355413FB0B /* AppLanguageStore.swift */; };
 		8602CA7A18E954BA43B859D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD47869D8271A934D5B7A712 /* SettingsView.swift */; };
+		8807EC06755F421F4ADD4E53 /* PrinterStatusRefreshPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811932A9AB13FE8F56F2ED91 /* PrinterStatusRefreshPolicy.swift */; };
 		8AA31762D1CA239A9857C2D1 /* AppLaunchConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA7B1EC1EE77EA53F2AB80E /* AppLaunchConfigurationTests.swift */; };
 		8DFD88A80A429B3B2B30585C /* WidgetFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8870652E515C7E4D80BD0A3 /* WidgetFamilyView.swift */; };
 		8E11B7F38AA9E8B607865240 /* MoonrakerCameraClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */; };
@@ -262,6 +263,7 @@
 		7C7276F7D6D5890B2C79C2BE /* SelenophileWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelenophileWidget.swift; sourceTree = "<group>"; };
 		7DE8328D080EA70F6A54B62A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusStore.swift; sourceTree = "<group>"; };
+		811932A9AB13FE8F56F2ED91 /* PrinterStatusRefreshPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusRefreshPolicy.swift; sourceTree = "<group>"; };
 		849466EBD3E8F207F0DA0251 /* SelenophileWidgetExtension-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SelenophileWidgetExtension-Info.plist"; sourceTree = "<group>"; };
 		86C5685BDF05F023DB4C961B /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		87322F049EA4FB355413FB0B /* AppLanguageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguageStore.swift; sourceTree = "<group>"; };
@@ -542,6 +544,7 @@
 				D1CF78F62BBD612ED4668424 /* MoonrakerCredentialStore.swift */,
 				C56142C5BDFDDF4A94561C13 /* MoonrakerWebSocketMessage.swift */,
 				29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */,
+				811932A9AB13FE8F56F2ED91 /* PrinterStatusRefreshPolicy.swift */,
 				80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */,
 				A62644B5C5D22734C2542E4D /* WidgetSnapshot.swift */,
 				BDA0400F26278045C2DF8B6B /* WidgetSnapshotStore.swift */,
@@ -884,6 +887,7 @@
 				2043B57528A08BEA75623716 /* MoonrakerCredentialStore.swift in Sources */,
 				1AED95A8409CBEF3684C36EE /* MoonrakerWebSocketMessage.swift in Sources */,
 				5DD5E3ED2FC58DF0ED14D605 /* PrinterStatus.swift in Sources */,
+				8807EC06755F421F4ADD4E53 /* PrinterStatusRefreshPolicy.swift in Sources */,
 				943069046312EF6BD5E252CF /* PrinterStatusStore.swift in Sources */,
 				0FC2DA1B0F19BFCFEE4270B3 /* WidgetSnapshot.swift in Sources */,
 				5478BAA0FC91E5D3AD28677E /* WidgetSnapshotStore.swift in Sources */,

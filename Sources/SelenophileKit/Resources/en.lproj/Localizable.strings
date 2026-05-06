@@ -12,6 +12,9 @@
 "settings_camera_snapshot_url_placeholder" = "http://127.0.0.1/webcam/?action=snapshot";
 "settings_camera_snapshot_help" = "Enter a direct image URL. Absolute URLs and relative paths on the Moonraker host are supported.";
 "settings_language_label" = "Interface Language";
+"settings_status_refresh_rate_label" = "Status Refresh Rate";
+"settings_status_refresh_realtime" = "Realtime";
+"settings_status_refresh_seconds_format" = "%d seconds";
 "settings_launch_at_login_label" = "Launch at Login";
 "settings_launch_at_login_description" = "When enabled, the app opens automatically at system login.";
 "settings_launch_at_login_unavailable" = "Currently unavailable";

@@ -16,6 +16,9 @@ public enum AppLocalization {
         case settingsCameraSnapshotURLPlaceholder = "settings_camera_snapshot_url_placeholder"
         case settingsCameraSnapshotHelp = "settings_camera_snapshot_help"
         case settingsLanguageLabel = "settings_language_label"
+        case settingsStatusRefreshRateLabel = "settings_status_refresh_rate_label"
+        case settingsStatusRefreshRealtime = "settings_status_refresh_realtime"
+        case settingsStatusRefreshSecondsFormat = "settings_status_refresh_seconds_format"
         case settingsLaunchAtLoginLabel = "settings_launch_at_login_label"
         case settingsLaunchAtLoginDescription = "settings_launch_at_login_description"
         case settingsLaunchAtLoginUnavailable = "settings_launch_at_login_unavailable"
@@ -143,6 +146,12 @@ public enum AppLocalization {
                 return "Enter a direct image URL. Absolute URLs and relative paths on the Moonraker host are supported."
             case .settingsLanguageLabel:
                 return "Interface Language"
+            case .settingsStatusRefreshRateLabel:
+                return "Status Refresh Rate"
+            case .settingsStatusRefreshRealtime:
+                return "Realtime"
+            case .settingsStatusRefreshSecondsFormat:
+                return "%d seconds"
             case .settingsLaunchAtLoginLabel:
                 return "Launch at Login"
             case .settingsLaunchAtLoginDescription:

@@ -12,6 +12,9 @@
 "settings_camera_snapshot_url_placeholder" = "http://127.0.0.1/webcam/?action=snapshot";
 "settings_camera_snapshot_help" = "填写一个可以直接返回图片的地址。支持绝对 URL，也支持相对当前 Moonraker 主机的路径。";
 "settings_language_label" = "界面语言";
+"settings_status_refresh_rate_label" = "状态刷新频率";
+"settings_status_refresh_realtime" = "实时";
+"settings_status_refresh_seconds_format" = "%d 秒";
 "settings_launch_at_login_label" = "开机自启";
 "settings_launch_at_login_description" = "启用后，应用会在系统登录时自动打开。";
 "settings_launch_at_login_unavailable" = "当前不可用";

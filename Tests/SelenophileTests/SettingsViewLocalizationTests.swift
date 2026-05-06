@@ -20,6 +20,8 @@ struct SettingsViewLocalizationTests {
         let store = PrinterStatusStore(
             client: SettingsViewLocalizationNoopClient(),
             persistence: configurationStore,
+            statusRefreshPolicy: .realtime,
+            statusRefreshPolicyPersistence: SettingsViewLocalizationRefreshPolicyStore(),
             logStore: logStore
         )
         let languageStore = AppLanguageStore(selectedLanguage: .english)
@@ -50,6 +52,8 @@ struct SettingsViewLocalizationTests {
         let store = PrinterStatusStore(
             client: SettingsViewLocalizationNoopClient(),
             persistence: SettingsViewLocalizationConfigurationStore(configuration: nil),
+            statusRefreshPolicy: .realtime,
+            statusRefreshPolicyPersistence: SettingsViewLocalizationRefreshPolicyStore(),
             logStore: AppLogStore()
         )
 
@@ -61,7 +65,8 @@ struct SettingsViewLocalizationTests {
             cameraSnapshotURL: "",
             appLanguage: .english,
             appearanceMode: .light,
-            themePalette: .graphite
+            themePalette: .graphite,
+            statusRefreshPolicy: .seconds(7)
         )
 
         #expect(!success)
@@ -69,6 +74,7 @@ struct SettingsViewLocalizationTests {
         #expect(appearanceStore.selectedPalette == .graphite)
         #expect(appearanceStore.persistedMode == .dark)
         #expect(appearanceStore.persistedPalette == .default)
+        #expect(store.statusRefreshPolicy == .realtime)
 
         appearanceStore.restorePersistedMode()
 
@@ -82,9 +88,12 @@ struct SettingsViewLocalizationTests {
         let appearanceStore = AppAppearanceStore(defaults: defaults)
         appearanceStore.save(mode: .dark, palette: .default)
         let configurationStore = SettingsViewLocalizationConfigurationStore(configuration: nil)
+        let refreshPolicyStore = SettingsViewLocalizationRefreshPolicyStore()
         let store = PrinterStatusStore(
             client: SettingsViewLocalizationNoopClient(),
             persistence: configurationStore,
+            statusRefreshPolicy: .realtime,
+            statusRefreshPolicyPersistence: refreshPolicyStore,
             logStore: AppLogStore()
         )
 
@@ -96,7 +105,8 @@ struct SettingsViewLocalizationTests {
             cameraSnapshotURL: " http://camera.local/snapshot.jpg ",
             appLanguage: .simplifiedChinese,
             appearanceMode: .light,
-            themePalette: .graphite
+            themePalette: .graphite,
+            statusRefreshPolicy: .seconds(5)
         )
 
         #expect(success)
@@ -105,6 +115,8 @@ struct SettingsViewLocalizationTests {
         #expect(configurationStore.load()?.apiToken == "token")
         #expect(configurationStore.load()?.cameraSnapshotURL == "http://camera.local/snapshot.jpg")
         #expect(configurationStore.load()?.appLanguage == .simplifiedChinese)
+        #expect(store.statusRefreshPolicy == .seconds(5))
+        #expect(refreshPolicyStore.load() == .seconds(5))
     }
 }
 
@@ -125,6 +137,18 @@ private final class SettingsViewLocalizationConfigurationStore: MoonrakerConfigu
 
     func clear() {
         configuration = nil
+    }
+}
+
+private final class SettingsViewLocalizationRefreshPolicyStore: PrinterStatusRefreshPolicyPersisting {
+    private var policy: PrinterStatusRefreshPolicy = .realtime
+
+    func load() -> PrinterStatusRefreshPolicy {
+        policy
+    }
+
+    func save(_ policy: PrinterStatusRefreshPolicy) {
+        self.policy = policy
     }
 }
 

@@ -102,6 +102,88 @@ func userFacingStatusAndErrorAreTranslatedAfterRetryExhaustion() async {
 
 @MainActor
 @Test
+func realtimeStatusRefreshPublishesEveryStatusUpdate() {
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        ),
+        statusRefreshPolicy: .realtime
+    )
+    store.connectionState = .connected
+    var snapshots: [WidgetSnapshot] = []
+    store.onWidgetSnapshotChange = { snapshots.append($0) }
+
+    store.handle(event: .printerStatus(PrinterStatus(state: .printing, progress: 0.1)))
+    store.handle(event: .printerStatusDelta(PrinterStatusDelta(progress: 0.2)))
+
+    #expect(store.printerStatus.progress == 0.2)
+    #expect(snapshots.count == 2)
+    #expect(snapshots.last?.progressLabel == "20%")
+}
+
+@MainActor
+@Test
+func throttledStatusRefreshCoalescesRapidProgressUpdates() async {
+    let sleeper = ControlledSleeper()
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        ),
+        statusRefreshPolicy: .seconds(1),
+        sleep: { duration in
+            await sleeper.sleep(for: duration)
+        }
+    )
+    store.connectionState = .connected
+    var snapshots: [WidgetSnapshot] = []
+    store.onWidgetSnapshotChange = { snapshots.append($0) }
+
+    store.handle(event: .printerStatus(PrinterStatus(state: .printing, progress: 0.1)))
+    store.handle(event: .printerStatusDelta(PrinterStatusDelta(progress: 0.2)))
+    store.handle(event: .printerStatusDelta(PrinterStatusDelta(progress: 0.3)))
+    await sleeper.waitForPendingSleepCount(1)
+
+    #expect(store.printerStatus.progress == 0.1)
+    #expect(snapshots.count == 1)
+
+    await sleeper.resumeAll()
+    for _ in 0..<10 {
+        if snapshots.count == 2 { break }
+        await Task.yield()
+    }
+
+    #expect(store.printerStatus.progress == 0.3)
+    #expect(snapshots.count == 2)
+    #expect(snapshots.last?.progressLabel == "30%")
+}
+
+@MainActor
+@Test
+func throttledStatusRefreshPublishesStateChangesImmediately() {
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        ),
+        statusRefreshPolicy: .seconds(10)
+    )
+    store.connectionState = .connected
+    var snapshots: [WidgetSnapshot] = []
+    store.onWidgetSnapshotChange = { snapshots.append($0) }
+
+    store.handle(event: .printerStatus(PrinterStatus(state: .printing, progress: 0.1)))
+    store.handle(event: .printerStatusDelta(PrinterStatusDelta(state: .paused, progress: 0.2)))
+
+    #expect(store.printerStatus.state == .paused)
+    #expect(store.printerStatus.progress == 0.2)
+    #expect(snapshots.count == 2)
+    #expect(snapshots.last?.statusLabel == "已暂停")
+}
+
+@MainActor
+@Test
 func disconnectDoesNotScheduleReconnectForClientDisconnectedEvent() async {
     let client = DisconnectEmittingMoonrakerClient()
     let store = PrinterStatusStore(
@@ -620,6 +702,28 @@ private final class RecordingMoonrakerConfigurationStore: MoonrakerConfiguration
 
     func savedConfiguration() -> MoonrakerConfiguration? {
         lock.withLock { configuration }
+    }
+}
+
+private actor ControlledSleeper {
+    private var continuations: [CheckedContinuation<Void, Never>] = []
+
+    func sleep(for duration: Duration) async {
+        await withCheckedContinuation { continuation in
+            continuations.append(continuation)
+        }
+    }
+
+    func waitForPendingSleepCount(_ count: Int) async {
+        while continuations.count < count {
+            await Task.yield()
+        }
+    }
+
+    func resumeAll() {
+        let pending = continuations
+        continuations.removeAll()
+        pending.forEach { $0.resume() }
     }
 }
 

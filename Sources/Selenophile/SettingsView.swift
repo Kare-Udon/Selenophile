@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var selectedAppLanguage: AppLanguage
     @State private var selectedAppearanceMode: AppAppearanceMode
     @State private var selectedThemePalette: AppThemePalette
+    @State private var selectedStatusRefreshPolicy: PrinterStatusRefreshPolicy
     @State private var launchAtLoginEnabled: Bool
     @State private var isUpdatingLaunchAtLogin = false
     @State private var isSaving = false
@@ -45,6 +46,7 @@ struct SettingsView: View {
         _selectedAppLanguage = State(initialValue: store.configuration?.appLanguage ?? .system)
         _selectedAppearanceMode = State(initialValue: appAppearanceStore.selectedMode)
         _selectedThemePalette = State(initialValue: appAppearanceStore.selectedPalette)
+        _selectedStatusRefreshPolicy = State(initialValue: store.statusRefreshPolicy)
         _launchAtLoginEnabled = State(initialValue: launchAtLoginControl?.isEnabled() ?? false)
     }
 
@@ -71,6 +73,7 @@ struct SettingsView: View {
             onLanguageSelectionPreview(selectedAppLanguage)
             selectedAppearanceMode = appAppearanceStore.selectedMode
             selectedThemePalette = appAppearanceStore.selectedPalette
+            selectedStatusRefreshPolicy = store.statusRefreshPolicy
         }
         .onChange(of: appLanguageStore.selectedLanguage) { _, language in
             selectedAppLanguage = language
@@ -89,7 +92,8 @@ struct SettingsView: View {
             cameraSnapshotURL: cameraSnapshotURL,
             appLanguage: selectedAppLanguage,
             appearanceMode: selectedAppearanceMode,
-            themePalette: selectedThemePalette
+            themePalette: selectedThemePalette,
+            statusRefreshPolicy: selectedStatusRefreshPolicy
         )
         isSaving = false
         if success && closeOnSuccess {
@@ -336,6 +340,10 @@ struct SettingsView: View {
             settingsCard {
                 formField(title: l10n(.settingsLanguageLabel)) {
                     languagePicker
+                }
+
+                formField(title: l10n(.settingsStatusRefreshRateLabel)) {
+                    statusRefreshSlider
                 }
 
                 VStack(alignment: .leading, spacing: 12) {
@@ -680,6 +688,96 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity)
         .frame(height: 44)
     }
+
+    private var statusRefreshSlider: some View {
+        let selections = PrinterStatusRefreshPolicy.supportedSelections
+
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text(statusRefreshPolicyLabel(selectedStatusRefreshPolicy))
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+                Spacer(minLength: 12)
+            }
+
+            Slider(
+                value: Binding(
+                    get: {
+                        Double(selections.firstIndex(of: selectedStatusRefreshPolicy) ?? 0)
+                    },
+                    set: { value in
+                        let index = min(max(Int(value.rounded()), 0), selections.count - 1)
+                        selectedStatusRefreshPolicy = selections[index]
+                    }
+                ),
+                in: 0...Double(selections.count - 1),
+                step: 1
+            )
+            .tint(SelenophileTheme.Colors.accent)
+            .accessibilityLabel(l10n(.settingsStatusRefreshRateLabel))
+            .accessibilityValue(statusRefreshPolicyLabel(selectedStatusRefreshPolicy))
+
+            statusRefreshTickLabels(selections)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 11)
+        .background(
+            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous)
+                .fill(SelenophileTheme.Colors.inputFill)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous)
+                .stroke(SelenophileTheme.Colors.inputBorder, lineWidth: 1)
+        }
+    }
+
+    private func statusRefreshPolicyLabel(_ policy: PrinterStatusRefreshPolicy) -> String {
+        switch policy {
+        case .realtime:
+            return l10n(.settingsStatusRefreshRealtime)
+        case .seconds(let seconds):
+            return String(format: l10n(.settingsStatusRefreshSecondsFormat), seconds)
+        }
+    }
+
+    private func statusRefreshTickLabel(_ policy: PrinterStatusRefreshPolicy) -> String {
+        switch policy {
+        case .realtime:
+            return l10n(.settingsStatusRefreshRealtime)
+        case .seconds(let seconds):
+            return "\(seconds)s"
+        }
+    }
+
+    private func statusRefreshTickLabels(_ selections: [PrinterStatusRefreshPolicy]) -> some View {
+        GeometryReader { proxy in
+            let thumbCenterInset: CGFloat = 20
+            let usableWidth = max(1, proxy.size.width - thumbCenterInset * 2)
+
+            ZStack(alignment: .topLeading) {
+                ForEach(Array(selections.enumerated()), id: \.element) { index, policy in
+                    let fraction = selections.count <= 1
+                        ? CGFloat(0)
+                        : CGFloat(index) / CGFloat(selections.count - 1)
+                    Text(statusRefreshTickLabel(policy))
+                        .font(.system(size: 10, weight: .medium, design: .rounded))
+                        .foregroundStyle(
+                            selectedStatusRefreshPolicy == policy
+                                ? SelenophileTheme.Colors.primaryText
+                                : SelenophileTheme.Colors.tertiaryText
+                        )
+                        .fixedSize(horizontal: true, vertical: false)
+                        .position(
+                            x: thumbCenterInset + usableWidth * fraction,
+                            y: 9
+                        )
+                }
+            }
+            .frame(width: proxy.size.width, height: 18)
+        }
+        .frame(height: 18)
+    }
 }
 
 private struct ConnectionTestFeedback: Equatable {
@@ -703,7 +801,8 @@ enum SettingsViewSubmission {
         cameraSnapshotURL: String,
         appLanguage: AppLanguage,
         appearanceMode: AppAppearanceMode,
-        themePalette: AppThemePalette
+        themePalette: AppThemePalette,
+        statusRefreshPolicy: PrinterStatusRefreshPolicy
     ) async -> Bool {
         let token = apiToken.trimmingCharacters(in: .whitespacesAndNewlines)
         let snapshotURL = cameraSnapshotURL.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -719,6 +818,7 @@ enum SettingsViewSubmission {
         }
 
         appAppearanceStore.save(mode: appearanceMode, palette: themePalette)
+        store.statusRefreshPolicy = statusRefreshPolicy
         return true
     }
 }

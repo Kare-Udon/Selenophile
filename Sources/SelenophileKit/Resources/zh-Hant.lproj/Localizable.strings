@@ -12,6 +12,9 @@
 "settings_camera_snapshot_url_placeholder" = "http://127.0.0.1/webcam/?action=snapshot";
 "settings_camera_snapshot_help" = "填入一個可直接回傳圖片的位址。支援絕對 URL，也支援相對於 Moonraker 主機的路徑。";
 "settings_language_label" = "介面語言";
+"settings_status_refresh_rate_label" = "狀態刷新頻率";
+"settings_status_refresh_realtime" = "即時";
+"settings_status_refresh_seconds_format" = "%d 秒";
 "settings_launch_at_login_label" = "開機自動啟動";
 "settings_launch_at_login_description" = "啟用後，應用程式會在系統登入時自動開啟。";
 "settings_launch_at_login_unavailable" = "目前不可用";

@@ -133,6 +133,12 @@ public final class PrinterStatusStore {
     }
     public var connectionState: MoonrakerConnectionState = .unconfigured
     public var printerStatus = PrinterStatus()
+    public var statusRefreshPolicy: PrinterStatusRefreshPolicy {
+        didSet {
+            statusRefreshPolicyPersistence.save(statusRefreshPolicy)
+            publishLatestStatus()
+        }
+    }
     public var lastErrorMessage: String?
     public var lastUpdatedAt: Date?
     public var onWidgetSnapshotChange: ((WidgetSnapshot) -> Void)?
@@ -153,6 +159,7 @@ public final class PrinterStatusStore {
     private let client: MoonrakerClientProtocol
     private let cameraClient: MoonrakerCameraClientProtocol
     private let persistence: MoonrakerConfigurationPersisting
+    private let statusRefreshPolicyPersistence: any PrinterStatusRefreshPolicyPersisting
     private let retryPolicy: MoonrakerRetryPolicy
     private let currentPrintThumbnailRetryLimit: Int
     private let sleep: @Sendable (Duration) async -> Void
@@ -164,11 +171,17 @@ public final class PrinterStatusStore {
     private var metadataRescanFilename: String?
     private var currentPrintThumbnailRetryCount: Int = 0
     private var isDisconnectingIntentionally = false
+    @ObservationIgnored private var livePrinterStatus = PrinterStatus()
+    @ObservationIgnored private var liveLastUpdatedAt: Date?
+    @ObservationIgnored private var statusPublishTask: Task<Void, Never>?
+    @ObservationIgnored private var lastStatusPublishedAt: Date?
 
     public init(
         client: MoonrakerClientProtocol = MoonrakerClient(),
         cameraClient: MoonrakerCameraClientProtocol = MoonrakerCameraClient(),
         persistence: MoonrakerConfigurationPersisting = UserDefaultsMoonrakerConfigurationStore(),
+        statusRefreshPolicy: PrinterStatusRefreshPolicy? = nil,
+        statusRefreshPolicyPersistence: any PrinterStatusRefreshPolicyPersisting = UserDefaultsPrinterStatusRefreshPolicyStore(),
         retryPolicy: MoonrakerRetryPolicy = MoonrakerRetryPolicy(),
         currentPrintThumbnailRetryLimit: Int = 3,
         sleep: @escaping @Sendable (Duration) async -> Void = { duration in
@@ -180,6 +193,8 @@ public final class PrinterStatusStore {
         self.client = client
         self.cameraClient = cameraClient
         self.persistence = persistence
+        self.statusRefreshPolicyPersistence = statusRefreshPolicyPersistence
+        self.statusRefreshPolicy = statusRefreshPolicy ?? statusRefreshPolicyPersistence.load()
         self.retryPolicy = retryPolicy
         self.currentPrintThumbnailRetryLimit = currentPrintThumbnailRetryLimit
         self.sleep = sleep
@@ -448,9 +463,12 @@ public final class PrinterStatusStore {
         connectTask?.cancel()
         reconnectTask?.cancel()
         metadataFetchTask?.cancel()
+        statusPublishTask?.cancel()
         connectTask = nil
         reconnectTask = nil
         metadataFetchTask = nil
+        statusPublishTask = nil
+        lastStatusPublishedAt = nil
         metadataFetchFilename = nil
         metadataFetchToken = nil
         metadataRescanFilename = nil
@@ -523,7 +541,10 @@ public final class PrinterStatusStore {
         connectTask?.cancel()
         reconnectTask?.cancel()
         metadataFetchTask?.cancel()
+        statusPublishTask?.cancel()
         metadataFetchTask = nil
+        statusPublishTask = nil
+        lastStatusPublishedAt = nil
         metadataFetchFilename = nil
         metadataFetchToken = nil
         metadataRescanFilename = nil
@@ -572,17 +593,19 @@ public final class PrinterStatusStore {
             log(.info, "Moonraker 已连接")
             emitWidgetSnapshot()
         case .printerStatus(let status):
-            printerStatus = status
-            lastUpdatedAt = Date()
+            let previousStatus = livePrinterStatus
+            livePrinterStatus = status
+            liveLastUpdatedAt = Date()
             logStatusUpdate(status)
-            refreshPrintAssetsIfNeeded(for: status)
-            emitWidgetSnapshot()
+            refreshPrintAssetsIfNeeded(for: livePrinterStatus)
+            publishStatusUpdate(previousStatus: previousStatus)
         case .printerStatusDelta(let delta):
-            printerStatus = printerStatus.applying(delta: delta)
-            lastUpdatedAt = Date()
+            let previousStatus = livePrinterStatus
+            livePrinterStatus = livePrinterStatus.applying(delta: delta)
+            liveLastUpdatedAt = Date()
             log(.debug, "收到打印状态增量更新")
-            refreshPrintAssetsIfNeeded(for: printerStatus)
-            emitWidgetSnapshot()
+            refreshPrintAssetsIfNeeded(for: livePrinterStatus)
+            publishStatusUpdate(previousStatus: previousStatus)
         case .disconnected(let message):
             if shouldIgnoreTransientDisconnection(message) {
                 log(.debug, "忽略连接阶段的瞬时断开事件")
@@ -656,6 +679,68 @@ public final class PrinterStatusStore {
         return "\(prefix)，\(remaining) 秒后重试（\(retryAttemptCount)/\(retryPolicy.maxAttempts)）"
     }
 
+    private func publishStatusUpdate(previousStatus: PrinterStatus) {
+        if shouldPublishStatusImmediately(previousStatus: previousStatus, latestStatus: livePrinterStatus) {
+            publishLatestStatus()
+            return
+        }
+
+        guard let intervalSeconds = statusRefreshPolicy.intervalSeconds else {
+            publishLatestStatus()
+            return
+        }
+
+        guard let lastStatusPublishedAt else {
+            publishLatestStatus()
+            return
+        }
+
+        let interval = TimeInterval(intervalSeconds)
+        let elapsed = Date().timeIntervalSince(lastStatusPublishedAt)
+        guard elapsed < interval else {
+            publishLatestStatus()
+            return
+        }
+
+        scheduleStatusPublish(after: interval - elapsed)
+    }
+
+    private func shouldPublishStatusImmediately(previousStatus: PrinterStatus, latestStatus: PrinterStatus) -> Bool {
+        guard statusRefreshPolicy != .realtime else {
+            return true
+        }
+        guard lastStatusPublishedAt != nil else {
+            return true
+        }
+        return previousStatus.state != latestStatus.state || previousStatus.filename != latestStatus.filename
+    }
+
+    private func scheduleStatusPublish(after delay: TimeInterval) {
+        guard statusPublishTask == nil else {
+            return
+        }
+
+        let milliseconds = max(1, Int((delay * 1000).rounded(.up)))
+        statusPublishTask = Task { [weak self] in
+            await self?.sleep(.milliseconds(milliseconds))
+            guard !Task.isCancelled else { return }
+            await MainActor.run { [weak self] in
+                self?.publishLatestStatus()
+            }
+        }
+    }
+
+    private func publishLatestStatus() {
+        statusPublishTask?.cancel()
+        statusPublishTask = nil
+        printerStatus = livePrinterStatus
+        if let liveLastUpdatedAt {
+            lastUpdatedAt = liveLastUpdatedAt
+        }
+        lastStatusPublishedAt = Date()
+        emitWidgetSnapshot()
+    }
+
     private func refreshPrintAssetsIfNeeded(for status: PrinterStatus) {
         let filename = status.filename?.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let filename, !filename.isEmpty, let configuration else {
@@ -665,6 +750,7 @@ public final class PrinterStatusStore {
             metadataRescanFilename = nil
             currentPrintThumbnailRetryCount = 0
             isWaitingForManualCurrentPrintThumbnailRetry = false
+            livePrinterStatus.slicerEstimatedPrintTime = nil
             printerStatus.slicerEstimatedPrintTime = nil
             currentPrintThumbnailData = nil
             currentPrintThumbnailErrorMessage = nil
@@ -724,6 +810,7 @@ public final class PrinterStatusStore {
                     guard let self else { return }
                     guard self.metadataFetchToken == fetchToken else { return }
                     guard self.metadataFetchFilename == filename else { return }
+                    self.livePrinterStatus.slicerEstimatedPrintTime = metadata.estimatedTime
                     self.printerStatus.slicerEstimatedPrintTime = metadata.estimatedTime
                 }
                 await fetchThumbnailIfNeeded(
@@ -740,6 +827,7 @@ public final class PrinterStatusStore {
                     guard let self else { return }
                     guard self.metadataFetchToken == fetchToken else { return }
                     guard self.metadataFetchFilename == filename else { return }
+                    self.livePrinterStatus.slicerEstimatedPrintTime = nil
                     self.printerStatus.slicerEstimatedPrintTime = nil
                     self.currentPrintThumbnailData = nil
                     self.currentPrintThumbnailErrorMessage = nil
