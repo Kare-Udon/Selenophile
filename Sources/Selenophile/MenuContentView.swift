@@ -245,6 +245,7 @@ struct MenuContentView: View {
                 .minimumScaleFactor(0.48)
                 .allowsTightening(true)
                 .monospacedDigit()
+                .padding(.leading, 4)
         }
         .frame(maxWidth: .infinity, minHeight: 54, alignment: .leading)
         .padding(.horizontal, 7)
@@ -403,12 +404,25 @@ struct MenuContentView: View {
 
                 HStack(spacing: isCameraSnapshotCollapsed ? 0 : 7) {
                     if !isCameraSnapshotCollapsed {
-                        Button(store.isFetchingCameraSnapshot ? l10n(.menuRefreshing) : l10n(.menuRefresh)) {
+                        Button {
                             Task { _ = await store.fetchCameraSnapshot() }
+                        } label: {
+                            ZStack {
+                                Image(systemName: "arrow.clockwise")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .opacity(store.isFetchingCameraSnapshot ? 0 : 1)
+
+                                if store.isFetchingCameraSnapshot {
+                                    ProgressView()
+                                        .controlSize(.small)
+                                }
+                            }
+                            .frame(width: 16, height: 16)
                         }
-                        .buttonStyle(SelenophileButtonStyle(kind: .secondary, scale: 0.9))
-                        .frame(width: 56)
+                        .buttonStyle(SelenophileButtonStyle(kind: .secondary, compact: true, scale: 0.9))
                         .contentShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.smallCorner, style: .continuous))
+                        .menuToolTip(l10n(.menuRefresh))
+                        .accessibilityLabel(store.isFetchingCameraSnapshot ? l10n(.menuRefreshing) : l10n(.menuRefresh))
                         .disabled(store.isFetchingCameraSnapshot || store.configuration == nil)
                     }
 
@@ -600,7 +614,7 @@ struct MenuContentView: View {
     }
 
     private var thumbnailTileBody: some View {
-        ZStack(alignment: .topTrailing) {
+        ZStack {
             RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous)
                 .fill(SelenophileTheme.Colors.surfaceRaised)
 
@@ -622,18 +636,22 @@ struct MenuContentView: View {
                 .padding(9)
             }
 
-            Image(systemName: "arrow.up.left.and.arrow.down.right")
-                .font(.system(size: 10, weight: .bold))
-                .foregroundStyle(SelenophileTheme.Colors.secondaryText)
-                .padding(6)
-                .background(Color.black.opacity(0.30), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                .padding(7)
+            if thumbnailImage != nil {
+                Image(systemName: "arrow.up.left.and.arrow.down.right")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .padding(6)
+                    .background(Color.black.opacity(0.30), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .padding(7)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            }
 
             if store.isFetchingCurrentPrintThumbnail {
                 ProgressView()
                     .controlSize(.mini)
                     .padding(7)
                     .background(.ultraThinMaterial, in: Capsule())
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: SelenophileTheme.Metrics.mediumCorner, style: .continuous))
