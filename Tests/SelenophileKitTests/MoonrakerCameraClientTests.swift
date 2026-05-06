@@ -3,7 +3,7 @@ import Testing
 @testable import SelenophileKit
 
 @Test
-func fetchSnapshotUsesConfiguredAbsoluteURL() async throws {
+func fetchSnapshotDoesNotForwardMoonrakerTokenToCrossOriginAbsoluteURL() async throws {
     try await URLProtocolStub.withExclusiveAccess {
         let session = makeURLSession()
         let client = MoonrakerCameraClient(session: session)
@@ -29,6 +29,37 @@ func fetchSnapshotUsesConfiguredAbsoluteURL() async throws {
         #expect(snapshot == imageData)
         #expect(requests.count == 1)
         #expect(requests[0].url == URL(string: "http://camera.local/snapshot.jpg"))
+        #expect(requests[0].value(forHTTPHeaderField: "Authorization") == nil)
+    }
+}
+
+@Test
+func fetchSnapshotForwardsMoonrakerTokenToSameOriginAbsoluteURL() async throws {
+    try await URLProtocolStub.withExclusiveAccess {
+        let session = makeURLSession()
+        let client = MoonrakerCameraClient(session: session)
+        let configuration = MoonrakerValidatedConfiguration(
+            httpURL: URL(string: "http://printer.local:7125")!,
+            webSocketURL: URL(string: "ws://printer.local:7125/websocket")!,
+            apiToken: "secret",
+            cameraSnapshotURL: "http://printer.local:7125/webcam/?action=snapshot"
+        )
+        let imageData = Data([0xFF, 0xD8, 0xFF])
+        await URLProtocolStub.setResponses([
+            .init(
+                url: URL(string: "http://printer.local:7125/webcam/?action=snapshot")!,
+                statusCode: 200,
+                headers: ["Content-Type": "image/jpeg"],
+                body: imageData
+            ),
+        ])
+
+        let snapshot = try await client.fetchSnapshot(configuration: configuration)
+        let requests = await URLProtocolStub.requests()
+
+        #expect(snapshot == imageData)
+        #expect(requests.count == 1)
+        #expect(requests[0].url == URL(string: "http://printer.local:7125/webcam/?action=snapshot"))
         #expect(requests[0].value(forHTTPHeaderField: "Authorization") == "Bearer secret")
     }
 }
@@ -41,7 +72,7 @@ func fetchSnapshotResolvesRelativeURLAgainstMoonrakerHost() async throws {
         let configuration = MoonrakerValidatedConfiguration(
             httpURL: URL(string: "http://printer.local:7125")!,
             webSocketURL: URL(string: "ws://printer.local:7125/websocket")!,
-            apiToken: nil,
+            apiToken: "secret",
             cameraSnapshotURL: "/webcam/?action=snapshot"
         )
         let imageData = Data([0x89, 0x50, 0x4E, 0x47])
@@ -59,6 +90,7 @@ func fetchSnapshotResolvesRelativeURLAgainstMoonrakerHost() async throws {
 
         #expect(snapshot == imageData)
         #expect(requests[0].url == URL(string: "http://printer.local/webcam/?action=snapshot"))
+        #expect(requests[0].value(forHTTPHeaderField: "Authorization") == "Bearer secret")
     }
 }
 

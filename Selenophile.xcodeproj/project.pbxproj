@@ -16,6 +16,7 @@
 		1AED95A8409CBEF3684C36EE /* MoonrakerWebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56142C5BDFDDF4A94561C13 /* MoonrakerWebSocketMessage.swift */; };
 		1B1ABEE13C3BE492FE57159B /* MenuBarIconConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED8CFBE15CF0F1CFC1B8734 /* MenuBarIconConfigurationTests.swift */; };
 		1EE3208E11C5F4CB79A5B01A /* MenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1C2A4B55080140BAA9017F /* MenuContentView.swift */; };
+		2043B57528A08BEA75623716 /* MoonrakerCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CF78F62BBD612ED4668424 /* MoonrakerCredentialStore.swift */; };
 		2205530F941B0BC6BBCBD5F7 /* AppLanguageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F935BCEFFF22B89E352C12 /* AppLanguageTests.swift */; };
 		26F2ECC19DE258A61B27DEB5 /* AppLanguageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453328176320E6CADD04C72 /* AppLanguageStoreTests.swift */; };
 		2A1D2CE8BEE751F62B1DB14C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07FA86E251B4546DE608D177 /* Assets.xcassets */; };
@@ -76,6 +77,7 @@
 		F17FFC7C2977E7A267C94109 /* MoonrakerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */; };
 		F3908F293355327FE9973361 /* WidgetSnapshotStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE30D4AA62792AA629DB0C /* WidgetSnapshotStoreTests.swift */; };
 		F910A93E66C8BF666C23519C /* WidgetEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D9B9E3B91EDFC189574DA3 /* WidgetEntry.swift */; };
+		FB0F55B69E38F5A98B62FCA4 /* MoonrakerConfigurationStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E912C26C32EF118F4E1464 /* MoonrakerConfigurationStoreTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -287,11 +289,13 @@
 		C75B453E88EF840C678335C9 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CEA8F4378C9CDD78B0C4A174 /* SelenophileWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SelenophileWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D9B9E3B91EDFC189574DA3 /* WidgetEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntry.swift; sourceTree = "<group>"; };
+		D1CF78F62BBD612ED4668424 /* MoonrakerCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerCredentialStore.swift; sourceTree = "<group>"; };
 		DD29BEF3BC6E8986AE25F1B8 /* SelenophileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelenophileApp.swift; sourceTree = "<group>"; };
 		DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerCameraClientTests.swift; sourceTree = "<group>"; };
 		DDDE30D4AA62792AA629DB0C /* WidgetSnapshotStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotStoreTests.swift; sourceTree = "<group>"; };
 		DFC3A0D80F1DA99F26CD63B8 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E28E9E6F3577BBDE58758CDE /* SelenophileWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelenophileWidgetExtension.entitlements; sourceTree = "<group>"; };
+		E2E912C26C32EF118F4E1464 /* MoonrakerConfigurationStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonrakerConfigurationStoreTests.swift; sourceTree = "<group>"; };
 		E2F935BCEFFF22B89E352C12 /* AppLanguageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguageTests.swift; sourceTree = "<group>"; };
 		E35F816603B7C9F499CF069E /* mr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = mr; path = mr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E8CCFB8003B2471E9BCCFC82 /* MenuBarStatusIconRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusIconRenderer.swift; sourceTree = "<group>"; };
@@ -483,6 +487,7 @@
 				5C47681039E48FBCC5930C1F /* AppLogStoreTests.swift */,
 				C5369424EC964E9065676399 /* AppThemePaletteTests.swift */,
 				DD97EBEA60B33A534F16D305 /* MoonrakerCameraClientTests.swift */,
+				E2E912C26C32EF118F4E1464 /* MoonrakerConfigurationStoreTests.swift */,
 				6D5FAA86E3FF790BE00B67C1 /* MoonrakerConfigurationTests.swift */,
 				EB7A5F1C14ED6BE85611231F /* MoonrakerStatusParsingTests.swift */,
 				30BD80AC67C69D6C826BBADD /* PrinterStatusStoreTests.swift */,
@@ -534,6 +539,7 @@
 				EE16A8BF6754D7446A49D79F /* MoonrakerCameraClient.swift */,
 				1A398735DFDB767EE29E0234 /* MoonrakerClient.swift */,
 				C6F04629C0853378A9FEC0B7 /* MoonrakerConfiguration.swift */,
+				D1CF78F62BBD612ED4668424 /* MoonrakerCredentialStore.swift */,
 				C56142C5BDFDDF4A94561C13 /* MoonrakerWebSocketMessage.swift */,
 				29AE02CF68173A3C1C8438A2 /* PrinterStatus.swift */,
 				80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */,
@@ -793,6 +799,7 @@
 				C62AF00E6AD26DA0CCE50E9D /* AppLogStoreTests.swift in Sources */,
 				646E92D2886031B7A003C87A /* AppThemePaletteTests.swift in Sources */,
 				8E11B7F38AA9E8B607865240 /* MoonrakerCameraClientTests.swift in Sources */,
+				FB0F55B69E38F5A98B62FCA4 /* MoonrakerConfigurationStoreTests.swift in Sources */,
 				19D0E6182DA3BEC3ECFC72E4 /* MoonrakerConfigurationTests.swift in Sources */,
 				96ED0ACC05F5A7D91716A435 /* MoonrakerStatusParsingTests.swift in Sources */,
 				3C388159A95FE2FFDBFC4609 /* PrinterStatusStoreTests.swift in Sources */,
@@ -874,6 +881,7 @@
 				6C9FA5459FB405D23DED9B0D /* MoonrakerCameraClient.swift in Sources */,
 				F17FFC7C2977E7A267C94109 /* MoonrakerClient.swift in Sources */,
 				5B9B41C9569512F8DB8CF58F /* MoonrakerConfiguration.swift in Sources */,
+				2043B57528A08BEA75623716 /* MoonrakerCredentialStore.swift in Sources */,
 				1AED95A8409CBEF3684C36EE /* MoonrakerWebSocketMessage.swift in Sources */,
 				5DD5E3ED2FC58DF0ED14D605 /* PrinterStatus.swift in Sources */,
 				943069046312EF6BD5E252CF /* PrinterStatusStore.swift in Sources */,

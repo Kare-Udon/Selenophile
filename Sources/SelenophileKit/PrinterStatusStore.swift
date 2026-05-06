@@ -61,24 +61,65 @@ public protocol MoonrakerConfigurationPersisting {
 
 public final class UserDefaultsMoonrakerConfigurationStore: MoonrakerConfigurationPersisting {
     private let defaults: UserDefaults
+    private let credentialStore: any MoonrakerCredentialStoring
     private let key = "moonraker.configuration"
 
-    public init(defaults: UserDefaults = .standard) {
+    public init(
+        defaults: UserDefaults = .standard,
+        credentialStore: any MoonrakerCredentialStoring = KeychainMoonrakerCredentialStore()
+    ) {
         self.defaults = defaults
+        self.credentialStore = credentialStore
     }
 
     public func load() -> MoonrakerConfiguration? {
         guard let data = defaults.data(forKey: key) else { return nil }
-        return try? JSONDecoder().decode(MoonrakerConfiguration.self, from: data)
+        guard let configuration = try? JSONDecoder().decode(MoonrakerConfiguration.self, from: data) else {
+            return nil
+        }
+
+        if let legacyToken = configuration.apiToken {
+            if credentialStore.saveAPIToken(legacyToken) {
+                persistUserDefaultsConfiguration(configurationWithoutAPIToken(configuration))
+            }
+            return configuration
+        }
+
+        guard let token = credentialStore.loadAPIToken() else {
+            return configuration
+        }
+        return replacingAPIToken(in: configuration, with: token)
     }
 
     public func save(_ configuration: MoonrakerConfiguration) {
-        guard let data = try? JSONEncoder().encode(configuration) else { return }
-        defaults.set(data, forKey: key)
+        _ = credentialStore.saveAPIToken(configuration.apiToken)
+        persistUserDefaultsConfiguration(configurationWithoutAPIToken(configuration))
     }
 
     public func clear() {
         defaults.removeObject(forKey: key)
+        credentialStore.clearAPIToken()
+    }
+
+    private func persistUserDefaultsConfiguration(_ configuration: MoonrakerConfiguration) {
+        guard let data = try? JSONEncoder().encode(configuration) else { return }
+        defaults.set(data, forKey: key)
+    }
+
+    private func configurationWithoutAPIToken(_ configuration: MoonrakerConfiguration) -> MoonrakerConfiguration {
+        replacingAPIToken(in: configuration, with: nil)
+    }
+
+    private func replacingAPIToken(
+        in configuration: MoonrakerConfiguration,
+        with apiToken: String?
+    ) -> MoonrakerConfiguration {
+        MoonrakerConfiguration(
+            serverURLString: configuration.serverURLString,
+            apiToken: apiToken,
+            cameraSnapshotURL: configuration.cameraSnapshotURL,
+            appLanguage: configuration.appLanguage
+        )
     }
 }
 

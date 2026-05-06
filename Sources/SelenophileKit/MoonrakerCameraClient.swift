@@ -26,13 +26,15 @@ public final class MoonrakerCameraClient: MoonrakerCameraClientProtocol {
     }
 
     public func fetchSnapshot(configuration: MoonrakerValidatedConfiguration) async throws -> Data {
-        guard let snapshotURL = resolvedURL(from: configuration.cameraSnapshotURL, baseURL: configuration.httpURL) else {
+        guard let snapshotRequest = resolvedSnapshotRequest(from: configuration.cameraSnapshotURL, baseURL: configuration.httpURL) else {
             throw MoonrakerCameraError.noSnapshotURL
         }
 
-        var request = URLRequest(url: snapshotURL)
+        var request = URLRequest(url: snapshotRequest.url)
         request.httpMethod = "GET"
-        applyAuthorization(to: &request, token: configuration.apiToken)
+        if snapshotRequest.forwardsMoonrakerAuthorization {
+            applyAuthorization(to: &request, token: configuration.apiToken)
+        }
 
         let (data, response) = try await session.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
@@ -46,12 +48,15 @@ public final class MoonrakerCameraClient: MoonrakerCameraClientProtocol {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     }
 
-    private func resolvedURL(from snapshotURL: String?, baseURL: URL) -> URL? {
+    private func resolvedSnapshotRequest(from snapshotURL: String?, baseURL: URL) -> ResolvedSnapshotRequest? {
         let trimmed = snapshotURL?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         guard !trimmed.isEmpty else { return nil }
 
         if let absoluteURL = URL(string: trimmed), absoluteURL.scheme != nil {
-            return absoluteURL
+            return ResolvedSnapshotRequest(
+                url: absoluteURL,
+                forwardsMoonrakerAuthorization: isSameOrigin(absoluteURL, baseURL)
+            )
         }
 
         let relativeComponents = URLComponents(string: trimmed)
@@ -63,6 +68,33 @@ public final class MoonrakerCameraClient: MoonrakerCameraClientProtocol {
         components.path = relativePath.hasPrefix("/") ? relativePath : "/" + relativePath
         components.query = relativeComponents?.query
         components.fragment = nil
-        return components.url
+        guard let url = components.url else { return nil }
+        return ResolvedSnapshotRequest(url: url, forwardsMoonrakerAuthorization: true)
     }
+
+    private func isSameOrigin(_ url: URL, _ baseURL: URL) -> Bool {
+        url.scheme?.lowercased() == baseURL.scheme?.lowercased()
+            && url.host()?.lowercased() == baseURL.host()?.lowercased()
+            && normalizedPort(for: url) == normalizedPort(for: baseURL)
+    }
+
+    private func normalizedPort(for url: URL) -> Int? {
+        if let port = url.port {
+            return port
+        }
+
+        switch url.scheme?.lowercased() {
+        case "http":
+            return 80
+        case "https":
+            return 443
+        default:
+            return nil
+        }
+    }
+}
+
+private struct ResolvedSnapshotRequest {
+    let url: URL
+    let forwardsMoonrakerAuthorization: Bool
 }

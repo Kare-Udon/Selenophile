@@ -19,8 +19,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let appLanguageStore: AppLanguageStore
     let appAppearanceStore: AppAppearanceStore
     let launchConfiguration: AppLaunchConfiguration
-    private let widgetSnapshotStore: WidgetSnapshotStore
-    private let widgetCenter: any WidgetTimelineReloading
+    private let widgetSnapshotStore: WidgetSnapshotStore?
+    private let widgetCenter: (any WidgetTimelineReloading)?
     private var settingsWindowController: NSWindowController?
     private var logWindowController: LogWindowController?
     private var mainPanelWindowController: MainPanelWindowController?
@@ -42,8 +42,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         appLanguageStore: AppLanguageStore? = nil,
         appAppearanceStore: AppAppearanceStore? = nil,
         launchConfiguration: AppLaunchConfiguration = AppLaunchConfiguration(processInfo: .processInfo),
-        widgetSnapshotStore: WidgetSnapshotStore = WidgetSnapshotStore(),
-        widgetCenter: any WidgetTimelineReloading = WidgetCenter.shared
+        widgetSnapshotStore: WidgetSnapshotStore? = nil,
+        widgetCenter: (any WidgetTimelineReloading)? = nil
     ) {
         let resolvedLogStore = logStore ?? AppLogStore()
         let resolvedStore = store ?? PrinterStatusStore(logStore: resolvedLogStore)
@@ -196,6 +196,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     private func publishWidgetSnapshot(_ snapshot: WidgetSnapshot) {
+        guard let widgetSnapshotStore, let widgetCenter else { return }
         widgetSnapshotStore.save(snapshot)
         widgetCenter.reloadTimelines(ofKind: AppConfig.widgetKind)
     }
