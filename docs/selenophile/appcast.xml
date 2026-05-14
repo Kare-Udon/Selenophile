@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Selenophile Updates</title>
+    <link>https://kare-udon.github.io/Selenophile/selenophile/appcast.xml</link>
+    <description>Update feed for Selenophile. Release items will be added when distribution is configured.</description>
+    <language>en</language>
+  </channel>
+</rss>

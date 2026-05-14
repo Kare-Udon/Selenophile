@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Selenophile</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #101318;
+      --surface: #1d2229;
+      --text: #f4f6f8;
+      --muted: #aab2bd;
+      --accent: #8bc2ff;
+      --border: #3a414a;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(720px, calc(100% - 48px));
+      padding: 40px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(36px, 6vw, 56px);
+      line-height: 1;
+    }
+
+    p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul {
+      margin: 28px 0 0;
+      padding-left: 20px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Selenophile</h1>
+    <p>A native macOS menu bar monitor for Klipper printers.</p>
+    <ul>
+      <li><a href="https://github.com/Kare-Udon/Selenophile">GitHub repository</a></li>
+      <li><a href="selenophile/appcast.xml">Sparkle appcast</a></li>
+      <li><a href="sparkle-github-distribution.html">Sparkle distribution notes</a></li>
+    </ul>
+  </main>
+</body>
+</html>
