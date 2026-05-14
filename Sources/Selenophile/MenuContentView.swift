@@ -74,7 +74,7 @@ struct MenuContentView: View {
             headerCard
             timeCards
             detailMetrics
-            if let lastError = store.displayErrorMessage?.nonEmpty {
+            if let lastError = store.displayErrorMessage(language: uiLanguage)?.nonEmpty {
                 errorBanner(lastError)
             }
         }
@@ -150,7 +150,7 @@ struct MenuContentView: View {
 
     private var connectionBadge: some View {
         SelenophileStatusBadge(
-            text: store.connectionBadgeLabel.uppercased(),
+            text: store.connectionBadgeLabel(language: uiLanguage).uppercased(),
             foreground: connectionBadgeForeground,
             background: connectionBadgeBackground
         )
@@ -455,7 +455,7 @@ struct MenuContentView: View {
                     }
                 }
 
-                if let error = store.cameraSnapshotErrorMessage?.nonEmpty {
+                if let error = store.cameraSnapshotErrorMessage(language: uiLanguage)?.nonEmpty {
                     Text(error)
                         .font(.system(size: 11, weight: .medium, design: .rounded))
                         .foregroundStyle(SelenophileTheme.Colors.danger)

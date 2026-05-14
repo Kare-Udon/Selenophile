@@ -15,7 +15,7 @@ struct SelenophileWidget: Widget {
             WidgetView(entry: entry)
         }
         .configurationDisplayName("Selenophile")
-        .description("显示 Moonraker 打印状态。")
+        .description(AppLocalization.localizedString(.widgetDescription, language: .system))
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

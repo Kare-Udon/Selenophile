@@ -5,6 +5,7 @@ import Testing
 @Test
 func widgetSnapshotEncodesAndDecodesLosslessly() throws {
     let snapshot = WidgetSnapshot(
+        language: .japanese,
         statusLabel: "打印中",
         connectionLabel: "已连接",
         title: "Benchy_0.2mm.gcode",
@@ -24,6 +25,33 @@ func widgetSnapshotEncodesAndDecodesLosslessly() throws {
     let decoded = try JSONDecoder().decode(WidgetSnapshot.self, from: data)
 
     #expect(decoded == snapshot)
+}
+
+@Test
+func widgetSnapshotDecodesLegacyPayloadWithoutLanguage() throws {
+    let legacyJSON = #"""
+    {
+      "statusLabel": "打印中",
+      "connectionLabel": "已连接",
+      "title": "Benchy_0.2mm.gcode",
+      "progress": 0.64,
+      "progressLabel": "64%",
+      "remainingTime": "00:28:40",
+      "elapsedTime": "00:49:20",
+      "nozzle": "215.0 / 220.0°C",
+      "bed": "63.0 / 65.0°C",
+      "layer": "124 / 196",
+      "speed": "100%",
+      "summary": "正在稳定打印，状态正常",
+      "tone": "accent"
+    }
+    """#
+
+    let decoded = try JSONDecoder().decode(WidgetSnapshot.self, from: Data(legacyJSON.utf8))
+
+    #expect(decoded.language == .system)
+    #expect(decoded.title == "Benchy_0.2mm.gcode")
+    #expect(decoded.tone == .accent)
 }
 
 @Test

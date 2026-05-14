@@ -98,6 +98,53 @@ public enum AppLocalization {
         case menuTooltipStatus = "menu_tooltip_status"
         case menuTooltipProgress = "menu_tooltip_progress"
         case menuLastUpdatedPrefix = "menu_last_updated_prefix"
+        case menuConnectionBadgeNeedsAttention = "menu_connection_badge_needs_attention"
+        case menuConnectionBadgeConnected = "menu_connection_badge_connected"
+        case menuConnectionBadgeConnecting = "menu_connection_badge_connecting"
+        case menuConnectionBadgeRetrying = "menu_connection_badge_retrying"
+        case menuConnectionBadgeDisconnected = "menu_connection_badge_disconnected"
+        case menuConnectionBadgeFailed = "menu_connection_badge_failed"
+        case menuConnectionBadgeUnconfigured = "menu_connection_badge_unconfigured"
+        case connectionSummaryAutoRetryStopped = "connection_summary_auto_retry_stopped"
+        case connectionSummaryConnectedWaitingStatus = "connection_summary_connected_waiting_status"
+        case connectionSummaryConnectedReceivingStatus = "connection_summary_connected_receiving_status"
+        case connectionSummaryConnecting = "connection_summary_connecting"
+        case connectionSummaryFailed = "connection_summary_failed"
+        case connectionSummaryDisconnected = "connection_summary_disconnected"
+        case connectionSummaryUnconfigured = "connection_summary_unconfigured"
+        case connectionSummaryRetryFormat = "connection_summary_retry_format"
+        case connectionErrorAuthFailed = "connection_error_auth_failed"
+        case connectionErrorDecodeMismatch = "connection_error_decode_mismatch"
+        case connectionErrorTimeout = "connection_error_timeout"
+        case connectionErrorCannotConnect = "connection_error_cannot_connect"
+        case connectionErrorCancelled = "connection_error_cancelled"
+        case connectionErrorEmptyURL = "connection_error_empty_url"
+        case connectionErrorInvalidURL = "connection_error_invalid_url"
+        case connectionErrorUnsupportedScheme = "connection_error_unsupported_scheme"
+        case cameraErrorNoSnapshotURL = "camera_error_no_snapshot_url"
+        case cameraErrorInvalidSnapshotResponse = "camera_error_invalid_snapshot_response"
+        case printerStateStandby = "printer_state_standby"
+        case printerStatePrinting = "printer_state_printing"
+        case printerStatePaused = "printer_state_paused"
+        case printerStateComplete = "printer_state_complete"
+        case printerStateCancelled = "printer_state_cancelled"
+        case printerStateError = "printer_state_error"
+        case printerStateUnknown = "printer_state_unknown"
+        case widgetTitleNoPrintTask = "widget_title_no_print_task"
+        case widgetTitleConnecting = "widget_title_connecting"
+        case widgetTitleReconnecting = "widget_title_reconnecting"
+        case widgetTitleDisconnected = "widget_title_disconnected"
+        case widgetTitleFailed = "widget_title_failed"
+        case widgetTitleUnconfigured = "widget_title_unconfigured"
+        case widgetSummaryPrintingNormal = "widget_summary_printing_normal"
+        case widgetSummaryPaused = "widget_summary_paused"
+        case widgetSummaryComplete = "widget_summary_complete"
+        case widgetSummaryCancelled = "widget_summary_cancelled"
+        case widgetSummaryError = "widget_summary_error"
+        case widgetSummaryStandby = "widget_summary_standby"
+        case widgetSummaryCheckConnection = "widget_summary_check_connection"
+        case widgetSummaryUnconfigured = "widget_summary_unconfigured"
+        case widgetDescription = "widget_description"
 
         case logLevelDebug = "log_level_debug"
         case logLevelInfo = "log_level_info"
@@ -311,6 +358,100 @@ public enum AppLocalization {
                 return "Progress"
             case .menuLastUpdatedPrefix:
                 return "Last updated"
+            case .menuConnectionBadgeNeedsAttention:
+                return "Needs Attention"
+            case .menuConnectionBadgeConnected:
+                return "Connected"
+            case .menuConnectionBadgeConnecting:
+                return "Connecting"
+            case .menuConnectionBadgeRetrying:
+                return "Retrying"
+            case .menuConnectionBadgeDisconnected:
+                return "Disconnected"
+            case .menuConnectionBadgeFailed:
+                return "Failed"
+            case .menuConnectionBadgeUnconfigured:
+                return "Not Set Up"
+            case .connectionSummaryAutoRetryStopped:
+                return "Automatic retry stopped. Reconnect manually."
+            case .connectionSummaryConnectedWaitingStatus:
+                return "Connected. Waiting for the first status update."
+            case .connectionSummaryConnectedReceivingStatus:
+                return "Connected and receiving Moonraker status."
+            case .connectionSummaryConnecting:
+                return "Connecting to Moonraker"
+            case .connectionSummaryFailed:
+                return "Connection failed"
+            case .connectionSummaryDisconnected:
+                return "Connection disconnected"
+            case .connectionSummaryUnconfigured:
+                return "Enter a Moonraker address first."
+            case .connectionSummaryRetryFormat:
+                return "%@, retrying in %d seconds (%d/%d)"
+            case .connectionErrorAuthFailed:
+                return "Moonraker authentication failed. Check the JWT or API token."
+            case .connectionErrorDecodeMismatch:
+                return "Moonraker returned data that does not match the current parser."
+            case .connectionErrorTimeout:
+                return "Connection to Moonraker timed out."
+            case .connectionErrorCannotConnect:
+                return "Cannot connect to Moonraker. Check the address, port, or network."
+            case .connectionErrorCancelled:
+                return "Connection was cancelled."
+            case .connectionErrorEmptyURL:
+                return "Enter a Moonraker address."
+            case .connectionErrorInvalidURL:
+                return "The Moonraker address is invalid."
+            case .connectionErrorUnsupportedScheme:
+                return "The Moonraker address only supports http or https."
+            case .cameraErrorNoSnapshotURL:
+                return "Enter an accessible camera snapshot URL first."
+            case .cameraErrorInvalidSnapshotResponse:
+                return "The camera snapshot response is invalid."
+            case .printerStateStandby:
+                return "Standby"
+            case .printerStatePrinting:
+                return "Printing"
+            case .printerStatePaused:
+                return "Paused"
+            case .printerStateComplete:
+                return "Complete"
+            case .printerStateCancelled:
+                return "Cancelled"
+            case .printerStateError:
+                return "Error"
+            case .printerStateUnknown:
+                return "Unknown"
+            case .widgetTitleNoPrintTask:
+                return "No current print job"
+            case .widgetTitleConnecting:
+                return "Connecting to Moonraker"
+            case .widgetTitleReconnecting:
+                return "Reconnecting to Moonraker"
+            case .widgetTitleDisconnected:
+                return "Moonraker disconnected"
+            case .widgetTitleFailed:
+                return "Moonraker connection issue"
+            case .widgetTitleUnconfigured:
+                return "Set up a Moonraker address first"
+            case .widgetSummaryPrintingNormal:
+                return "Printing is stable and status is normal"
+            case .widgetSummaryPaused:
+                return "Print is paused"
+            case .widgetSummaryComplete:
+                return "Print is complete"
+            case .widgetSummaryCancelled:
+                return "Print was cancelled"
+            case .widgetSummaryError:
+                return "Printer status needs attention"
+            case .widgetSummaryStandby:
+                return "Printer is connected with no active job"
+            case .widgetSummaryCheckConnection:
+                return "Check the Moonraker address or network connection"
+            case .widgetSummaryUnconfigured:
+                return "No printer status data is available yet"
+            case .widgetDescription:
+                return "Display Moonraker print status."
             case .logLevelDebug:
                 return "Debug"
             case .logLevelInfo:
@@ -368,6 +509,70 @@ public enum AppLocalization {
 
     public static func logWindowTitle(for language: AppLanguage) -> String {
         localizedString(.logWindowTitle, language: language)
+    }
+
+    public static func localizedConnectionErrorDescription(_ error: Error, language: AppLanguage) -> String {
+        switch error {
+        case MoonrakerConfigurationError.emptyURL:
+            return localizedString(.connectionErrorEmptyURL, language: language)
+        case MoonrakerConfigurationError.invalidURL:
+            return localizedString(.connectionErrorInvalidURL, language: language)
+        case MoonrakerConfigurationError.unsupportedScheme:
+            return localizedString(.connectionErrorUnsupportedScheme, language: language)
+        case MoonrakerCameraError.noSnapshotURL:
+            return localizedString(.cameraErrorNoSnapshotURL, language: language)
+        case MoonrakerCameraError.invalidSnapshotResponse:
+            return localizedString(.cameraErrorInvalidSnapshotResponse, language: language)
+        default:
+            return localizedConnectionErrorMessage(error.localizedDescription, language: language)
+        }
+    }
+
+    public static func localizedConnectionErrorMessage(_ message: String, language: AppLanguage) -> String {
+        let normalized = message.lowercased()
+
+        if normalized.contains("failed to decode jwt") || normalized.contains("jwt") {
+            return localizedString(.connectionErrorAuthFailed, language: language)
+        }
+        if normalized.contains("couldn't be read")
+            || normalized.contains("couldn’t be read")
+            || normalized.contains("could not be read")
+            || normalized.contains("isn’t in the correct format")
+            || normalized.contains("isn't in the correct format")
+            || normalized.contains("is in the wrong format")
+        {
+            return localizedString(.connectionErrorDecodeMismatch, language: language)
+        }
+        if normalized.contains("timed out") || normalized.contains("连接 moonraker 超时") {
+            return localizedString(.connectionErrorTimeout, language: language)
+        }
+        if normalized.contains("could not connect")
+            || normalized.contains("cannot connect")
+            || normalized.contains("network is unreachable")
+            || normalized.contains("connection refused")
+            || normalized.contains("无法连接到 moonraker")
+        {
+            return localizedString(.connectionErrorCannotConnect, language: language)
+        }
+        if normalized.contains("cancelled") || normalized.contains("canceled") || normalized.contains("已取消") {
+            return localizedString(.connectionErrorCancelled, language: language)
+        }
+        if normalized.contains("请输入 moonraker 地址") || normalized.contains("enter a moonraker address") {
+            return localizedString(.connectionErrorEmptyURL, language: language)
+        }
+        if normalized.contains("moonraker 地址无效") || normalized.contains("moonraker address is invalid") {
+            return localizedString(.connectionErrorInvalidURL, language: language)
+        }
+        if normalized.contains("moonraker 地址只支持") || normalized.contains("moonraker address only supports") {
+            return localizedString(.connectionErrorUnsupportedScheme, language: language)
+        }
+        if normalized.contains("请先填写可访问的相机快照地址") || normalized.contains("accessible camera snapshot url") {
+            return localizedString(.cameraErrorNoSnapshotURL, language: language)
+        }
+        if normalized.contains("相机快照响应无效") || normalized.contains("camera snapshot response is invalid") {
+            return localizedString(.cameraErrorInvalidSnapshotResponse, language: language)
+        }
+        return message
     }
 
     static func localizedString(_ key: String, fallback: String, language: AppLanguage) -> String {

@@ -95,9 +95,12 @@ func userFacingStatusAndErrorAreTranslatedAfterRetryExhaustion() async {
     store.start()
     try? await Task.sleep(for: .milliseconds(100))
 
-    #expect(store.connectionBadgeLabel == "需要处理")
-    #expect(store.connectionStatusSummary == "自动重试已停止，请手动重连")
-    #expect(store.displayErrorMessage == "Moonraker 返回的数据格式与当前解析规则不一致。")
+    #expect(store.connectionBadgeLabel(language: .simplifiedChinese) == "需要处理")
+    #expect(store.connectionStatusSummary(language: .simplifiedChinese) == "自动重试已停止，请手动重连")
+    #expect(store.displayErrorMessage(language: .simplifiedChinese) == "Moonraker 返回的数据格式与当前解析规则不一致。")
+    #expect(store.connectionBadgeLabel(language: .japanese) == "要対応")
+    #expect(store.connectionStatusSummary(language: .japanese) == "自動再試行は停止しました。手動で再接続してください。")
+    #expect(store.displayErrorMessage(language: .japanese) == "Moonraker から返されたデータが現在の解析ルールと一致しません。")
 }
 
 @MainActor
@@ -106,7 +109,11 @@ func realtimeStatusRefreshPublishesEveryStatusUpdate() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+            configuration: MoonrakerConfiguration(
+                serverURLString: "http://printer.local:7125",
+                apiToken: nil,
+                appLanguage: .simplifiedChinese
+            )
         ),
         statusRefreshPolicy: .realtime
     )
@@ -165,7 +172,11 @@ func throttledStatusRefreshPublishesStateChangesImmediately() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+            configuration: MoonrakerConfiguration(
+                serverURLString: "http://printer.local:7125",
+                apiToken: nil,
+                appLanguage: .simplifiedChinese
+            )
         ),
         statusRefreshPolicy: .seconds(10)
     )
@@ -242,7 +253,12 @@ func fetchCameraSnapshotReportsFailure() async throws {
         client: NoopMoonrakerClient(),
         cameraClient: StubMoonrakerCameraClient(snapshotResult: .failure(MoonrakerCameraError.noSnapshotURL)),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil, cameraSnapshotURL: nil)
+            configuration: MoonrakerConfiguration(
+                serverURLString: "http://printer.local:7125",
+                apiToken: nil,
+                cameraSnapshotURL: nil,
+                appLanguage: .japanese
+            )
         )
     )
 
@@ -251,7 +267,9 @@ func fetchCameraSnapshotReportsFailure() async throws {
     #expect(!success)
     #expect(store.cameraSnapshotData == nil)
     #expect(store.cameraSnapshotUpdatedAt == nil)
-    #expect(store.cameraSnapshotErrorMessage == MoonrakerCameraError.noSnapshotURL.localizedDescription)
+    #expect(store.cameraSnapshotErrorMessage == "Enter an accessible camera snapshot URL first.")
+    #expect(store.cameraSnapshotErrorMessage(language: .japanese) == "先にアクセス可能なカメラスナップショット URL を入力してください。")
+    #expect(store.cameraSnapshotErrorMessage(language: .simplifiedChinese) == "请先填写可访问的相机快照地址。")
     #expect(!store.isFetchingCameraSnapshot)
 }
 
