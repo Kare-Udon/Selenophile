@@ -1,9 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
-  <channel>
-    <title>Selenophile Updates</title>
-    <link>https://kare-udon.github.io/Selenophile/selenophile/appcast.xml</link>
-    <description>Update feed for Selenophile. Release items will be added when distribution is configured.</description>
-    <language>en</language>
-  </channel>
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Selenophile</title>
+        <item>
+            <title>0.1.0</title>
+            <pubDate>Thu, 14 May 2026 17:51:09 +0800</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>0.1.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <sparkle:releaseNotesLink>https://kare-udon.github.io/Selenophile/selenophile/releases/Selenophile-0.1.0.html</sparkle:releaseNotesLink>
+            <enclosure url="https://github.com/Kare-Udon/Selenophile/releases/download/v0.1.0/Selenophile-0.1.0.dmg" length="4150240" type="application/octet-stream" sparkle:edSignature="OrsJfcuhdAEb3kg73EZW2vQZuWv8Et9foEWd7JLi+JJOWwlUd9MAN7z+9YLbZcoSOiNxWYjWCmASjM5vwI/eDw=="/>
+        </item>
+    </channel>
 </rss>
