@@ -3,6 +3,16 @@
     <channel>
         <title>Selenophile</title>
         <item>
+            <title>0.1.1</title>
+            <pubDate>Thu, 14 May 2026 19:56:04 +0800</pubDate>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>0.1.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <sparkle:releaseNotesLink>https://kare-udon.github.io/Selenophile/selenophile/releases/Selenophile-0.1.1.html</sparkle:releaseNotesLink>
+            <enclosure url="https://github.com/Kare-Udon/Selenophile/releases/download/v0.1.1/Selenophile-0.1.1.dmg" length="4177300" type="application/octet-stream" sparkle:edSignature="N9bWN/xWf81BDCQWDyD+vLkQStXutBr0xp2/mchEDGk522PgYYpVX9Bufbxn8Lo7UOEpMC03apoQoVRN/L0jCw=="/>
+        </item>
+        <item>
             <title>0.1.0</title>
             <pubDate>Thu, 14 May 2026 17:51:09 +0800</pubDate>
             <sparkle:version>1</sparkle:version>

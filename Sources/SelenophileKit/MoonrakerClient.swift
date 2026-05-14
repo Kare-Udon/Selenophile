@@ -215,7 +215,7 @@ public actor MoonrakerClient: MoonrakerClientProtocol {
         let request = MoonrakerRequest.identify(
             id: nextRequestID(),
             clientName: AppConfig.appName,
-            version: "0.1.0",
+            version: "0.1.1",
             url: AppConfig.projectURL,
             accessToken: configuration.apiToken
         )
