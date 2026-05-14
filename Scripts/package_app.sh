@@ -9,8 +9,8 @@ APP_NAME=${APP_NAME:-Selenophile}
 BUNDLE_ID=${BUNDLE_ID:-com.udon.selenophile}
 MACOS_MIN_VERSION=${MACOS_MIN_VERSION:-14.0}
 MENU_BAR_APP=${MENU_BAR_APP:-1}
-SPARKLE_FEED_URL=${SPARKLE_FEED_URL:-https://example.com/selenophile/appcast.xml}
-SPARKLE_PUBLIC_ED_KEY=${SPARKLE_PUBLIC_ED_KEY:-}
+SPARKLE_FEED_URL=${SPARKLE_FEED_URL:-https://kare-udon.github.io/Selenophile/selenophile/appcast.xml}
+SPARKLE_PUBLIC_ED_KEY=${SPARKLE_PUBLIC_ED_KEY:-E/nueJJiuhX7I3zRZEjCtYn50JepeMIbY1LltoIs6rA=}
 SIGNING_MODE=${SIGNING_MODE:-}
 APP_IDENTITY=${APP_IDENTITY:-}
 

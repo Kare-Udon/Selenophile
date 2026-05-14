@@ -1,18 +1,18 @@
 # Sparkle 2 GitHub 分发教程
 
-这份教程假设未来会使用 GitHub 作为分发源，但最终仓库、Pages URL 和签名密钥还没有准备好。
+这份教程记录 Selenophile 使用 GitHub Releases、GitHub Pages 和 Sparkle 2 分发更新的流程。
 
 ## 当前已经接入的内容
 
 - Sparkle 2 已经通过 Swift Package Manager 链接到 `Selenophile` app target。
-- `Project.swift` 定义了占位构建设置：
-  - `SPARKLE_FEED_URL = https://example.com/selenophile/appcast.xml`
-  - `SPARKLE_PUBLIC_ED_KEY = ""`
+- `Project.swift` 定义了当前发布用构建设置：
+  - `SPARKLE_FEED_URL = https://kare-udon.github.io/Selenophile/selenophile/appcast.xml`
+  - `SPARKLE_PUBLIC_ED_KEY = E/nueJJiuhX7I3zRZEjCtYn50JepeMIbY1LltoIs6rA=`
 - `Scripts/package_app.sh` 也可以通过环境变量接收同样的值。
 - Sparkle 启动逻辑已经在代码中做了保护。只有 app bundle 里存在真实 HTTPS `SUFeedURL`，并且 `SUPublicEDKey` 非空时，更新检查才会启用。
 - 默认通过 `SUEnableAutomaticChecks = false` 关闭自动检查；Sparkle 配置完成后，Settings 窗口会显示手动检查更新入口。
 
-不要发布占位 feed URL。代码会有意把它视为未启用状态。
+不要恢复占位 feed URL。代码会有意把 `example.com` 或未替换构建变量视为未启用状态。
 
 ## 推荐的 GitHub 布局
 

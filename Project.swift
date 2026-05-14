@@ -12,8 +12,8 @@ let project = Project(
     settings: .settings(
         base: [
             "MACOSX_DEPLOYMENT_TARGET": "14.0",
-            "SPARKLE_FEED_URL": "https://example.com/selenophile/appcast.xml",
-            "SPARKLE_PUBLIC_ED_KEY": "",
+            "SPARKLE_FEED_URL": "https://kare-udon.github.io/Selenophile/selenophile/appcast.xml",
+            "SPARKLE_PUBLIC_ED_KEY": "E/nueJJiuhX7I3zRZEjCtYn50JepeMIbY1LltoIs6rA=",
         ]
     ),
     targets: [
