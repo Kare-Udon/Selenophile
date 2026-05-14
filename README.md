@@ -1,85 +1,97 @@
 # Selenophile
 
-Selenophile 是一个面向 Moonraker / Klipper 的 macOS 菜单栏应用，用来查看打印状态、连接状态和相机相关信息，并提供设置与调试日志入口。
+[English](README.md) | [简体中文](README.zh-Hans.md) | [日本語](README.ja.md)
 
-## 项目特性
+A native macOS menu bar monitor for Klipper printers.
 
-- 菜单栏常驻运行
-- 连接 Moonraker 后实时显示打印状态
-- 支持相机快照获取与状态展示
-- 提供设置窗口和调试日志窗口
-- 内置自动重试与日志记录能力
+Selenophile keeps the current state of your Moonraker / Klipper printer visible from the macOS menu bar. It focuses on monitoring, not printer control: quick status, live progress, temperatures, timing, layers, speed, camera snapshots, and enough logs to understand connection problems.
 
-## 仓库结构
+<p>
+  <img src="docs/assets/readme/menu-popover.jpg" alt="Selenophile menu bar popover showing a live Klipper print" width="420">
+</p>
 
-- `Sources/Selenophile/`：应用层 UI、窗口和菜单栏控制逻辑
-- `Sources/SelenophileKit/`：核心数据模型、网络客户端和状态管理
-- `Tests/`：单元测试
-- `Scripts/`：构建、打包和启动脚本
-- `Selenophile.xcodeproj/`、`Selenophile.xcworkspace/`：Xcode/Tuist 生成的工程入口
-- `docs/`：项目设计文档和实施计划
+## Highlights
 
-## 本地开发
+- Native macOS menu bar app with a compact popover.
+- Live Moonraker status for Klipper printers.
+- Print progress, filename, elapsed time, remaining time, layers, speed, nozzle temperature, and bed temperature.
+- Optional camera snapshot preview from a Moonraker-relative or absolute image URL.
+- Settings for connection, refresh rate, launch at login, interface language, appearance mode, and color palette.
+- Debug logs for connection, retry, status update, and camera request issues.
+- Built for Apple Silicon Macs on macOS 14 or later.
 
-### 生成工程
+## Screenshots
 
-如果你使用 Tuist：
+| Connection | General |
+| --- | --- |
+| <img src="docs/assets/readme/settings-connection.jpg" alt="Moonraker connection settings" width="420"> | <img src="docs/assets/readme/settings-general.jpg" alt="General settings with language, refresh rate, and launch at login" width="420"> |
+
+| Appearance |
+| --- |
+| <img src="docs/assets/readme/settings-appearance.jpg" alt="Appearance settings with theme and color palette options" width="620"> |
+
+## Requirements
+
+- Apple Silicon Mac.
+- macOS 14 or later.
+- A Klipper printer with Moonraker enabled.
+
+## Moonraker Setup
+
+Open **Settings** from the menu bar popover and enter your Moonraker connection details.
+
+- **Moonraker URL**: usually `http://printer.local:7125` or `http://<printer-ip>:7125`.
+- **API Token**: optional. Most local Moonraker installations do not need a token unless authentication is enabled.
+- **Camera Snapshot URL**: optional. You can use a full URL such as `http://printer.local/webcam/?action=snapshot`, or a relative path on the Moonraker host such as `/webcam/?action=snapshot`.
+
+Use **Test Connection** before saving if you want to verify the URL and token.
+
+## What Selenophile Does Not Do
+
+Selenophile is a monitor. It does not upload G-code, start prints, pause prints, cancel prints, or edit Klipper configuration. Those actions should stay in your existing printer UI.
+
+## Languages
+
+The app interface supports multiple languages. This README is available in English, Simplified Chinese, and Japanese.
+
+## Build From Source
+
+Clone the repository and build with Swift Package Manager:
 
 ```bash
-tuist generate --no-open
+swift build
 ```
 
-### 运行测试
+Run the test suite:
 
 ```bash
 swift test
 ```
 
-### 启动应用
+Launch the menu bar app locally:
 
 ```bash
 ./run-menubar.sh
 ```
 
-停止应用：
-
-```bash
-./stop-menubar.sh
-```
-
-### 构建分发 DMG
-
-生成一个可将 `Selenophile.app` 拖到 `Applications` 目录的本地分发 `.dmg`：
+Build a local app package:
 
 ```bash
 ./Scripts/build_dmg.sh
 ```
 
-默认输出到 `dist/Selenophile-0.1.0.dmg`。如需构建通用二进制，可结合现有环境变量：
+The Xcode project is maintained through Tuist. If you use Tuist locally:
 
 ```bash
-ARCHES="arm64 x86_64" ./Scripts/build_dmg.sh
+tuist generate --no-open
 ```
 
-Sparkle 2 更新框架已经接入，但默认使用占位 appcast URL 和空 public key，不会在分发源未配置时启动更新检查。GitHub Releases / Pages 分发流程见 `docs/sparkle-github-distribution.md`。
+Release and update distribution notes live in [docs/sparkle-github-distribution.md](docs/sparkle-github-distribution.md).
 
-## 初始提交建议
+## Contributing
 
-适合提交到 git 的内容：
+Issues and pull requests are welcome. For code changes, keep the menu bar app focused on monitoring and run the relevant Swift tests before submitting.
 
-- 源码：`Sources/`
-- 测试：`Tests/`
-- 工程定义：`Package.swift`、`Project.swift`、`Tuist.swift`
-- Xcode / Tuist 工程文件：`Selenophile.xcodeproj/`、`Selenophile.xcworkspace/`
-- 脚本：`Scripts/`、`run-menubar.sh`、`stop-menubar.sh`
-- 配置与文档：`version.env`、`docs/`、`README.md`
+## License
 
-不建议提交的内容：
-
-- 构建产物：`.build/`、`Derived/`、`Selenophile.app/`
-- 本地状态：`.DS_Store`、`xcuserdata/`、`*.xcuserstate`
-- 本地协作缓存：`.codex/`、`.superpowers/`
-
-## 许可证
-
-当前仓库尚未添加许可证文件，如需开源发布，建议补充 `LICENSE`。
+Selenophile is released under the [MIT License](LICENSE).
