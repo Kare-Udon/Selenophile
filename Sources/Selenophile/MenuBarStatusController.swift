@@ -118,8 +118,8 @@ final class MenuBarStatusController: NSObject {
 
     private var tooltipText: String {
         let progressText = formattedProgressText(for: store.printerStatus.progress)
-        let stateText = store.printerStatus.state.localizedLabel
         let uiLanguage = appLanguageStore.effectiveLanguage()
+        let stateText = store.printerStatus.state.localizedLabel(language: uiLanguage)
         return "\(AppLocalization.localizedString(.menuTooltipTitle, language: uiLanguage))\n\(AppLocalization.localizedString(.menuTooltipStatus, language: uiLanguage))：\(stateText)\n\(AppLocalization.localizedString(.menuTooltipProgress, language: uiLanguage))：\(progressText)"
     }
 

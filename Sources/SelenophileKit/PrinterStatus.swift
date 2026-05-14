@@ -104,21 +104,25 @@ public enum PrinterState: String, Codable, Equatable, Sendable {
     }
 
     public var localizedLabel: String {
+        localizedLabel(language: .simplifiedChinese)
+    }
+
+    public func localizedLabel(language: AppLanguage) -> String {
         switch self {
         case .standby:
-            return "待机"
+            return AppLocalization.localizedString(.printerStateStandby, language: language)
         case .printing:
-            return "打印中"
+            return AppLocalization.localizedString(.printerStatePrinting, language: language)
         case .paused:
-            return "已暂停"
+            return AppLocalization.localizedString(.printerStatePaused, language: language)
         case .complete:
-            return "已完成"
+            return AppLocalization.localizedString(.printerStateComplete, language: language)
         case .cancelled:
-            return "已取消"
+            return AppLocalization.localizedString(.printerStateCancelled, language: language)
         case .error:
-            return "错误"
+            return AppLocalization.localizedString(.printerStateError, language: language)
         case .unknown:
-            return "未知"
+            return AppLocalization.localizedString(.printerStateUnknown, language: language)
         }
     }
 

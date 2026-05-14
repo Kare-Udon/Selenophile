@@ -144,7 +144,10 @@ struct SettingsView: View {
                 connectionTestFeedback = .init(message: message, isError: true)
             }
         } catch {
-            connectionTestFeedback = .init(message: error.localizedDescription, isError: true)
+            connectionTestFeedback = .init(
+                message: AppLocalization.localizedConnectionErrorDescription(error, language: uiLanguage),
+                isError: true
+            )
         }
     }
 
@@ -308,7 +311,7 @@ struct SettingsView: View {
                 }
 
                 if let error = SettingsFeedbackPresentation.storeErrorMessage(
-                    store.displayErrorMessage,
+                    store.displayErrorMessage(language: uiLanguage),
                     hasConnectionTestFeedback: connectionTestFeedback != nil
                 ) {
                     errorBanner(error)

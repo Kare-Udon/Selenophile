@@ -87,8 +87,20 @@ func appLocalizationLocalizesJapaneseSettingsSurface() {
     #expect(AppLocalization.localizedString(.settingsTestConnection, language: .japanese) == "接続をテスト")
     #expect(AppLocalization.localizedString(.settingsTestingConnection, language: .japanese) == "テスト中…")
     #expect(AppLocalization.localizedString(.settingsConnectionHint, language: .japanese) == "Moonraker インスタンスに接続するための URL とトークンを入力してください。")
+    #expect(AppLocalization.localizedString(.settingsStatusRefreshRateLabel, language: .japanese) == "状態の更新頻度")
+    #expect(AppLocalization.localizedString(.settingsStatusRefreshRealtime, language: .japanese) == "リアルタイム")
     #expect(AppLocalization.localizedString(.appearanceModeLabel, language: .japanese) == "テーマ")
     #expect(AppLocalization.localizedString(.themePaletteLabel, language: .japanese) == "カラースタイル")
+}
+
+@Test
+func appLocalizationLocalizesJapaneseConnectionStatusSurface() {
+    #expect(AppLocalization.localizedString(.menuConnectionBadgeNeedsAttention, language: .japanese) == "要対応")
+    #expect(AppLocalization.localizedString(.connectionSummaryAutoRetryStopped, language: .japanese) == "自動再試行は停止しました。手動で再接続してください。")
+    #expect(AppLocalization.localizedString(.connectionErrorCannotConnect, language: .japanese) == "Moonraker に接続できません。アドレス、ポート、ネットワークを確認してください。")
+    #expect(AppLocalization.localizedString(.cameraErrorNoSnapshotURL, language: .japanese) == "先にアクセス可能なカメラスナップショット URL を入力してください。")
+    #expect(AppLocalization.localizedString(.printerStatePrinting, language: .japanese) == "印刷中")
+    #expect(AppLocalization.localizedString(.widgetTitleNoPrintTask, language: .japanese) == "現在の印刷ジョブはありません")
 }
 
 @Test

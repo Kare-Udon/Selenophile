@@ -36,19 +36,23 @@ public enum MoonrakerConnectionState: Equatable, Sendable {
     case failed
 
     public var localizedLabel: String {
+        localizedLabel(language: .simplifiedChinese)
+    }
+
+    public func localizedLabel(language: AppLanguage) -> String {
         switch self {
         case .unconfigured:
-            return "未配置"
+            return AppLocalization.localizedString(.menuConnectionBadgeUnconfigured, language: language)
         case .connecting:
-            return "连接中"
+            return AppLocalization.localizedString(.menuConnectionBadgeConnecting, language: language)
         case .connected:
-            return "已连接"
+            return AppLocalization.localizedString(.menuConnectionBadgeConnected, language: language)
         case .reconnecting:
-            return "重连中"
+            return AppLocalization.localizedString(.menuConnectionBadgeRetrying, language: language)
         case .disconnected:
-            return "已断开"
+            return AppLocalization.localizedString(.menuConnectionBadgeDisconnected, language: language)
         case .failed:
-            return "连接失败"
+            return AppLocalization.localizedString(.menuConnectionBadgeFailed, language: language)
         }
     }
 }
@@ -224,50 +228,69 @@ public final class PrinterStatusStore {
     }
 
     public var connectionBadgeLabel: String {
+        connectionBadgeLabel(language: storeLanguage)
+    }
+
+    public func connectionBadgeLabel(language: AppLanguage) -> String {
         if isWaitingForManualReconnect {
-            return "需要处理"
+            return localized(.menuConnectionBadgeNeedsAttention, language: language)
         }
 
         switch connectionState {
         case .connected:
-            return "已连接"
+            return localized(.menuConnectionBadgeConnected, language: language)
         case .connecting:
-            return "连接中"
+            return localized(.menuConnectionBadgeConnecting, language: language)
         case .reconnecting:
-            return "重试中"
+            return localized(.menuConnectionBadgeRetrying, language: language)
         case .disconnected:
-            return "已断开"
+            return localized(.menuConnectionBadgeDisconnected, language: language)
         case .failed:
-            return "连接失败"
+            return localized(.menuConnectionBadgeFailed, language: language)
         case .unconfigured:
-            return "待配置"
+            return localized(.menuConnectionBadgeUnconfigured, language: language)
         }
     }
 
     public var connectionStatusSummary: String {
+        connectionStatusSummary(language: storeLanguage)
+    }
+
+    public func connectionStatusSummary(language: AppLanguage) -> String {
         if isWaitingForManualReconnect {
-            return "自动重试已停止，请手动重连"
+            return localized(.connectionSummaryAutoRetryStopped, language: language)
         }
 
         switch connectionState {
         case .connected:
-            return lastUpdatedAt == nil ? "已建立连接，等待首个状态更新" : "连接正常，正在接收 Moonraker 状态"
+            return lastUpdatedAt == nil
+                ? localized(.connectionSummaryConnectedWaitingStatus, language: language)
+                : localized(.connectionSummaryConnectedReceivingStatus, language: language)
         case .connecting:
-            return "正在连接 Moonraker"
+            return localized(.connectionSummaryConnecting, language: language)
         case .reconnecting:
-            return retryStatusLine(prefix: "连接失败")
+            return retryStatusLine(prefix: localized(.connectionSummaryFailed, language: language), language: language)
         case .disconnected:
-            return retryStatusLine(prefix: "连接已断开")
+            return retryStatusLine(prefix: localized(.connectionSummaryDisconnected, language: language), language: language)
         case .failed:
-            return retryStatusLine(prefix: "连接失败")
+            return retryStatusLine(prefix: localized(.connectionSummaryFailed, language: language), language: language)
         case .unconfigured:
-            return "请先填写 Moonraker 地址"
+            return localized(.connectionSummaryUnconfigured, language: language)
         }
     }
 
     public var displayErrorMessage: String? {
+        displayErrorMessage(language: storeLanguage)
+    }
+
+    public func displayErrorMessage(language: AppLanguage) -> String? {
         guard let lastErrorMessage, !lastErrorMessage.isEmpty else { return nil }
-        return translatedErrorMessage(lastErrorMessage)
+        return AppLocalization.localizedConnectionErrorMessage(lastErrorMessage, language: language)
+    }
+
+    public func cameraSnapshotErrorMessage(language: AppLanguage) -> String? {
+        guard let cameraSnapshotErrorMessage, !cameraSnapshotErrorMessage.isEmpty else { return nil }
+        return AppLocalization.localizedConnectionErrorMessage(cameraSnapshotErrorMessage, language: language)
     }
 
     private func emitWidgetSnapshot() {
@@ -275,8 +298,9 @@ public final class PrinterStatusStore {
     }
 
     public func widgetSnapshot() -> WidgetSnapshot {
+        let language = storeLanguage
         guard configuration != nil else {
-            return .placeholder
+            return .placeholder(language: language)
         }
 
         let statusLabel: String
@@ -284,39 +308,39 @@ public final class PrinterStatusStore {
 
         switch connectionState {
         case .unconfigured:
-            return .placeholder
+            return .placeholder(language: language)
         case .connecting:
-            statusLabel = "连接中"
+            statusLabel = localized(.menuConnectionBadgeConnecting, language: language)
             tone = .muted
         case .reconnecting:
-            statusLabel = "重连中"
+            statusLabel = localized(.menuConnectionBadgeRetrying, language: language)
             tone = .muted
         case .connected:
             switch printerStatus.state {
             case .printing:
-                statusLabel = "打印中"
+                statusLabel = printerStatus.state.localizedLabel(language: language)
                 tone = .accent
             case .paused:
-                statusLabel = "已暂停"
+                statusLabel = printerStatus.state.localizedLabel(language: language)
                 tone = .muted
             case .complete:
-                statusLabel = "已完成"
+                statusLabel = printerStatus.state.localizedLabel(language: language)
                 tone = .neutral
             case .cancelled:
-                statusLabel = "已取消"
+                statusLabel = printerStatus.state.localizedLabel(language: language)
                 tone = .neutral
             case .error:
-                statusLabel = "错误"
+                statusLabel = printerStatus.state.localizedLabel(language: language)
                 tone = .danger
             case .standby, .unknown:
-                statusLabel = "待机"
+                statusLabel = printerStatus.state.localizedLabel(language: language)
                 tone = .muted
             }
         case .disconnected:
-            statusLabel = "已断开"
+            statusLabel = localized(.menuConnectionBadgeDisconnected, language: language)
             tone = .danger
         case .failed:
-            statusLabel = "连接失败"
+            statusLabel = localized(.menuConnectionBadgeFailed, language: language)
             tone = .danger
         }
 
@@ -326,17 +350,17 @@ public final class PrinterStatusStore {
             }
             switch connectionState {
             case .connected:
-                return "当前无打印任务"
+                return localized(.widgetTitleNoPrintTask, language: language)
             case .connecting:
-                return "正在连接 Moonraker"
+                return localized(.widgetTitleConnecting, language: language)
             case .reconnecting:
-                return "正在重连 Moonraker"
+                return localized(.widgetTitleReconnecting, language: language)
             case .disconnected:
-                return "Moonraker 已断开"
+                return localized(.widgetTitleDisconnected, language: language)
             case .failed:
-                return "Moonraker 连接异常"
+                return localized(.widgetTitleFailed, language: language)
             case .unconfigured:
-                return "请先设置 Moonraker 地址"
+                return localized(.widgetTitleUnconfigured, language: language)
             }
         }()
 
@@ -351,34 +375,35 @@ public final class PrinterStatusStore {
             case .connected:
                 switch printerStatus.state {
                 case .printing:
-                    return "正在稳定打印，状态正常"
+                    return localized(.widgetSummaryPrintingNormal, language: language)
                 case .paused:
-                    return "打印已暂停"
+                    return localized(.widgetSummaryPaused, language: language)
                 case .complete:
-                    return "打印已完成"
+                    return localized(.widgetSummaryComplete, language: language)
                 case .cancelled:
-                    return "打印已取消"
+                    return localized(.widgetSummaryCancelled, language: language)
                 case .error:
-                    return "打印状态异常"
+                    return localized(.widgetSummaryError, language: language)
                 case .standby, .unknown:
-                    return "打印机已连接，当前没有活动任务"
+                    return localized(.widgetSummaryStandby, language: language)
                 }
             case .connecting:
-                return "正在连接 Moonraker"
+                return localized(.widgetTitleConnecting, language: language)
             case .reconnecting:
-                return connectionStatusSummary
+                return connectionStatusSummary(language: language)
             case .disconnected:
-                return "请检查 Moonraker 地址或网络连接"
+                return localized(.widgetSummaryCheckConnection, language: language)
             case .failed:
-                return "请检查 Moonraker 地址或网络连接"
+                return localized(.widgetSummaryCheckConnection, language: language)
             case .unconfigured:
-                return "还没有可用的打印状态数据"
+                return localized(.widgetSummaryUnconfigured, language: language)
             }
         }()
 
         return WidgetSnapshot(
+            language: language,
             statusLabel: statusLabel,
-            connectionLabel: connectionBadgeLabel,
+            connectionLabel: connectionBadgeLabel(language: language),
             title: title,
             progress: printerStatus.normalizedProgress,
             progressLabel: WidgetSnapshotFormatter.percentLabel(for: printerStatus.progress),
@@ -495,7 +520,7 @@ public final class PrinterStatusStore {
         guard let configuration else {
             cameraSnapshotData = nil
             cameraSnapshotUpdatedAt = nil
-            cameraSnapshotErrorMessage = "请先配置 Moonraker 地址。"
+            cameraSnapshotErrorMessage = MoonrakerConfigurationError.emptyURL.localizedDescription
             log(.warning, "Camera snapshot request skipped: Moonraker is not configured")
             return false
         }
@@ -668,15 +693,31 @@ public final class PrinterStatusStore {
         (connectionState == .connecting || connectionState == .reconnecting) && message == "Disconnected"
     }
 
-    private func retryStatusLine(prefix: String) -> String {
+    private var storeLanguage: AppLanguage {
+        (configuration?.appLanguage ?? .system).resolved(preferredLanguages: Locale.preferredLanguages)
+    }
+
+    private func localized(_ key: AppLocalization.Key, language: AppLanguage) -> String {
+        AppLocalization.localizedString(key, language: language.resolved(preferredLanguages: Locale.preferredLanguages))
+    }
+
+    private func retryStatusLine(prefix: String, language: AppLanguage) -> String {
         if isWaitingForManualReconnect {
-            return "自动重试已停止，请手动重连"
+            return localized(.connectionSummaryAutoRetryStopped, language: language)
         }
         guard let nextRetryAt else {
             return prefix
         }
         let remaining = max(0, Int(nextRetryAt.timeIntervalSinceNow.rounded(.up)))
-        return "\(prefix)，\(remaining) 秒后重试（\(retryAttemptCount)/\(retryPolicy.maxAttempts)）"
+        let format = localized(.connectionSummaryRetryFormat, language: language)
+        return String(
+            format: format,
+            locale: AppLocalization.locale(for: language),
+            prefix,
+            remaining,
+            retryAttemptCount,
+            retryPolicy.maxAttempts
+        )
     }
 
     private func publishStatusUpdate(previousStatus: PrinterStatus) {
@@ -960,37 +1001,6 @@ public final class PrinterStatusStore {
             let rhsArea = (rhs.width ?? 0) * (rhs.height ?? 0)
             return lhsArea < rhsArea
         }
-    }
-
-    private func translatedErrorMessage(_ message: String) -> String {
-        let normalized = message.lowercased()
-
-        if normalized.contains("failed to decode jwt") || normalized.contains("jwt") {
-            return "Moonraker 鉴权失败，请检查 JWT 或 API token。"
-        }
-        if normalized.contains("couldn't be read")
-            || normalized.contains("couldn’t be read")
-            || normalized.contains("could not be read")
-            || normalized.contains("isn’t in the correct format")
-            || normalized.contains("isn't in the correct format")
-            || normalized.contains("is in the wrong format")
-        {
-            return "Moonraker 返回的数据格式与当前解析规则不一致。"
-        }
-        if normalized.contains("timed out") {
-            return "连接 Moonraker 超时。"
-        }
-        if normalized.contains("could not connect")
-            || normalized.contains("cannot connect")
-            || normalized.contains("network is unreachable")
-            || normalized.contains("connection refused")
-        {
-            return "无法连接到 Moonraker，请检查地址、端口或网络。"
-        }
-        if normalized.contains("cancelled") || normalized.contains("canceled") {
-            return "连接已取消。"
-        }
-        return message
     }
 
     private func log(_ level: AppLogLevel, _ message: String) {

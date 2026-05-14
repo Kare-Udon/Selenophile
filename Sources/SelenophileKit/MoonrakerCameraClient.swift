@@ -11,9 +11,9 @@ public enum MoonrakerCameraError: LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .noSnapshotURL:
-            return "请先填写可访问的相机快照地址。"
+            return "Enter an accessible camera snapshot URL first."
         case .invalidSnapshotResponse:
-            return "相机快照响应无效。"
+            return "The camera snapshot response is invalid."
         }
     }
 }

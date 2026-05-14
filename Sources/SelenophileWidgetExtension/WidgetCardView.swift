@@ -192,25 +192,29 @@ struct WidgetCardView: View {
             return []
         case .systemMedium:
             return [
-                Metric(title: "喷嘴", value: snapshot.nozzle),
-                Metric(title: "热床", value: snapshot.bed),
-                Metric(title: "剩余", value: snapshot.remainingTime)
+                Metric(title: l10n(.menuNozzle), value: snapshot.nozzle),
+                Metric(title: l10n(.menuBed), value: snapshot.bed),
+                Metric(title: l10n(.menuRemainingTime), value: snapshot.remainingTime)
             ]
         case .systemLarge:
             return [
-                Metric(title: "喷嘴", value: snapshot.nozzle),
-                Metric(title: "热床", value: snapshot.bed),
-                Metric(title: "剩余", value: snapshot.remainingTime),
-                Metric(title: "层数", value: snapshot.layer),
-                Metric(title: "倍率", value: snapshot.speed)
+                Metric(title: l10n(.menuNozzle), value: snapshot.nozzle),
+                Metric(title: l10n(.menuBed), value: snapshot.bed),
+                Metric(title: l10n(.menuRemainingTime), value: snapshot.remainingTime),
+                Metric(title: l10n(.menuLayer), value: snapshot.layer),
+                Metric(title: l10n(.menuPrintSpeed), value: snapshot.speed)
             ]
         default:
             return [
-                Metric(title: "喷嘴", value: snapshot.nozzle),
-                Metric(title: "热床", value: snapshot.bed),
-                Metric(title: "剩余", value: snapshot.remainingTime)
+                Metric(title: l10n(.menuNozzle), value: snapshot.nozzle),
+                Metric(title: l10n(.menuBed), value: snapshot.bed),
+                Metric(title: l10n(.menuRemainingTime), value: snapshot.remainingTime)
             ]
         }
+    }
+
+    private func l10n(_ key: AppLocalization.Key) -> String {
+        AppLocalization.localizedString(key, language: snapshot.language)
     }
 
     private var cardBackground: some View {

@@ -10,7 +10,7 @@ func widgetSnapshotDefaultsToPlaceholderWhenUnconfigured() {
         persistence: InMemoryMoonrakerConfigurationStore(configuration: nil)
     )
 
-    #expect(store.widgetSnapshot() == .placeholder)
+    #expect(store.widgetSnapshot() == .placeholder(language: .system.resolved()))
 }
 
 @MainActor
@@ -19,7 +19,7 @@ func widgetSnapshotReflectsConnectedPrintingState() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+            configuration: chineseConfiguration()
         )
     )
 
@@ -60,7 +60,7 @@ func widgetSnapshotReflectsConnectedStandbyState() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+            configuration: chineseConfiguration()
         )
     )
 
@@ -96,11 +96,36 @@ func widgetSnapshotReflectsConnectedStandbyState() {
 
 @MainActor
 @Test
+func widgetSnapshotUsesConfiguredJapaneseLanguage() {
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(
+                serverURLString: "http://printer.local:7125",
+                apiToken: nil,
+                appLanguage: .japanese
+            )
+        )
+    )
+
+    store.connectionState = .connected
+    store.printerStatus = PrinterStatus(state: .standby)
+
+    let snapshot = store.widgetSnapshot()
+
+    #expect(snapshot.statusLabel == "待機")
+    #expect(snapshot.connectionLabel == "接続済み")
+    #expect(snapshot.title == "現在の印刷ジョブはありません")
+    #expect(snapshot.summary == "プリンターは接続済みで、現在のジョブはありません")
+}
+
+@MainActor
+@Test
 func widgetSnapshotReflectsDisconnectedState() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+            configuration: chineseConfiguration()
         )
     )
 
@@ -122,7 +147,7 @@ func widgetSnapshotChangeCallbackEmitsUpdatedSnapshot() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+            configuration: chineseConfiguration()
         )
     )
     var snapshots: [WidgetSnapshot] = []
@@ -156,7 +181,7 @@ func failedEventPublishesDangerToneSnapshot() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+            configuration: chineseConfiguration()
         )
     )
     var snapshots: [WidgetSnapshot] = []
@@ -209,4 +234,12 @@ private struct InMemoryMoonrakerConfigurationStore: MoonrakerConfigurationPersis
     func save(_ configuration: MoonrakerConfiguration) {}
 
     func clear() {}
+}
+
+private func chineseConfiguration() -> MoonrakerConfiguration {
+    MoonrakerConfiguration(
+        serverURLString: "http://printer.local:7125",
+        apiToken: nil,
+        appLanguage: .simplifiedChinese
+    )
 }

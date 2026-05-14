@@ -8,6 +8,7 @@ public enum WidgetTone: String, Codable, Equatable, Sendable {
 }
 
 public struct WidgetSnapshot: Codable, Equatable, Sendable {
+    public var language: AppLanguage
     public var statusLabel: String
     public var connectionLabel: String
     public var title: String
@@ -23,6 +24,7 @@ public struct WidgetSnapshot: Codable, Equatable, Sendable {
     public var tone: WidgetTone
 
     public init(
+        language: AppLanguage = .system,
         statusLabel: String,
         connectionLabel: String,
         title: String,
@@ -37,6 +39,7 @@ public struct WidgetSnapshot: Codable, Equatable, Sendable {
         summary: String,
         tone: WidgetTone
     ) {
+        self.language = language
         self.statusLabel = statusLabel
         self.connectionLabel = connectionLabel
         self.title = title
@@ -52,11 +55,51 @@ public struct WidgetSnapshot: Codable, Equatable, Sendable {
         self.tone = tone
     }
 
+    private enum CodingKeys: String, CodingKey {
+        case language
+        case statusLabel
+        case connectionLabel
+        case title
+        case progress
+        case progressLabel
+        case remainingTime
+        case elapsedTime
+        case nozzle
+        case bed
+        case layer
+        case speed
+        case summary
+        case tone
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.language = try container.decodeIfPresent(AppLanguage.self, forKey: .language) ?? .system
+        self.statusLabel = try container.decode(String.self, forKey: .statusLabel)
+        self.connectionLabel = try container.decode(String.self, forKey: .connectionLabel)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.progress = try container.decode(Double.self, forKey: .progress)
+        self.progressLabel = try container.decode(String.self, forKey: .progressLabel)
+        self.remainingTime = try container.decode(String.self, forKey: .remainingTime)
+        self.elapsedTime = try container.decode(String.self, forKey: .elapsedTime)
+        self.nozzle = try container.decode(String.self, forKey: .nozzle)
+        self.bed = try container.decode(String.self, forKey: .bed)
+        self.layer = try container.decode(String.self, forKey: .layer)
+        self.speed = try container.decode(String.self, forKey: .speed)
+        self.summary = try container.decode(String.self, forKey: .summary)
+        self.tone = try container.decode(WidgetTone.self, forKey: .tone)
+    }
+
     public static var placeholder: WidgetSnapshot {
+        placeholder(language: .system)
+    }
+
+    public static func placeholder(language: AppLanguage) -> WidgetSnapshot {
         WidgetSnapshot(
-            statusLabel: "未配置",
-            connectionLabel: "待配置",
-            title: "请先设置 Moonraker 地址",
+            language: language,
+            statusLabel: AppLocalization.localizedString(.menuConnectionBadgeUnconfigured, language: language),
+            connectionLabel: AppLocalization.localizedString(.menuConnectionBadgeUnconfigured, language: language),
+            title: AppLocalization.localizedString(.widgetTitleUnconfigured, language: language),
             progress: 0,
             progressLabel: "0%",
             remainingTime: "--:--:--",
@@ -65,7 +108,7 @@ public struct WidgetSnapshot: Codable, Equatable, Sendable {
             bed: "--",
             layer: "--",
             speed: "--",
-            summary: "还没有可用的打印状态数据",
+            summary: AppLocalization.localizedString(.widgetSummaryUnconfigured, language: language),
             tone: .neutral
         )
     }

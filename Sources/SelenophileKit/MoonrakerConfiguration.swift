@@ -110,11 +110,11 @@ public enum MoonrakerConfigurationError: LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .emptyURL:
-            return "请输入 Moonraker 地址。"
+            return "Enter a Moonraker address."
         case .invalidURL:
-            return "Moonraker 地址无效。"
+            return "The Moonraker address is invalid."
         case .unsupportedScheme:
-            return "Moonraker 地址只支持 http 或 https。"
+            return "The Moonraker address only supports http or https."
         }
     }
 }
