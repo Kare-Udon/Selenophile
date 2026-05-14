@@ -99,6 +99,10 @@
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "التبعيات";
 "settings_updates_title" = "تحديثات البرنامج";
+"settings_updates_status_ready" = "Update checking is ready.";
+"settings_updates_status_unavailable" = "Update checking is currently unavailable.";
+"settings_automatic_updates_label" = "Automatic Update Checks";
+"settings_automatic_updates_description" = "Check quietly when Selenophile opens and then once per day.";
 "settings_check_for_updates" = "التحقق من وجود تحديثات…";
 "settings_about_dependencies_intro" = "يعتمد Selenophile على أطر Apple وسلسلة أدوات Swift وتكامل Moonraker API و Sparkle للتحديثات و Tuist لتوليد المشروع.";
 "settings_dependency_sparkle" = "يوفر فحص تحديثات آمناً وتوزيعاً يعتمد على appcast.";

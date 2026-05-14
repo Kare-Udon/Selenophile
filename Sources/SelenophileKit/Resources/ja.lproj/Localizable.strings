@@ -99,6 +99,10 @@
 "menu_last_updated_prefix" = "最終更新";
 "settings_about_dependencies_title" = "依存関係";
 "settings_updates_title" = "ソフトウェアアップデート";
+"settings_updates_status_ready" = "アップデート確認を利用できます。";
+"settings_updates_status_unavailable" = "現在アップデートを確認できません。";
+"settings_automatic_updates_label" = "自動アップデート確認";
+"settings_automatic_updates_description" = "Selenophile の起動時に静かに確認し、その後は 1 日 1 回確認します。";
 "settings_check_for_updates" = "アップデートを確認…";
 "settings_about_dependencies_intro" = "Selenophile は Apple フレームワーク、Swift ツールチェーン、Moonraker API 連携、更新用の Sparkle、プロジェクト生成用の Tuist を基盤にしています。";
 "settings_dependency_swift" = "言語、標準ライブラリ、package manifest、コマンドラインのビルドとテストの流れを提供します。";

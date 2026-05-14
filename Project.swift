@@ -38,7 +38,8 @@ let project = Project(
                     "CFBundleDisplayName": "Selenophile",
                     "SUFeedURL": "$(SPARKLE_FEED_URL)",
                     "SUPublicEDKey": "$(SPARKLE_PUBLIC_ED_KEY)",
-                    "SUEnableAutomaticChecks": false,
+                    "SUEnableAutomaticChecks": true,
+                    "SUScheduledCheckInterval": 86_400,
                 ]
             ),
             sources: ["Sources/Selenophile/**"],

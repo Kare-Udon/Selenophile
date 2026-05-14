@@ -66,7 +66,8 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>LSUIElement</key><${LSUI_VALUE}/>
     <key>CFBundleIconFile</key><string>Icon</string>
     <key>SUFeedURL</key><string>${SPARKLE_FEED_URL}</string>
-    <key>SUEnableAutomaticChecks</key><false/>
+    <key>SUEnableAutomaticChecks</key><true/>
+    <key>SUScheduledCheckInterval</key><real>86400</real>
 PLIST
 
 if [[ -n "$SPARKLE_PUBLIC_ED_KEY" ]]; then

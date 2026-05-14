@@ -16,7 +16,7 @@ Selenophile keeps the current state of your Moonraker / Klipper printer visible 
 - Live Moonraker status for Klipper printers.
 - Print progress, filename, elapsed time, remaining time, layers, speed, nozzle temperature, and bed temperature.
 - Optional camera snapshot preview from a Moonraker-relative or absolute image URL.
-- Settings for connection, refresh rate, launch at login, interface language, appearance mode, and color palette.
+- Settings for connection, refresh rate, launch at login, interface language, automatic update checks, appearance mode, and color palette.
 - Debug logs for connection, retry, status update, and camera request issues.
 - Built for Apple Silicon Macs on macOS 14 or later.
 
@@ -24,7 +24,7 @@ Selenophile keeps the current state of your Moonraker / Klipper printer visible 
 
 | Connection | General |
 | --- | --- |
-| <img src="docs/assets/readme/settings-connection.jpg" alt="Moonraker connection settings" width="420"> | <img src="docs/assets/readme/settings-general.jpg" alt="General settings with language, refresh rate, and launch at login" width="420"> |
+| <img src="docs/assets/readme/settings-connection.jpg" alt="Moonraker connection settings" width="420"> | <img src="docs/assets/readme/settings-general.jpg" alt="General settings with language, refresh rate, launch at login, and update checks" width="420"> |
 
 | Appearance |
 | --- |

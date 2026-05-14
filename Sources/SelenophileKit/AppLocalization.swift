@@ -33,6 +33,10 @@ public enum AppLocalization {
         case settingsNoAdditionalOptions = "settings_no_additional_options"
         case settingsAboutBody = "settings_about_body"
         case settingsUpdatesTitle = "settings_updates_title"
+        case settingsUpdatesStatusReady = "settings_updates_status_ready"
+        case settingsUpdatesStatusUnavailable = "settings_updates_status_unavailable"
+        case settingsAutomaticUpdatesLabel = "settings_automatic_updates_label"
+        case settingsAutomaticUpdatesDescription = "settings_automatic_updates_description"
         case settingsCheckForUpdates = "settings_check_for_updates"
         case settingsAboutDependenciesTitle = "settings_about_dependencies_title"
         case settingsAboutDependenciesIntro = "settings_about_dependencies_intro"
@@ -183,6 +187,14 @@ public enum AppLocalization {
                 return "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status and camera previews."
             case .settingsUpdatesTitle:
                 return "Software Updates"
+            case .settingsUpdatesStatusReady:
+                return "Update checking is ready."
+            case .settingsUpdatesStatusUnavailable:
+                return "Update checking is currently unavailable."
+            case .settingsAutomaticUpdatesLabel:
+                return "Automatic Update Checks"
+            case .settingsAutomaticUpdatesDescription:
+                return "Check quietly when Selenophile opens and then once per day."
             case .settingsCheckForUpdates:
                 return "Check for Updates…"
             case .settingsAboutDependenciesTitle:

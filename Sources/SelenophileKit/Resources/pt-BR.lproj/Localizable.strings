@@ -99,6 +99,10 @@
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "Dependências";
 "settings_updates_title" = "Atualizações";
+"settings_updates_status_ready" = "Update checking is ready.";
+"settings_updates_status_unavailable" = "Update checking is currently unavailable.";
+"settings_automatic_updates_label" = "Automatic Update Checks";
+"settings_automatic_updates_description" = "Check quietly when Selenophile opens and then once per day.";
 "settings_check_for_updates" = "Verificar atualizações…";
 "settings_about_dependencies_intro" = "O Selenophile é construído com frameworks da Apple, a toolchain Swift, integração com a API Moonraker, Sparkle para atualizações e Tuist para gerar o projeto.";
 "settings_dependency_sparkle" = "Fornece verificações seguras de atualização e distribuição baseada em appcast.";

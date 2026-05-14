@@ -99,6 +99,10 @@
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "சார்புகள்";
 "settings_updates_title" = "மென்பொருள் புதுப்பிப்புகள்";
+"settings_updates_status_ready" = "Update checking is ready.";
+"settings_updates_status_unavailable" = "Update checking is currently unavailable.";
+"settings_automatic_updates_label" = "Automatic Update Checks";
+"settings_automatic_updates_description" = "Check quietly when Selenophile opens and then once per day.";
 "settings_check_for_updates" = "புதுப்பிப்புகளைச் சரிபார்…";
 "settings_about_dependencies_intro" = "Selenophile Apple frameworks, Swift toolchain, Moonraker API integration, updates-க்கு Sparkle மற்றும் project generation-க்கு Tuist ஆகியவற்றை அடிப்படையாகக் கொண்டது.";
 "settings_dependency_sparkle" = "பாதுகாப்பான update checks மற்றும் appcast-based distribution வழங்குகிறது.";

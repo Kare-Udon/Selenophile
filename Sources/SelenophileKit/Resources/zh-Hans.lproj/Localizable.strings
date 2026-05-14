@@ -92,6 +92,10 @@
 "settings_no_additional_options" = "这个分区暂时还没有额外选项。";
 "settings_about_body" = "Selenophile 以更精致的一览视图展示你的 3D 打印状态，包含实时状态和相机预览。";
 "settings_updates_title" = "软件更新";
+"settings_updates_status_ready" = "更新检查已可用。";
+"settings_updates_status_unavailable" = "当前无法检查更新。";
+"settings_automatic_updates_label" = "自动检查更新";
+"settings_automatic_updates_description" = "在 Selenophile 打开时静默检查，之后每天检查一次。";
 "settings_check_for_updates" = "检查更新…";
 "settings_about_dependencies_title" = "项目依赖";
 "settings_about_dependencies_intro" = "Selenophile 基于 Apple 系统框架、Swift 工具链、Moonraker API 集成、Sparkle 更新框架和 Tuist 工程生成。";

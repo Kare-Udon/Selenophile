@@ -46,6 +46,14 @@ func appLocalizationDescribesAboutDependencies() {
 }
 
 @Test
+func appLocalizationDescribesUpdateSettings() {
+    #expect(AppLocalization.localizedString(.settingsUpdatesStatusReady, language: .english) == "Update checking is ready.")
+    #expect(AppLocalization.localizedString(.settingsAutomaticUpdatesLabel, language: .english) == "Automatic Update Checks")
+    #expect(AppLocalization.localizedString(.settingsAutomaticUpdatesLabel, language: .simplifiedChinese) == "自动检查更新")
+    #expect(AppLocalization.localizedString(.settingsAutomaticUpdatesLabel, language: .japanese) == "自動アップデート確認")
+}
+
+@Test
 func appLocalizationProvidesAboutDependencyTranslationsForEveryLanguage() {
     let dependencyKeys: [AppLocalization.Key] = [
         .settingsAboutDependenciesTitle,

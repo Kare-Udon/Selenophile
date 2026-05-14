@@ -3,9 +3,15 @@ import Sparkle
 import SelenophileKit
 
 @MainActor
-protocol AppUpdateChecking {
+protocol AppUpdateChecking: AnyObject {
     var canCheckForUpdates: Bool { get }
+    var automaticallyChecksForUpdates: Bool { get set }
     func checkForUpdates()
+}
+
+@MainActor
+enum AppUpdateDefaults {
+    static let automaticCheckInterval: TimeInterval = 86_400
 }
 
 @MainActor
@@ -33,16 +39,29 @@ enum AppUpdateConfiguration {
 final class SparkleUpdateController: AppUpdateChecking {
     private let updaterController: SPUStandardUpdaterController
 
-    init() {
+    init(checkOnLaunch: Bool = true) {
         updaterController = SPUStandardUpdaterController(
             startingUpdater: true,
             updaterDelegate: nil,
             userDriverDelegate: nil
         )
+        updaterController.updater.updateCheckInterval = AppUpdateDefaults.automaticCheckInterval
+        if checkOnLaunch && updaterController.updater.automaticallyChecksForUpdates {
+            updaterController.updater.checkForUpdatesInBackground()
+        }
     }
 
     var canCheckForUpdates: Bool {
         updaterController.updater.canCheckForUpdates
+    }
+
+    var automaticallyChecksForUpdates: Bool {
+        get {
+            updaterController.updater.automaticallyChecksForUpdates
+        }
+        set {
+            updaterController.updater.automaticallyChecksForUpdates = newValue
+        }
     }
 
     func checkForUpdates() {

@@ -19,6 +19,7 @@ struct SettingsView: View {
     @State private var selectedThemePalette: AppThemePalette
     @State private var selectedStatusRefreshPolicy: PrinterStatusRefreshPolicy
     @State private var launchAtLoginEnabled: Bool
+    @State private var automaticUpdateChecksEnabled: Bool
     @State private var isUpdatingLaunchAtLogin = false
     @State private var isSaving = false
     @State private var isTestingConnection = false
@@ -51,6 +52,7 @@ struct SettingsView: View {
         _selectedThemePalette = State(initialValue: appAppearanceStore.selectedPalette)
         _selectedStatusRefreshPolicy = State(initialValue: store.statusRefreshPolicy)
         _launchAtLoginEnabled = State(initialValue: launchAtLoginControl?.isEnabled() ?? false)
+        _automaticUpdateChecksEnabled = State(initialValue: false)
     }
 
     var body: some View {
@@ -77,6 +79,7 @@ struct SettingsView: View {
             selectedAppearanceMode = appAppearanceStore.selectedMode
             selectedThemePalette = appAppearanceStore.selectedPalette
             selectedStatusRefreshPolicy = store.statusRefreshPolicy
+            automaticUpdateChecksEnabled = updateChecker?.automaticallyChecksForUpdates ?? false
         }
         .onChange(of: appLanguageStore.selectedLanguage) { _, language in
             selectedAppLanguage = language
@@ -176,6 +179,16 @@ struct SettingsView: View {
         await launchAtLoginControl.setIsEnabled(enabled)
         refreshLaunchAtLoginState()
         isUpdatingLaunchAtLogin = false
+    }
+
+    @MainActor
+    private func updateAutomaticUpdateChecksEnabled(_ enabled: Bool) {
+        guard let updateChecker else {
+            automaticUpdateChecksEnabled = false
+            return
+        }
+        updateChecker.automaticallyChecksForUpdates = enabled
+        automaticUpdateChecksEnabled = updateChecker.automaticallyChecksForUpdates
     }
 
     private var sidebar: some View {
@@ -384,7 +397,76 @@ struct SettingsView: View {
                     }
                 }
             }
+
+            softwareUpdatesSection
         }
+    }
+
+    private var softwareUpdatesSection: some View {
+        settingsCard {
+            Text(l10n(.settingsUpdatesTitle))
+                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: updateChecker?.canCheckForUpdates == true ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(updateChecker?.canCheckForUpdates == true ? SelenophileTheme.Colors.success : SelenophileTheme.Colors.tertiaryText)
+                    .frame(width: 18, height: 18)
+                    .padding(.top, 1)
+
+                Text(updateStatusText)
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(l10n(.settingsAutomaticUpdatesLabel))
+                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+                    Text(l10n(.settingsAutomaticUpdatesDescription))
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                Toggle("", isOn: Binding(
+                    get: { automaticUpdateChecksEnabled },
+                    set: { newValue in
+                        updateAutomaticUpdateChecksEnabled(newValue)
+                    }
+                ))
+                .labelsHidden()
+                .toggleStyle(SwitchToggleStyle(tint: SelenophileTheme.Colors.accent))
+                .accessibilityLabel(l10n(.settingsAutomaticUpdatesLabel))
+                .accessibilityHint(l10n(.settingsAutomaticUpdatesDescription))
+                .disabled(updateChecker == nil)
+            }
+
+            if let updateChecker {
+                Button {
+                    updateChecker.checkForUpdates()
+                } label: {
+                    Label(l10n(.settingsCheckForUpdates), systemImage: "arrow.triangle.2.circlepath")
+                }
+                .buttonStyle(SelenophileButtonStyle(kind: .secondary))
+                .disabled(!updateChecker.canCheckForUpdates)
+            }
+        }
+    }
+
+    private var updateStatusText: String {
+        guard let updateChecker else {
+            return l10n(.settingsUpdatesStatusUnavailable)
+        }
+        return updateChecker.canCheckForUpdates
+            ? l10n(.settingsUpdatesStatusReady)
+            : l10n(.settingsUpdatesStatusUnavailable)
     }
 
     private var appearanceSection: some View {
@@ -542,22 +624,6 @@ struct SettingsView: View {
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(SelenophileTheme.Colors.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
-            }
-
-            if let updateChecker {
-                settingsCard {
-                    Text(l10n(.settingsUpdatesTitle))
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                        .foregroundStyle(SelenophileTheme.Colors.primaryText)
-
-                    Button {
-                        updateChecker.checkForUpdates()
-                    } label: {
-                        Label(l10n(.settingsCheckForUpdates), systemImage: "arrow.triangle.2.circlepath")
-                    }
-                    .buttonStyle(SelenophileButtonStyle(kind: .secondary))
-                    .disabled(!updateChecker.canCheckForUpdates)
-                }
             }
 
             settingsCard {

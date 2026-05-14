@@ -102,6 +102,10 @@
 "menu_last_updated_prefix" = "上次更新";
 "settings_about_dependencies_title" = "專案依賴";
 "settings_updates_title" = "軟體更新";
+"settings_updates_status_ready" = "更新檢查已可用。";
+"settings_updates_status_unavailable" = "目前無法檢查更新。";
+"settings_automatic_updates_label" = "自動檢查更新";
+"settings_automatic_updates_description" = "在 Selenophile 開啟時靜默檢查，之後每天檢查一次。";
 "settings_check_for_updates" = "檢查更新…";
 "settings_about_dependencies_intro" = "Selenophile 基於 Apple 系統框架、Swift 工具鏈、Moonraker API 整合、Sparkle 更新框架和 Tuist 工程產生。";
 "settings_dependency_swift" = "提供語言、標準函式庫、Package manifest，以及命令列建置和測試流程。";

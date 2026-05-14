@@ -10,7 +10,7 @@
   - `SPARKLE_PUBLIC_ED_KEY = E/nueJJiuhX7I3zRZEjCtYn50JepeMIbY1LltoIs6rA=`
 - `Scripts/package_app.sh` 也可以通过环境变量接收同样的值。
 - Sparkle 启动逻辑已经在代码中做了保护。只有 app bundle 里存在真实 HTTPS `SUFeedURL`，并且 `SUPublicEDKey` 非空时，更新检查才会启用。
-- 默认通过 `SUEnableAutomaticChecks = false` 关闭自动检查；Sparkle 配置完成后，Settings 窗口会显示手动检查更新入口。
+- 默认通过 `SUEnableAutomaticChecks = true` 和 `SUScheduledCheckInterval = 86400` 启用自动检查；Selenophile 打开时会做一次后台检查，之后按每天一次的周期由 Sparkle 调度。Settings 的 General 页提供检查状态、自动检查开关和手动检查入口。
 
 不要恢复占位 feed URL。代码会有意把 `example.com` 或未替换构建变量视为未启用状态。
 

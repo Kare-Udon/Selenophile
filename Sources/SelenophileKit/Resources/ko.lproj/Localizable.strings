@@ -99,6 +99,10 @@
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "의존성";
 "settings_updates_title" = "소프트웨어 업데이트";
+"settings_updates_status_ready" = "Update checking is ready.";
+"settings_updates_status_unavailable" = "Update checking is currently unavailable.";
+"settings_automatic_updates_label" = "Automatic Update Checks";
+"settings_automatic_updates_description" = "Check quietly when Selenophile opens and then once per day.";
 "settings_check_for_updates" = "업데이트 확인…";
 "settings_about_dependencies_intro" = "Selenophile은 Apple 프레임워크, Swift 툴체인, Moonraker API 통합, 업데이트용 Sparkle, 프로젝트 생성용 Tuist를 기반으로 합니다.";
 "settings_dependency_sparkle" = "안전한 업데이트 확인과 appcast 기반 배포를 제공합니다.";

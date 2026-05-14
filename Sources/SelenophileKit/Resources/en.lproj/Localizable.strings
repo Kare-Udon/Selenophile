@@ -92,6 +92,10 @@
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status and camera previews.";
 "settings_updates_title" = "Software Updates";
+"settings_updates_status_ready" = "Update checking is ready.";
+"settings_updates_status_unavailable" = "Update checking is currently unavailable.";
+"settings_automatic_updates_label" = "Automatic Update Checks";
+"settings_automatic_updates_description" = "Check quietly when Selenophile opens and then once per day.";
 "settings_check_for_updates" = "Check for Updates…";
 "settings_about_dependencies_title" = "Dependencies";
 "settings_about_dependencies_intro" = "Selenophile is built on Apple frameworks, the Swift toolchain, Moonraker API integration, Sparkle for updates, and Tuist for project generation.";

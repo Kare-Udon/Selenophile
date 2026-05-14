@@ -99,6 +99,10 @@
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "انحصارات";
 "settings_updates_title" = "سافٹ ویئر اپ ڈیٹس";
+"settings_updates_status_ready" = "Update checking is ready.";
+"settings_updates_status_unavailable" = "Update checking is currently unavailable.";
+"settings_automatic_updates_label" = "Automatic Update Checks";
+"settings_automatic_updates_description" = "Check quietly when Selenophile opens and then once per day.";
 "settings_check_for_updates" = "اپ ڈیٹس چیک کریں…";
 "settings_about_dependencies_intro" = "Selenophile Apple frameworks، Swift toolchain، Moonraker API integration، updates کے لیے Sparkle، اور project generation کے لیے Tuist پر بنایا گیا ہے۔";
 "settings_dependency_sparkle" = "محفوظ update checks اور appcast-based distribution فراہم کرتا ہے۔";

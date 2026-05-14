@@ -99,6 +99,10 @@
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "Dependensi";
 "settings_updates_title" = "Nganyari piranti lunak";
+"settings_updates_status_ready" = "Update checking is ready.";
+"settings_updates_status_unavailable" = "Update checking is currently unavailable.";
+"settings_automatic_updates_label" = "Automatic Update Checks";
+"settings_automatic_updates_description" = "Check quietly when Selenophile opens and then once per day.";
 "settings_check_for_updates" = "Priksa nganyari…";
 "settings_about_dependencies_intro" = "Selenophile dibangun nganggo framework Apple, toolchain Swift, integrasi Moonraker API, Sparkle kanggo nganyari, lan Tuist kanggo nggawe proyek.";
 "settings_dependency_sparkle" = "Nyedhiyakake pemeriksaan nganyari aman lan distribusi adhedhasar appcast.";
