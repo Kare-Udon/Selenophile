@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "Dependensi";
-"settings_about_dependencies_intro" = "Selenophile ora nganggo paket Swift pihak katelu nalika runtime. Aplikasi iki dibangun nganggo framework Apple, toolchain Swift, integrasi Moonraker API, lan Tuist kanggo nggawe proyek.";
+"settings_updates_title" = "Nganyari piranti lunak";
+"settings_check_for_updates" = "Priksa nganyari…";
+"settings_about_dependencies_intro" = "Selenophile dibangun nganggo framework Apple, toolchain Swift, integrasi Moonraker API, Sparkle kanggo nganyari, lan Tuist kanggo nggawe proyek.";
+"settings_dependency_sparkle" = "Nyedhiyakake pemeriksaan nganyari aman lan distribusi adhedhasar appcast.";
 "settings_dependency_swift" = "Nyedhiyakake basa, pustaka standar, package manifest, lan alur build/test liwat command line.";
 "settings_dependency_swiftui" = "Nyedhiyakake tampilan deklaratif kanggo panel menu, jendhela setelan, log, lan widget.";
 "settings_dependency_appkit" = "Nyedhiyakake integrasi menu bar macOS, popover, jendhela, lan kontrol native.";

@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "Bağımlılıklar";
-"settings_about_dependencies_intro" = "Selenophile çalışma zamanında üçüncü taraf Swift paketi kullanmaz. Apple framework’leri, Swift araç zinciri, Moonraker API entegrasyonu ve proje üretimi için Tuist üzerine kuruludur.";
+"settings_updates_title" = "Yazılım güncellemeleri";
+"settings_check_for_updates" = "Güncellemeleri denetle…";
+"settings_about_dependencies_intro" = "Selenophile Apple framework’leri, Swift araç zinciri, Moonraker API entegrasyonu, güncellemeler için Sparkle ve proje üretimi için Tuist üzerine kuruludur.";
+"settings_dependency_sparkle" = "Güvenli güncelleme denetimleri ve appcast tabanlı dağıtım sağlar.";
 "settings_dependency_swift" = "Dil, standart kütüphane, package manifest ve komut satırı build/test akışını sağlar.";
 "settings_dependency_swiftui" = "Menü paneli, ayarlar penceresi, günlükler ve widget’lar için bildirime dayalı görünümler sağlar.";
 "settings_dependency_appkit" = "macOS menü çubuğu entegrasyonu, popover’lar, pencereler ve yerel kontroller sağlar.";

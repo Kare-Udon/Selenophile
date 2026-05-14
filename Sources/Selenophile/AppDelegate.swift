@@ -19,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let appLanguageStore: AppLanguageStore
     let appAppearanceStore: AppAppearanceStore
     let launchConfiguration: AppLaunchConfiguration
+    let updateChecker: (any AppUpdateChecking)?
     private let widgetSnapshotStore: WidgetSnapshotStore?
     private let widgetCenter: (any WidgetTimelineReloading)?
     private var settingsWindowController: NSWindowController?
@@ -31,7 +32,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             logStore: AppLogStore(),
             appLanguageStore: AppLanguageStore.shared,
             appAppearanceStore: AppAppearanceStore.shared,
-            launchConfiguration: AppLaunchConfiguration(processInfo: .processInfo)
+            launchConfiguration: AppLaunchConfiguration(processInfo: .processInfo),
+            configureSparkleUpdates: true
         )
     }
 
@@ -42,6 +44,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         appLanguageStore: AppLanguageStore? = nil,
         appAppearanceStore: AppAppearanceStore? = nil,
         launchConfiguration: AppLaunchConfiguration = AppLaunchConfiguration(processInfo: .processInfo),
+        configureSparkleUpdates: Bool = false,
+        updateChecker: (any AppUpdateChecking)? = nil,
         widgetSnapshotStore: WidgetSnapshotStore? = nil,
         widgetCenter: (any WidgetTimelineReloading)? = nil
     ) {
@@ -55,6 +59,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         self.appLanguageStore = resolvedAppLanguageStore
         self.appAppearanceStore = resolvedAppAppearanceStore
         self.launchConfiguration = launchConfiguration
+        self.updateChecker = updateChecker
+            ?? (configureSparkleUpdates
+                ? SparkleUpdateController.makeIfConfigured(logStore: resolvedLogStore)
+                : nil)
         self.widgetSnapshotStore = widgetSnapshotStore
         self.widgetCenter = widgetCenter
         super.init()
@@ -246,6 +254,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                     }
                 }
             ),
+            updateChecker: updateChecker,
             appLanguageStore: appLanguageStore,
             appAppearanceStore: appAppearanceStore
         )

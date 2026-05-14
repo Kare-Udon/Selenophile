@@ -7,6 +7,7 @@ struct SettingsView: View {
     let onCancel: () -> Void
     let onLanguageSelectionPreview: (AppLanguage) -> Void
     let launchAtLoginControl: LaunchAtLoginControl?
+    let updateChecker: (any AppUpdateChecking)?
     let appLanguageStore: AppLanguageStore
     let appAppearanceStore: AppAppearanceStore
 
@@ -30,6 +31,7 @@ struct SettingsView: View {
         onCancel: @escaping () -> Void,
         onLanguageSelectionPreview: @escaping (AppLanguage) -> Void = { _ in },
         launchAtLoginControl: LaunchAtLoginControl? = nil,
+        updateChecker: (any AppUpdateChecking)? = nil,
         appLanguageStore: AppLanguageStore,
         appAppearanceStore: AppAppearanceStore
     ) {
@@ -38,6 +40,7 @@ struct SettingsView: View {
         self.onCancel = onCancel
         self.onLanguageSelectionPreview = onLanguageSelectionPreview
         self.launchAtLoginControl = launchAtLoginControl
+        self.updateChecker = updateChecker
         self.appLanguageStore = appLanguageStore
         self.appAppearanceStore = appAppearanceStore
         _serverURLString = State(initialValue: store.configuration?.serverURLString ?? "http://127.0.0.1:7125")
@@ -541,6 +544,22 @@ struct SettingsView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
+            if let updateChecker {
+                settingsCard {
+                    Text(l10n(.settingsUpdatesTitle))
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                        .foregroundStyle(SelenophileTheme.Colors.primaryText)
+
+                    Button {
+                        updateChecker.checkForUpdates()
+                    } label: {
+                        Label(l10n(.settingsCheckForUpdates), systemImage: "arrow.triangle.2.circlepath")
+                    }
+                    .buttonStyle(SelenophileButtonStyle(kind: .secondary))
+                    .disabled(!updateChecker.canCheckForUpdates)
+                }
+            }
+
             settingsCard {
                 Text(l10n(.settingsAboutDependenciesTitle))
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -878,6 +897,7 @@ private enum AboutDependency: CaseIterable {
     case swift
     case swiftUI
     case appKit
+    case sparkle
     case widgetKit
     case serviceManagement
     case moonraker
@@ -891,6 +911,8 @@ private enum AboutDependency: CaseIterable {
             return "SwiftUI"
         case .appKit:
             return "AppKit"
+        case .sparkle:
+            return "Sparkle 2"
         case .widgetKit:
             return "WidgetKit"
         case .serviceManagement:
@@ -908,6 +930,8 @@ private enum AboutDependency: CaseIterable {
             return "swift"
         case .appKit:
             return "macwindow"
+        case .sparkle:
+            return "arrow.triangle.2.circlepath"
         case .widgetKit:
             return "rectangle.grid.2x2"
         case .serviceManagement:
@@ -927,6 +951,8 @@ private enum AboutDependency: CaseIterable {
             return URL(string: "https://developer.apple.com/documentation/swiftui")!
         case .appKit:
             return URL(string: "https://developer.apple.com/documentation/appkit")!
+        case .sparkle:
+            return URL(string: "https://sparkle-project.org/")!
         case .widgetKit:
             return URL(string: "https://developer.apple.com/documentation/widgetkit")!
         case .serviceManagement:
@@ -946,6 +972,8 @@ private enum AboutDependency: CaseIterable {
             return .settingsDependencySwiftUI
         case .appKit:
             return .settingsDependencyAppKit
+        case .sparkle:
+            return .settingsDependencySparkle
         case .widgetKit:
             return .settingsDependencyWidgetKit
         case .serviceManagement:

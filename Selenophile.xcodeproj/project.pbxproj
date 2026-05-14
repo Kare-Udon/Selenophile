@@ -33,6 +33,7 @@
 		45E9D140279DB7F7F84720BB /* AppThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 775BA298CF74076A6AE85A88 /* AppThemePalette.swift */; };
 		4616EE2A75CCE4D530D97AA5 /* LaunchAtLoginControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7217A6E35E9FB82AD745AF04 /* LaunchAtLoginControllerTests.swift */; };
 		492067A6E3D01494B4351531 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A778EB6A0E645DB0EB94E1BB /* Localizable.strings */; };
+		4A91B45E5E3A4D76A3F31F21 /* AppUpdateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC6C7F7DF6848B39D796E1D /* AppUpdateController.swift */; };
 		4E20B8DA32E8D3E8AFDF99ED /* Selenophile_SelenophileKit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4C80BD5EED9B07AE18F7C698 /* Selenophile_SelenophileKit.bundle */; };
 		500045AEE23B2F525368CB0A /* AppAppearanceModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F4F8AFC4FCA787FB1BC92 /* AppAppearanceModeTests.swift */; };
 		5478BAA0FC91E5D3AD28677E /* WidgetSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA0400F26278045C2DF8B6B /* WidgetSnapshotStore.swift */; };
@@ -59,6 +60,7 @@
 		96ED0ACC05F5A7D91716A435 /* MoonrakerStatusParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7A5F1C14ED6BE85611231F /* MoonrakerStatusParsingTests.swift */; };
 		9BC779227A8EFBC8AD2BC31D /* AppLogStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7A80A26E325C50AEC9E8338 /* AppLogStore.swift */; };
 		9F72E523B1079FC0F89D62CE /* libSelenophileKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B107EEF376C0D261F3775438 /* libSelenophileKit.a */; };
+		A16D5A63A3554B52A6D1E1C9 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 2BA425B0D35943C3918EF3A2 /* Sparkle */; };
 		A20D425494F29CE9FEB61A13 /* AppDelegateWidgetPublishingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FDE309A115EB8BAAE8AAC98 /* AppDelegateWidgetPublishingTests.swift */; };
 		A3C9014389F09DD25DD96C5F /* WidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F85AA34259590E42CC6873B /* WidgetProvider.swift */; };
 		A6F31B3FC669A8C9C8E3BC13 /* AppAppearanceStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7006656655EC7822BCE9464 /* AppAppearanceStoreTests.swift */; };
@@ -260,6 +262,7 @@
 		775BA298CF74076A6AE85A88 /* AppThemePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemePalette.swift; sourceTree = "<group>"; };
 		78C075EE9B310FAD9213210A /* TuistStrings+SelenophileKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistStrings+SelenophileKit.swift"; sourceTree = "<group>"; };
 		7B7D9E616DAF1908E5FF8F60 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
+		7BC6C7F7DF6848B39D796E1D /* AppUpdateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdateController.swift; sourceTree = "<group>"; };
 		7C7276F7D6D5890B2C79C2BE /* SelenophileWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelenophileWidget.swift; sourceTree = "<group>"; };
 		7DE8328D080EA70F6A54B62A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		80B435BC55847E8DC3C13556 /* PrinterStatusStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStatusStore.swift; sourceTree = "<group>"; };
@@ -331,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D92F54154696D3F8AC6E7877 /* libSelenophileKit.a in Frameworks */,
+				A16D5A63A3554B52A6D1E1C9 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +460,7 @@
 				6586DD64BFB26A97E156CECC /* AppDelegate.swift */,
 				87322F049EA4FB355413FB0B /* AppLanguageStore.swift */,
 				1FE4150D69A79CAFBFCA51E7 /* AppLaunchConfiguration.swift */,
+				7BC6C7F7DF6848B39D796E1D /* AppUpdateController.swift */,
 				3A79280D907FF9B7EAE19C7D /* LaunchAtLoginService.swift */,
 				7DE8328D080EA70F6A54B62A /* LogView.swift */,
 				578BFD7E1802AE0DECD0A4FC /* LogWindowController.swift */,
@@ -657,6 +662,7 @@
 			);
 			name = Selenophile;
 			packageProductDependencies = (
+				2BA425B0D35943C3918EF3A2 /* Sparkle */,
 			);
 			productName = Selenophile;
 			productReference = F24F9C835685980E10BB49A1 /* Selenophile.app */;
@@ -726,6 +732,9 @@
 				"zh-Hant",
 			);
 			mainGroup = CFFECABFC932D7864BD546A5;
+			packageReferences = (
+				5D36161499DB46FD84307227 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			productRefGroup = BD8D14C51357ED53D1CE8DC7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -841,6 +850,7 @@
 				3C49686F45434182BDAF398A /* AppDelegate.swift in Sources */,
 				808E78ACD9C7DB9786D1D010 /* AppLanguageStore.swift in Sources */,
 				41FFEE98960A1E66E3852EF0 /* AppLaunchConfiguration.swift in Sources */,
+				4A91B45E5E3A4D76A3F31F21 /* AppUpdateController.swift in Sources */,
 				2EF928A1BD776B5321EF04D1 /* LaunchAtLoginService.swift in Sources */,
 				9525D3A114B7707096E5D6BF /* LogView.swift in Sources */,
 				65774F452A2E8B331A3E865D /* LogWindowController.swift in Sources */,
@@ -1199,6 +1209,9 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Derived/InfoPlists/Selenophile-Info.plist";
+				INFOPLIST_KEY_SUEnableAutomaticChecks = NO;
+				INFOPLIST_KEY_SUFeedURL = "$(SPARKLE_FEED_URL)";
+				INFOPLIST_KEY_SUPublicEDKey = "$(SPARKLE_PUBLIC_ED_KEY)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1211,6 +1224,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile;
 				PRODUCT_NAME = Selenophile;
 				SDKROOT = macosx;
+				SPARKLE_FEED_URL = "https://example.com/selenophile/appcast.xml";
+				SPARKLE_PUBLIC_ED_KEY = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
 					"$(inherited)",
 					DEBUG,
@@ -1363,6 +1378,9 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Derived/InfoPlists/Selenophile-Info.plist";
+				INFOPLIST_KEY_SUEnableAutomaticChecks = NO;
+				INFOPLIST_KEY_SUFeedURL = "$(SPARKLE_FEED_URL)";
+				INFOPLIST_KEY_SUPublicEDKey = "$(SPARKLE_PUBLIC_ED_KEY)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1375,6 +1393,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.udon.selenophile;
 				PRODUCT_NAME = Selenophile;
 				SDKROOT = macosx;
+				SPARKLE_FEED_URL = "https://example.com/selenophile/appcast.xml";
+				SPARKLE_PUBLIC_ED_KEY = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5;
@@ -1448,6 +1468,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5D36161499DB46FD84307227 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2BA425B0D35943C3918EF3A2 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5D36161499DB46FD84307227 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A3889A96367A82C2595090C5 /* Project object */;
 }

@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "의존성";
-"settings_about_dependencies_intro" = "Selenophile은 런타임에 타사 Swift 패키지를 사용하지 않습니다. Apple 프레임워크, Swift 툴체인, Moonraker API 통합, 프로젝트 생성을 위한 Tuist를 기반으로 합니다.";
+"settings_updates_title" = "소프트웨어 업데이트";
+"settings_check_for_updates" = "업데이트 확인…";
+"settings_about_dependencies_intro" = "Selenophile은 Apple 프레임워크, Swift 툴체인, Moonraker API 통합, 업데이트용 Sparkle, 프로젝트 생성용 Tuist를 기반으로 합니다.";
+"settings_dependency_sparkle" = "안전한 업데이트 확인과 appcast 기반 배포를 제공합니다.";
 "settings_dependency_swift" = "언어, 표준 라이브러리, package manifest, 명령줄 빌드 및 테스트 흐름을 제공합니다.";
 "settings_dependency_swiftui" = "메뉴 패널, 설정 창, 로그, 위젯을 위한 선언형 화면을 제공합니다.";
 "settings_dependency_appkit" = "macOS 메뉴 막대 통합, 팝오버, 창, 네이티브 컨트롤을 제공합니다.";

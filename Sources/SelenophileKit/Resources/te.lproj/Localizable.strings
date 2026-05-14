@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "ఆధారాలు";
-"settings_about_dependencies_intro" = "Selenophile runtime లో third-party Swift package ను ఉపయోగించదు. ఇది Apple frameworks, Swift toolchain, Moonraker API integration మరియు project generation కోసం Tuist పై నిర్మించబడింది.";
+"settings_updates_title" = "సాఫ్ట్‌వేర్ నవీకరణలు";
+"settings_check_for_updates" = "నవీకరణలు చూడండి…";
+"settings_about_dependencies_intro" = "Selenophile Apple frameworks, Swift toolchain, Moonraker API integration, updates కోసం Sparkle మరియు project generation కోసం Tuist పై నిర్మించబడింది.";
+"settings_dependency_sparkle" = "సురక్షిత update checks మరియు appcast-based distribution ను అందిస్తుంది.";
 "settings_dependency_swift" = "భాష, standard library, package manifest మరియు command-line build/test workflow ను అందిస్తుంది.";
 "settings_dependency_swiftui" = "menu panel, settings window, logs మరియు widgets కోసం declarative views అందిస్తుంది.";
 "settings_dependency_appkit" = "macOS menu bar integration, popovers, windows మరియు native controls అందిస్తుంది.";

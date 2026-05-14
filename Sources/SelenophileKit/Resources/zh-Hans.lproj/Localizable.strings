@@ -91,8 +91,10 @@
 "settings_connection_hint" = "输入 URL 和 token 以连接到你的 Moonraker 实例。";
 "settings_no_additional_options" = "这个分区暂时还没有额外选项。";
 "settings_about_body" = "Selenophile 以更精致的一览视图展示你的 3D 打印状态，包含实时状态和相机预览。";
+"settings_updates_title" = "软件更新";
+"settings_check_for_updates" = "检查更新…";
 "settings_about_dependencies_title" = "项目依赖";
-"settings_about_dependencies_intro" = "Selenophile 没有使用第三方运行时 Swift package。项目基于 Apple 系统框架、Swift 工具链、Moonraker API 集成，并使用 Tuist 生成工程。";
+"settings_about_dependencies_intro" = "Selenophile 基于 Apple 系统框架、Swift 工具链、Moonraker API 集成、Sparkle 更新框架和 Tuist 工程生成。";
 "settings_dependency_swift" = "提供语言、标准库、Package manifest，以及命令行构建和测试流程。";
 "settings_dependency_swiftui" = "用于菜单面板、设置窗口、日志窗口和 Widget 的声明式界面。";
 "settings_dependency_appkit" = "用于 macOS 菜单栏集成、弹出层、窗口和原生控件。";
@@ -100,6 +102,7 @@
 "settings_dependency_service_management" = "通过 macOS 登录项 API 控制开机自启设置。";
 "settings_dependency_moonraker" = "提供 Selenophile 消费的打印状态、元数据、缩略图和相机数据。";
 "settings_dependency_tuist" = "生成并维护用于 App 和 Widget 打包的 Xcode 工程。";
+"settings_dependency_sparkle" = "提供安全的软件更新检查和基于 appcast 的分发能力。";
 "settings_feature_status" = "监控进度、温度、层数和速度";
 "settings_feature_logs" = "快速访问日志与设置";
 "settings_feature_security" = "安全连接到你的 Moonraker 实例";

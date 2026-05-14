@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "Зависимости";
-"settings_about_dependencies_intro" = "Selenophile не использует сторонние Swift-пакеты во время выполнения. Он построен на фреймворках Apple, инструментах Swift, интеграции с API Moonraker и Tuist для генерации проекта.";
+"settings_updates_title" = "Обновления";
+"settings_check_for_updates" = "Проверить обновления…";
+"settings_about_dependencies_intro" = "Selenophile построен на фреймворках Apple, инструментах Swift, интеграции с API Moonraker, Sparkle для обновлений и Tuist для генерации проекта.";
+"settings_dependency_sparkle" = "Обеспечивает безопасную проверку обновлений и распространение через appcast.";
 "settings_dependency_swift" = "Предоставляет язык, стандартную библиотеку, манифест пакета и поток сборки и тестирования из командной строки.";
 "settings_dependency_swiftui" = "Декларативные представления для панели меню, окна настроек, журналов и виджетов.";
 "settings_dependency_appkit" = "Интеграция с меню macOS, popover-окна, окна и нативные элементы управления.";

@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "Dependências";
-"settings_about_dependencies_intro" = "O Selenophile não usa pacotes Swift de terceiros em tempo de execução. Ele é construído com frameworks da Apple, a toolchain Swift, integração com a API Moonraker e Tuist para gerar o projeto.";
+"settings_updates_title" = "Atualizações";
+"settings_check_for_updates" = "Verificar atualizações…";
+"settings_about_dependencies_intro" = "O Selenophile é construído com frameworks da Apple, a toolchain Swift, integração com a API Moonraker, Sparkle para atualizações e Tuist para gerar o projeto.";
+"settings_dependency_sparkle" = "Fornece verificações seguras de atualização e distribuição baseada em appcast.";
 "settings_dependency_swift" = "Fornece a linguagem, biblioteca padrão, manifesto do pacote e fluxo de build/teste pela linha de comando.";
 "settings_dependency_swiftui" = "Views declarativas para o painel do menu, janela de ajustes, logs e widgets.";
 "settings_dependency_appkit" = "Integração com a barra de menus do macOS, popovers, janelas e controles nativos.";

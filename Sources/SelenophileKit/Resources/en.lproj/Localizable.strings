@@ -91,8 +91,10 @@
 "settings_connection_hint" = "Enter the URLs and token to connect to your Moonraker instance.";
 "settings_no_additional_options" = "No additional options in this section yet.";
 "settings_about_body" = "Selenophile delivers a refined, at-a-glance overview of your 3D prints with real-time status and camera previews.";
+"settings_updates_title" = "Software Updates";
+"settings_check_for_updates" = "Check for Updates…";
 "settings_about_dependencies_title" = "Dependencies";
-"settings_about_dependencies_intro" = "Selenophile does not use third-party runtime Swift packages. It is built on Apple frameworks, the Swift toolchain, Moonraker API integration, and Tuist for project generation.";
+"settings_about_dependencies_intro" = "Selenophile is built on Apple frameworks, the Swift toolchain, Moonraker API integration, Sparkle for updates, and Tuist for project generation.";
 "settings_dependency_swift" = "Language, standard library, package manifest, and command-line build/test workflow.";
 "settings_dependency_swiftui" = "Declarative views for the menu panel, settings window, logs, and widgets.";
 "settings_dependency_appkit" = "macOS menu bar integration, popovers, windows, and native controls.";
@@ -100,6 +102,7 @@
 "settings_dependency_service_management" = "Controls the Launch at Login setting through macOS login item APIs.";
 "settings_dependency_moonraker" = "Provides the printer status, metadata, thumbnails, and camera data consumed by Selenophile.";
 "settings_dependency_tuist" = "Generates and maintains the Xcode project used for app and widget packaging.";
+"settings_dependency_sparkle" = "Provides secure app update checks and appcast-based distribution.";
 "settings_feature_status" = "Monitor progress, temps, layers, and speed";
 "settings_feature_logs" = "Quick access to logs and settings";
 "settings_feature_security" = "Secure connection to your Moonraker instance";

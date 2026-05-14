@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "अवलंबने";
-"settings_about_dependencies_intro" = "Selenophile runtime वेळी कोणतेही third-party Swift package वापरत नाही. हे Apple frameworks, Swift toolchain, Moonraker API integration आणि project generation साठी Tuist वर आधारित आहे.";
+"settings_updates_title" = "सॉफ्टवेअर अपडेट";
+"settings_check_for_updates" = "अपडेट तपासा…";
+"settings_about_dependencies_intro" = "Selenophile Apple frameworks, Swift toolchain, Moonraker API integration, updates साठी Sparkle आणि project generation साठी Tuist वर आधारित आहे.";
+"settings_dependency_sparkle" = "सुरक्षित update checks आणि appcast-based वितरण पुरवते.";
 "settings_dependency_swift" = "भाषा, standard library, package manifest आणि command-line build/test workflow पुरवते.";
 "settings_dependency_swiftui" = "menu panel, settings window, logs आणि widgets साठी declarative views पुरवते.";
 "settings_dependency_appkit" = "macOS menu bar integration, popovers, windows आणि native controls पुरवते.";

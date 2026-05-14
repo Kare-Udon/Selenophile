@@ -61,6 +61,8 @@ swift test
 ARCHES="arm64 x86_64" ./Scripts/build_dmg.sh
 ```
 
+Sparkle 2 更新框架已经接入，但默认使用占位 appcast URL 和空 public key，不会在分发源未配置时启动更新检查。GitHub Releases / Pages 分发流程见 `docs/sparkle-github-distribution.md`。
+
 ## 初始提交建议
 
 适合提交到 git 的内容：

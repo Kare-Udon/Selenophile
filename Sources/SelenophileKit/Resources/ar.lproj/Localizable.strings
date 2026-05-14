@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "التبعيات";
-"settings_about_dependencies_intro" = "يعتمد Selenophile على أطر Apple وسلسلة أدوات Swift وتكامل Moonraker API و Tuist لتوليد المشروع، ولا يستخدم حزم Swift خارجية وقت التشغيل.";
+"settings_updates_title" = "تحديثات البرنامج";
+"settings_check_for_updates" = "التحقق من وجود تحديثات…";
+"settings_about_dependencies_intro" = "يعتمد Selenophile على أطر Apple وسلسلة أدوات Swift وتكامل Moonraker API و Sparkle للتحديثات و Tuist لتوليد المشروع.";
+"settings_dependency_sparkle" = "يوفر فحص تحديثات آمناً وتوزيعاً يعتمد على appcast.";
 "settings_dependency_swift" = "يوفر اللغة والمكتبة القياسية وملف الحزمة وسير عمل البناء والاختبار من سطر الأوامر.";
 "settings_dependency_swiftui" = "يوفر واجهات تعريفية للوحة القائمة ونافذة الإعدادات والسجلات والودجت.";
 "settings_dependency_appkit" = "يوفر تكامل شريط قوائم macOS والنوافذ المنبثقة والنوافذ وعناصر التحكم الأصلية.";

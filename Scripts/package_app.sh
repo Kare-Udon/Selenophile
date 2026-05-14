@@ -9,6 +9,8 @@ APP_NAME=${APP_NAME:-Selenophile}
 BUNDLE_ID=${BUNDLE_ID:-com.udon.selenophile}
 MACOS_MIN_VERSION=${MACOS_MIN_VERSION:-14.0}
 MENU_BAR_APP=${MENU_BAR_APP:-1}
+SPARKLE_FEED_URL=${SPARKLE_FEED_URL:-https://example.com/selenophile/appcast.xml}
+SPARKLE_PUBLIC_ED_KEY=${SPARKLE_PUBLIC_ED_KEY:-}
 SIGNING_MODE=${SIGNING_MODE:-}
 APP_IDENTITY=${APP_IDENTITY:-}
 
@@ -63,6 +65,17 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>LSMinimumSystemVersion</key><string>${MACOS_MIN_VERSION}</string>
     <key>LSUIElement</key><${LSUI_VALUE}/>
     <key>CFBundleIconFile</key><string>Icon</string>
+    <key>SUFeedURL</key><string>${SPARKLE_FEED_URL}</string>
+    <key>SUEnableAutomaticChecks</key><false/>
+PLIST
+
+if [[ -n "$SPARKLE_PUBLIC_ED_KEY" ]]; then
+  cat >> "$APP/Contents/Info.plist" <<PLIST
+    <key>SUPublicEDKey</key><string>${SPARKLE_PUBLIC_ED_KEY}</string>
+PLIST
+fi
+
+cat >> "$APP/Contents/Info.plist" <<PLIST
     <key>BuildTimestamp</key><string>${BUILD_TIMESTAMP}</string>
     <key>GitCommit</key><string>${GIT_COMMIT}</string>
 </dict>
@@ -139,16 +152,38 @@ if [[ ${#SWIFTPM_BUNDLES[@]} -gt 0 ]]; then
   done
 fi
 
-# Embed frameworks if any exist in the build folder.
+# Embed frameworks if any exist in the build folder or SwiftPM artifact cache.
+ensure_framework_rpath() {
+  local binary="$APP/Contents/MacOS/$APP_NAME"
+  if ! otool -l "$binary" | grep -q "@executable_path/../Frameworks"; then
+    install_name_tool -add_rpath "@executable_path/../Frameworks" "$binary"
+  fi
+}
+
+copy_framework_into_app() {
+  local framework="$1"
+  local name
+  name=$(basename "$framework")
+  rm -rf "$APP/Contents/Frameworks/$name"
+  ditto "$framework" "$APP/Contents/Frameworks/$name"
+  chmod -R a+rX "$APP/Contents/Frameworks/$name"
+  ensure_framework_rpath
+}
+
 FRAMEWORK_DIRS=(".build/$CONF" ".build/${ARCH_LIST[0]}-apple-macosx/$CONF")
 for dir in "${FRAMEWORK_DIRS[@]}"; do
   if compgen -G "${dir}/*.framework" >/dev/null; then
-    cp -R "${dir}/"*.framework "$APP/Contents/Frameworks/"
-    chmod -R a+rX "$APP/Contents/Frameworks"
-    install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/$APP_NAME"
-    break
+    for framework in "${dir}/"*.framework; do
+      copy_framework_into_app "$framework"
+    done
   fi
 done
+
+if [[ -d "$ROOT/.build/artifacts" ]]; then
+  while IFS= read -r -d '' framework; do
+    copy_framework_into_app "$framework"
+  done < <(find "$ROOT/.build/artifacts" -path "*/macos-*/*.framework" -type d -print0)
+fi
 
 if [[ -f "$ICON_TARGET" ]]; then
   cp "$ICON_TARGET" "$APP/Contents/Resources/Icon.icns"
@@ -184,16 +219,19 @@ else
   CODESIGN_ARGS=(--force --timestamp --options runtime --sign "$APP_IDENTITY")
 fi
 
-# Sign embedded frameworks and their nested binaries before the app bundle.
+# Sign embedded frameworks and their nested bundles before the app bundle.
 sign_frameworks() {
   local fw
   for fw in "$APP/Contents/Frameworks/"*.framework; do
     if [[ ! -d "$fw" ]]; then
       continue
     fi
+    while IFS= read -r -d '' nested_bundle; do
+      codesign "${CODESIGN_ARGS[@]}" "$nested_bundle"
+    done < <(find "$fw" -type d \( -name "*.xpc" -o -name "*.app" \) -print0)
     while IFS= read -r -d '' bin; do
       codesign "${CODESIGN_ARGS[@]}" "$bin"
-    done < <(find "$fw" -type f -perm -111 -print0)
+    done < <(find "$fw" -type f -perm -111 ! -path "*.xpc/*" ! -path "*.app/*" -print0)
     codesign "${CODESIGN_ARGS[@]}" "$fw"
   done
 }

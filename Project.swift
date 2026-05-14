@@ -3,9 +3,17 @@ import ProjectDescription
 let project = Project(
     name: "Selenophile",
     organizationName: "udon",
+    packages: [
+        .remote(
+            url: "https://github.com/sparkle-project/Sparkle",
+            requirement: .upToNextMajor(from: "2.9.1")
+        ),
+    ],
     settings: .settings(
         base: [
             "MACOSX_DEPLOYMENT_TARGET": "14.0",
+            "SPARKLE_FEED_URL": "https://example.com/selenophile/appcast.xml",
+            "SPARKLE_PUBLIC_ED_KEY": "",
         ]
     ),
     targets: [
@@ -28,12 +36,16 @@ let project = Project(
                 with: [
                     "LSUIElement": true,
                     "CFBundleDisplayName": "Selenophile",
+                    "SUFeedURL": "$(SPARKLE_FEED_URL)",
+                    "SUPublicEDKey": "$(SPARKLE_PUBLIC_ED_KEY)",
+                    "SUEnableAutomaticChecks": false,
                 ]
             ),
             sources: ["Sources/Selenophile/**"],
             resources: ["Sources/Selenophile/Resources/**"],
             dependencies: [
                 .target(name: "SelenophileKit"),
+                .package(product: "Sparkle", type: .runtime),
             ]
         ),
         .target(

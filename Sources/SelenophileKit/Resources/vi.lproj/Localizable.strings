@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "Phụ thuộc";
-"settings_about_dependencies_intro" = "Selenophile không dùng package Swift bên thứ ba khi chạy. Ứng dụng dựa trên framework của Apple, toolchain Swift, tích hợp Moonraker API và Tuist để tạo dự án.";
+"settings_updates_title" = "Cập nhật phần mềm";
+"settings_check_for_updates" = "Kiểm tra cập nhật…";
+"settings_about_dependencies_intro" = "Selenophile dựa trên framework của Apple, toolchain Swift, tích hợp Moonraker API, Sparkle cho cập nhật và Tuist để tạo dự án.";
+"settings_dependency_sparkle" = "Cung cấp kiểm tra cập nhật an toàn và phân phối dựa trên appcast.";
 "settings_dependency_swift" = "Cung cấp ngôn ngữ, thư viện chuẩn, package manifest và quy trình build/test bằng dòng lệnh.";
 "settings_dependency_swiftui" = "Cung cấp giao diện khai báo cho bảng menu, cửa sổ cài đặt, nhật ký và widget.";
 "settings_dependency_appkit" = "Cung cấp tích hợp thanh menu macOS, popover, cửa sổ và điều khiển gốc.";

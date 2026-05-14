@@ -11,6 +11,9 @@ let package = Package(
         .executable(name: "Selenophile", targets: ["Selenophile"]),
         .library(name: "SelenophileKit", targets: ["SelenophileKit"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.1"),
+    ],
     targets: [
         .target(
             name: "SelenophileKit",
@@ -21,7 +24,10 @@ let package = Package(
         ),
         .executableTarget(
             name: "Selenophile",
-            dependencies: ["SelenophileKit"],
+            dependencies: [
+                "SelenophileKit",
+                .product(name: "Sparkle", package: "Sparkle"),
+            ],
             path: "Sources/Selenophile",
             resources: [
                 .process("Resources")

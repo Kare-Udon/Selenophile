@@ -98,7 +98,10 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "சார்புகள்";
-"settings_about_dependencies_intro" = "Selenophile runtime-இல் third-party Swift package எதையும் பயன்படுத்தாது. இது Apple frameworks, Swift toolchain, Moonraker API integration மற்றும் project generation-க்கு Tuist ஆகியவற்றை அடிப்படையாகக் கொண்டது.";
+"settings_updates_title" = "மென்பொருள் புதுப்பிப்புகள்";
+"settings_check_for_updates" = "புதுப்பிப்புகளைச் சரிபார்…";
+"settings_about_dependencies_intro" = "Selenophile Apple frameworks, Swift toolchain, Moonraker API integration, updates-க்கு Sparkle மற்றும் project generation-க்கு Tuist ஆகியவற்றை அடிப்படையாகக் கொண்டது.";
+"settings_dependency_sparkle" = "பாதுகாப்பான update checks மற்றும் appcast-based distribution வழங்குகிறது.";
 "settings_dependency_swift" = "மொழி, standard library, package manifest மற்றும் command-line build/test workflow வழங்குகிறது.";
 "settings_dependency_swiftui" = "menu panel, settings window, logs மற்றும் widgets க்கான declarative views வழங்குகிறது.";
 "settings_dependency_appkit" = "macOS menu bar integration, popovers, windows மற்றும் native controls வழங்குகிறது.";

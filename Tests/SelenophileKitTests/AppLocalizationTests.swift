@@ -56,7 +56,8 @@ func appLocalizationProvidesAboutDependencyTranslationsForEveryLanguage() {
         .settingsDependencyWidgetKit,
         .settingsDependencyServiceManagement,
         .settingsDependencyMoonraker,
-        .settingsDependencyTuist
+        .settingsDependencyTuist,
+        .settingsDependencySparkle
     ]
     let translatedLanguages = AppLanguage.supportedSelections.filter {
         $0 != .system && $0 != .english

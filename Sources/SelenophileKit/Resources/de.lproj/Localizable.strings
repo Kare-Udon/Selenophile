@@ -98,7 +98,9 @@
 "log_message_column" = "Message";
 "menu_last_updated_prefix" = "Last updated";
 "settings_about_dependencies_title" = "Abhängigkeiten";
-"settings_about_dependencies_intro" = "Selenophile verwendet zur Laufzeit keine Swift-Pakete von Drittanbietern. Es basiert auf Apple-Frameworks, der Swift-Toolchain, der Moonraker-API-Integration und Tuist zur Projekterzeugung.";
+"settings_updates_title" = "Softwareupdates";
+"settings_check_for_updates" = "Nach Updates suchen…";
+"settings_about_dependencies_intro" = "Selenophile basiert auf Apple-Frameworks, der Swift-Toolchain, der Moonraker-API-Integration, Sparkle für Updates und Tuist zur Projekterzeugung.";
 "settings_dependency_swift" = "Stellt Sprache, Standardbibliothek, Paketmanifest sowie Build- und Testabläufe über die Kommandozeile bereit.";
 "settings_dependency_swiftui" = "Deklarative Ansichten für Menüleiste, Einstellungsfenster, Protokolle und Widgets.";
 "settings_dependency_appkit" = "macOS-Menüleistenintegration, Popover, Fenster und native Steuerelemente.";
@@ -106,3 +108,4 @@
 "settings_dependency_service_management" = "Steuert die Option Beim Anmelden öffnen über die macOS-Login-Item-APIs.";
 "settings_dependency_moonraker" = "Liefert Druckerstatus, Metadaten, Vorschaubilder und Kameradaten, die Selenophile verwendet.";
 "settings_dependency_tuist" = "Erzeugt und pflegt das Xcode-Projekt für App- und Widget-Paketierung.";
+"settings_dependency_sparkle" = "Ermöglicht sichere Updateprüfungen und appcast-basierte Verteilung.";
