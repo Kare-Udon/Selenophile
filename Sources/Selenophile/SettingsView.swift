@@ -307,7 +307,10 @@ struct SettingsView: View {
                     feedbackBanner(connectionTestFeedback)
                 }
 
-                if let error = store.displayErrorMessage, !error.isEmpty {
+                if let error = SettingsFeedbackPresentation.storeErrorMessage(
+                    store.displayErrorMessage,
+                    hasConnectionTestFeedback: connectionTestFeedback != nil
+                ) {
                     errorBanner(error)
                 }
             }
@@ -868,6 +871,17 @@ struct SettingsView: View {
 private struct ConnectionTestFeedback: Equatable {
     let message: String
     let isError: Bool
+}
+
+enum SettingsFeedbackPresentation {
+    static func storeErrorMessage(
+        _ message: String?,
+        hasConnectionTestFeedback: Bool
+    ) -> String? {
+        guard !hasConnectionTestFeedback else { return nil }
+        guard let message, !message.isEmpty else { return nil }
+        return message
+    }
 }
 
 private enum ConnectionProbeOutcome: Equatable {
