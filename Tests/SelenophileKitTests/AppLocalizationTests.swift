@@ -104,6 +104,29 @@ func appLocalizationLocalizesJapaneseConnectionStatusSurface() {
 }
 
 @Test
+func appLocalizationMapsCommonURLSessionConnectionFailures() {
+    let messages = [
+        "Could not connect to the server.",
+        "Unable to connect to the server.",
+        "The Internet connection appears to be offline.",
+        "A server with the specified hostname could not be found.",
+        "The network connection was lost.",
+        "The operation couldn’t be completed. Network is unreachable.",
+        "The operation couldn’t be completed. Not connected to the Internet.",
+        "Connection reset by peer.",
+        "The operation couldn’t be completed. (NSURLErrorDomain error -1011.)",
+        "bad server response"
+    ]
+
+    for message in messages {
+        #expect(
+            AppLocalization.localizedConnectionErrorMessage(message, language: .japanese)
+                == "Moonraker に接続できません。アドレス、ポート、ネットワークを確認してください。"
+        )
+    }
+}
+
+@Test
 func appLocalizationLoadsTranslationsFromEmbeddedResourceBundle() throws {
     let rootURL = FileManager.default.temporaryDirectory
         .appendingPathComponent(UUID().uuidString, isDirectory: true)

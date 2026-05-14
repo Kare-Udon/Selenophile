@@ -105,6 +105,26 @@ func userFacingStatusAndErrorAreTranslatedAfterRetryExhaustion() async {
 
 @MainActor
 @Test
+func displayErrorLocalizesCommonURLSessionFailures() {
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(
+                serverURLString: "http://printer.local:7125",
+                apiToken: nil,
+                appLanguage: .japanese
+            )
+        )
+    )
+
+    store.lastErrorMessage = "A server with the specified hostname could not be found."
+
+    #expect(store.displayErrorMessage(language: .japanese) == "Moonraker に接続できません。アドレス、ポート、ネットワークを確認してください。")
+    #expect(store.displayErrorMessage(language: .simplifiedChinese) == "无法连接到 Moonraker，请检查地址、端口或网络。")
+}
+
+@MainActor
+@Test
 func realtimeStatusRefreshPublishesEveryStatusUpdate() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
@@ -271,6 +291,30 @@ func fetchCameraSnapshotReportsFailure() async throws {
     #expect(store.cameraSnapshotErrorMessage(language: .japanese) == "先にアクセス可能なカメラスナップショット URL を入力してください。")
     #expect(store.cameraSnapshotErrorMessage(language: .simplifiedChinese) == "请先填写可访问的相机快照地址。")
     #expect(!store.isFetchingCameraSnapshot)
+}
+
+@MainActor
+@Test
+func fetchCameraSnapshotLocalizesRawNetworkFailureForDisplay() async throws {
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        cameraClient: StubMoonrakerCameraClient(snapshotResult: .failure(URLError(.notConnectedToInternet))),
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(
+                serverURLString: "http://printer.local:7125",
+                apiToken: nil,
+                cameraSnapshotURL: "http://camera.local/snapshot.jpg",
+                appLanguage: .japanese
+            )
+        )
+    )
+
+    let success = await store.fetchCameraSnapshot()
+
+    #expect(!success)
+    #expect(store.cameraSnapshotData == nil)
+    #expect(store.cameraSnapshotErrorMessage(language: .japanese) == "Moonraker に接続できません。アドレス、ポート、ネットワークを確認してください。")
+    #expect(store.cameraSnapshotErrorMessage(language: .simplifiedChinese) == "无法连接到 Moonraker，请检查地址、端口或网络。")
 }
 
 @MainActor

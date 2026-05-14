@@ -10,7 +10,11 @@ func appDelegatePublishesAndRefreshesWidgetSnapshots() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
         persistence: InMemoryMoonrakerConfigurationStore(
-            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+            configuration: MoonrakerConfiguration(
+                serverURLString: "http://printer.local:7125",
+                apiToken: nil,
+                appLanguage: .simplifiedChinese
+            )
         ),
         logStore: logStore
     )
@@ -20,7 +24,7 @@ func appDelegatePublishesAndRefreshesWidgetSnapshots() {
     let appDelegate = AppDelegate(
         logStore: logStore,
         store: store,
-        appLanguageStore: AppLanguageStore(),
+        appLanguageStore: AppLanguageStore(selectedLanguage: .simplifiedChinese),
         widgetSnapshotStore: widgetStore,
         widgetCenter: widgetCenter
     )

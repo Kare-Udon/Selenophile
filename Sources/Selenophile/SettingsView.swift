@@ -129,25 +129,16 @@ struct SettingsView: View {
 
         do {
             let validated = try configuration.validated()
-            let result = await MoonrakerConnectionProbe.test(
-                configuration: validated,
-                timeoutMessage: l10n(.settingsConnectionTestTimeout)
-            )
+            let result = await MoonrakerConnectionProbe.test(configuration: validated)
 
             switch result {
             case .success:
-                connectionTestFeedback = .init(
-                    message: l10n(.settingsConnectionTestSuccess),
-                    isError: false
-                )
-            case .failure(let message):
-                connectionTestFeedback = .init(message: message, isError: true)
+                connectionTestFeedback = .init(kind: .success)
+            case .failure(let reason):
+                connectionTestFeedback = .init(kind: .failure(reason))
             }
         } catch {
-            connectionTestFeedback = .init(
-                message: AppLocalization.localizedConnectionErrorDescription(error, language: uiLanguage),
-                isError: true
-            )
+            connectionTestFeedback = .init(kind: .failure(.message(error.localizedDescription)))
         }
     }
 
@@ -706,7 +697,7 @@ struct SettingsView: View {
     }
 
     private func errorBanner(_ error: String) -> some View {
-        feedbackBanner(.init(message: error, isError: true))
+        feedbackBanner(.init(kind: .failure(.message(error))))
     }
 
     private func feedbackBanner(_ feedback: ConnectionTestFeedback) -> some View {
@@ -714,7 +705,7 @@ struct SettingsView: View {
             Image(systemName: feedback.isError ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
                 .foregroundStyle(feedback.isError ? SelenophileTheme.Colors.danger : SelenophileTheme.Colors.success)
 
-            Text(feedback.message)
+            Text(feedback.message(language: uiLanguage))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(SelenophileTheme.Colors.primaryText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -872,11 +863,51 @@ struct SettingsView: View {
 }
 
 private struct ConnectionTestFeedback: Equatable {
-    let message: String
-    let isError: Bool
+    let kind: SettingsConnectionTestFeedback
+
+    var isError: Bool {
+        kind.isError
+    }
+
+    func message(language: AppLanguage) -> String {
+        SettingsFeedbackPresentation.connectionTestFeedbackMessage(kind, language: language)
+    }
+}
+
+enum SettingsConnectionTestFeedback: Equatable {
+    case success
+    case failure(ConnectionProbeFailure)
+
+    var isError: Bool {
+        switch self {
+        case .success:
+            return false
+        case .failure:
+            return true
+        }
+    }
+}
+
+enum ConnectionProbeFailure: Equatable {
+    case message(String)
+    case timeout
 }
 
 enum SettingsFeedbackPresentation {
+    static func connectionTestFeedbackMessage(
+        _ feedback: SettingsConnectionTestFeedback,
+        language: AppLanguage
+    ) -> String {
+        switch feedback {
+        case .success:
+            return AppLocalization.localizedString(.settingsConnectionTestSuccess, language: language)
+        case .failure(.timeout):
+            return AppLocalization.localizedString(.settingsConnectionTestTimeout, language: language)
+        case .failure(.message(let message)):
+            return AppLocalization.localizedConnectionErrorMessage(message, language: language)
+        }
+    }
+
     static func storeErrorMessage(
         _ message: String?,
         hasConnectionTestFeedback: Bool
@@ -889,7 +920,7 @@ enum SettingsFeedbackPresentation {
 
 private enum ConnectionProbeOutcome: Equatable {
     case success
-    case failure(String)
+    case failure(ConnectionProbeFailure)
 }
 
 @MainActor
@@ -1164,18 +1195,18 @@ private final class MoonrakerConnectionProbeRelay: @unchecked Sendable {
         case .connected:
             resolve(.success)
         case .failed(let message):
-            resolve(.failure(message))
+            resolve(.failure(.message(message)))
         case .disconnected(let reason):
             if let reason, !reason.isEmpty {
-                resolve(.failure(reason))
+                resolve(.failure(.message(reason)))
             }
         case .printerStatus, .printerStatusDelta:
             break
         }
     }
 
-    func timeout(message: String) {
-        resolve(.failure(message))
+    func timeout() {
+        resolve(.failure(.timeout))
     }
 
     private func resolve(_ result: ConnectionProbeOutcome) {
@@ -1194,7 +1225,6 @@ private final class MoonrakerConnectionProbeRelay: @unchecked Sendable {
 private enum MoonrakerConnectionProbe {
     static func test(
         configuration: MoonrakerValidatedConfiguration,
-        timeoutMessage: String,
         timeout: Duration = .seconds(4)
     ) async -> ConnectionProbeOutcome {
         let client = MoonrakerClient()
@@ -1211,7 +1241,7 @@ private enum MoonrakerConnectionProbe {
 
             Task {
                 try? await Task.sleep(for: timeout)
-                relay.timeout(message: timeoutMessage)
+                relay.timeout()
             }
         }
 

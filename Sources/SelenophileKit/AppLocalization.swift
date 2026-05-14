@@ -535,6 +535,29 @@ public enum AppLocalization {
             return localizedString(.cameraErrorNoSnapshotURL, language: language)
         case MoonrakerCameraError.invalidSnapshotResponse:
             return localizedString(.cameraErrorInvalidSnapshotResponse, language: language)
+        case let urlError as URLError:
+            return localizedConnectionErrorDescription(urlError, language: language)
+        default:
+            return localizedConnectionErrorMessage(error.localizedDescription, language: language)
+        }
+    }
+
+    public static func localizedConnectionErrorDescription(_ error: URLError, language: AppLanguage) -> String {
+        switch error.code {
+        case .timedOut:
+            return localizedString(.connectionErrorTimeout, language: language)
+        case .cancelled:
+            return localizedString(.connectionErrorCancelled, language: language)
+        case .cannotFindHost,
+                .cannotConnectToHost,
+                .networkConnectionLost,
+                .dnsLookupFailed,
+                .notConnectedToInternet,
+                .internationalRoamingOff,
+                .callIsActive,
+                .dataNotAllowed,
+                .badServerResponse:
+            return localizedString(.connectionErrorCannotConnect, language: language)
         default:
             return localizedConnectionErrorMessage(error.localizedDescription, language: language)
         }
@@ -560,8 +583,21 @@ public enum AppLocalization {
         }
         if normalized.contains("could not connect")
             || normalized.contains("cannot connect")
+            || normalized.contains("unable to connect")
+            || normalized.contains("internet connection appears to be offline")
+            || normalized.contains("not connected to the internet")
+            || normalized.contains("specified hostname could not be found")
+            || normalized.contains("network connection was lost")
             || normalized.contains("network is unreachable")
+            || normalized.contains("no route to host")
             || normalized.contains("connection refused")
+            || normalized.contains("connection reset")
+            || normalized.contains("bad server response")
+            || normalized.contains("nsurlerrordomain error -1003")
+            || normalized.contains("nsurlerrordomain error -1004")
+            || normalized.contains("nsurlerrordomain error -1005")
+            || normalized.contains("nsurlerrordomain error -1009")
+            || normalized.contains("nsurlerrordomain error -1011")
             || normalized.contains("无法连接到 moonraker")
         {
             return localizedString(.connectionErrorCannotConnect, language: language)

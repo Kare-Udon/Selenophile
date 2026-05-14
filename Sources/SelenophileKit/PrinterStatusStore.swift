@@ -368,7 +368,7 @@ public final class PrinterStatusStore {
             if let message = WidgetSnapshotFormatter.nonEmpty(printerStatus.message) {
                 return message
             }
-            if let message = WidgetSnapshotFormatter.nonEmpty(displayErrorMessage) {
+            if let message = WidgetSnapshotFormatter.nonEmpty(displayErrorMessage(language: language)) {
                 return message
             }
             switch connectionState {

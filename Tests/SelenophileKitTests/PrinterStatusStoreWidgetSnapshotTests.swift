@@ -143,6 +143,31 @@ func widgetSnapshotReflectsDisconnectedState() {
 
 @MainActor
 @Test
+func widgetSnapshotLocalizesRawURLSessionConnectionErrorSummary() {
+    let store = PrinterStatusStore(
+        client: NoopMoonrakerClient(),
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(
+                serverURLString: "http://printer.local:7125",
+                apiToken: nil,
+                appLanguage: .japanese
+            )
+        )
+    )
+
+    store.connectionState = .failed
+    store.lastErrorMessage = "The Internet connection appears to be offline."
+    store.printerStatus = PrinterStatus()
+
+    let snapshot = store.widgetSnapshot()
+
+    #expect(snapshot.statusLabel == "接続失敗")
+    #expect(snapshot.connectionLabel == "接続失敗")
+    #expect(snapshot.summary == "Moonraker に接続できません。アドレス、ポート、ネットワークを確認してください。")
+}
+
+@MainActor
+@Test
 func widgetSnapshotChangeCallbackEmitsUpdatedSnapshot() {
     let store = PrinterStatusStore(
         client: NoopMoonrakerClient(),
