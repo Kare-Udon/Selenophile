@@ -14,6 +14,7 @@ public protocol MoonrakerClientProtocol: Sendable {
         onEvent: @escaping @Sendable (MoonrakerClientEvent) -> Void
     ) async
     func disconnect() async
+    func fetchCurrentStatus(configuration: MoonrakerValidatedConfiguration) async throws -> PrinterStatus
     func rescanGCodeMetadata(
         configuration: MoonrakerValidatedConfiguration,
         filename: String
@@ -95,6 +96,34 @@ public actor MoonrakerClient: MoonrakerClientProtocol {
 
     public func disconnect() async {
         cleanupCurrentTask(notifyDisconnection: true, reason: "Disconnected")
+    }
+
+    public func fetchCurrentStatus(configuration: MoonrakerValidatedConfiguration) async throws -> PrinterStatus {
+        let queryURL = configuration.httpURL
+            .appendingPathComponent("printer")
+            .appendingPathComponent("objects")
+            .appendingPathComponent("query")
+        var request = URLRequest(url: queryURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let apiToken = configuration.apiToken {
+            request.setValue("Bearer \(apiToken)", forHTTPHeaderField: "Authorization")
+        }
+        request.httpBody = try encoder.encode(
+            MoonrakerObjectQueryRequest(objects: MoonrakerSubscriptionObjects.default)
+        )
+
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200..<300).contains(httpResponse.statusCode)
+        else {
+            throw URLError(.badServerResponse)
+        }
+        let result = try decoder.decode(MoonrakerResultEnvelope<SubscriptionResult>.self, from: data).result
+        guard let status = result.status?.printerStatus else {
+            throw URLError(.cannotParseResponse)
+        }
+        return status
     }
 
     public func rescanGCodeMetadata(
@@ -215,7 +244,7 @@ public actor MoonrakerClient: MoonrakerClientProtocol {
         let request = MoonrakerRequest.identify(
             id: nextRequestID(),
             clientName: AppConfig.appName,
-            version: "0.1.1",
+            version: "0.1.2",
             url: AppConfig.projectURL,
             accessToken: configuration.apiToken
         )
@@ -320,6 +349,10 @@ private enum MoonrakerSubscriptionObjects {
         "heater_bed": ["temperature", "target"],
         "gcode_move": ["speed_factor"],
     ]
+}
+
+private struct MoonrakerObjectQueryRequest: Encodable {
+    let objects: [String: [String]]
 }
 
 private struct MoonrakerRequest: Encodable {

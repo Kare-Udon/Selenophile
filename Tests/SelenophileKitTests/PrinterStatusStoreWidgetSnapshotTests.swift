@@ -216,7 +216,7 @@ func failedEventPublishesDangerToneSnapshot() {
 
     #expect(snapshots.count == 1)
     #expect(snapshots.first?.statusLabel == "连接失败")
-    #expect(snapshots.first?.connectionLabel == "连接失败")
+    #expect(snapshots.first?.connectionLabel == "重试中")
     #expect(snapshots.first?.tone == .danger)
 }
 
@@ -227,6 +227,10 @@ private actor NoopMoonrakerClient: MoonrakerClientProtocol {
     ) async {}
 
     func disconnect() async {}
+
+    func fetchCurrentStatus(configuration: MoonrakerValidatedConfiguration) async throws -> PrinterStatus {
+        PrinterStatus()
+    }
 
     func rescanGCodeMetadata(
         configuration: MoonrakerValidatedConfiguration,

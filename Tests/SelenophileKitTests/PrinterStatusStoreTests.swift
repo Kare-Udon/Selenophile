@@ -21,7 +21,8 @@ func connectingIgnoresIntentionalDisconnectPlaceholder() {
 
 @MainActor
 @Test
-func stopsAutoRetryAfterMaximumFailures() async {
+func automaticReconnectKeepsRetryingWithCappedBackoff() async {
+    let sleeper = ControlledSleeper()
     let client = ScriptedMoonrakerClient(eventsPerConnect: [
         [.failed("Connection timed out")],
         [.failed("Connection timed out")],
@@ -33,25 +34,39 @@ func stopsAutoRetryAfterMaximumFailures() async {
         persistence: InMemoryMoonrakerConfigurationStore(
             configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
         ),
-        retryPolicy: MoonrakerRetryPolicy(maxAttempts: 3, delay: { _ in .zero }),
-        sleep: { _ in }
+        retryPolicy: MoonrakerRetryPolicy(delays: [.seconds(30), .seconds(60), .seconds(300)]),
+        sleep: { duration in
+            await sleeper.sleep(for: duration)
+        }
     )
 
     store.start()
-    try? await Task.sleep(for: .milliseconds(100))
+    await sleeper.waitForPendingSleepCount(1)
+    #expect(await client.connectCallCount() == 1)
+    #expect(await sleeper.pendingDurations() == [.seconds(30)])
 
+    await sleeper.resumeAll()
+    await sleeper.waitForPendingSleepCount(1)
+    #expect(await client.connectCallCount() == 2)
+    #expect(await sleeper.pendingDurations() == [.seconds(60)])
+
+    await sleeper.resumeAll()
+    await sleeper.waitForPendingSleepCount(1)
     #expect(await client.connectCallCount() == 3)
-    #expect(store.connectionState == .failed)
-    #expect(store.isWaitingForManualReconnect)
-    #expect(store.retryAttemptCount == 3)
+    #expect(await sleeper.pendingDurations() == [.seconds(300)])
+
+    await sleeper.resumeAll()
+    await sleeper.waitForPendingSleepCount(1)
+    #expect(await client.connectCallCount() == 4)
+    #expect(await sleeper.pendingDurations() == [.seconds(300)])
+    #expect(!store.isWaitingForManualReconnect)
 }
 
 @MainActor
 @Test
 func manualReconnectResetsRetryBudget() async {
+    let sleeper = ControlledSleeper()
     let client = ScriptedMoonrakerClient(eventsPerConnect: [
-        [.failed("Connection timed out")],
-        [.failed("Connection timed out")],
         [.failed("Connection timed out")],
         [.connected],
     ])
@@ -60,18 +75,21 @@ func manualReconnectResetsRetryBudget() async {
         persistence: InMemoryMoonrakerConfigurationStore(
             configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
         ),
-        retryPolicy: MoonrakerRetryPolicy(maxAttempts: 3, delay: { _ in .zero }),
-        sleep: { _ in }
+        retryPolicy: MoonrakerRetryPolicy(delays: [.seconds(30), .seconds(60), .seconds(300)]),
+        statusSnapshotRefreshInterval: nil,
+        sleep: { duration in
+            await sleeper.sleep(for: duration)
+        }
     )
 
     store.start()
-    try? await Task.sleep(for: .milliseconds(100))
-    #expect(store.isWaitingForManualReconnect)
+    await sleeper.waitForPendingSleepCount(1)
+    #expect(store.retryAttemptCount == 1)
 
     store.reconnectNow()
     try? await Task.sleep(for: .milliseconds(100))
 
-    #expect(await client.connectCallCount() == 4)
+    #expect(await client.connectCallCount() == 2)
     #expect(store.connectionState == .connected)
     #expect(!store.isWaitingForManualReconnect)
     #expect(store.retryAttemptCount == 0)
@@ -79,7 +97,8 @@ func manualReconnectResetsRetryBudget() async {
 
 @MainActor
 @Test
-func userFacingStatusAndErrorAreTranslatedAfterRetryExhaustion() async {
+func userFacingStatusAndErrorAreTranslatedWhileAutomaticRetryContinues() async {
+    let sleeper = ControlledSleeper()
     let client = ScriptedMoonrakerClient(eventsPerConnect: [
         [.failed("The data couldn’t be read because it isn’t in the correct format.")]
     ])
@@ -88,18 +107,20 @@ func userFacingStatusAndErrorAreTranslatedAfterRetryExhaustion() async {
         persistence: InMemoryMoonrakerConfigurationStore(
             configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
         ),
-        retryPolicy: MoonrakerRetryPolicy(maxAttempts: 1, delay: { _ in .zero }),
-        sleep: { _ in }
+        retryPolicy: MoonrakerRetryPolicy(delays: [.seconds(30)]),
+        sleep: { duration in
+            await sleeper.sleep(for: duration)
+        }
     )
 
     store.start()
-    try? await Task.sleep(for: .milliseconds(100))
+    await sleeper.waitForPendingSleepCount(1)
 
-    #expect(store.connectionBadgeLabel(language: .simplifiedChinese) == "需要处理")
-    #expect(store.connectionStatusSummary(language: .simplifiedChinese) == "自动重试已停止，请手动重连")
+    #expect(store.connectionBadgeLabel(language: .simplifiedChinese) == "重试中")
+    #expect(store.connectionStatusSummary(language: .simplifiedChinese).contains("30 秒后重试"))
     #expect(store.displayErrorMessage(language: .simplifiedChinese) == "Moonraker 返回的数据格式与当前解析规则不一致。")
-    #expect(store.connectionBadgeLabel(language: .japanese) == "要対応")
-    #expect(store.connectionStatusSummary(language: .japanese) == "自動再試行は停止しました。手動で再接続してください。")
+    #expect(store.connectionBadgeLabel(language: .japanese) == "再試行中")
+    #expect(store.connectionStatusSummary(language: .japanese).contains("30 秒後に再試行"))
     #expect(store.displayErrorMessage(language: .japanese) == "Moonraker から返されたデータが現在の解析ルールと一致しません。")
 }
 
@@ -147,6 +168,108 @@ func realtimeStatusRefreshPublishesEveryStatusUpdate() {
     #expect(store.printerStatus.progress == 0.2)
     #expect(snapshots.count == 2)
     #expect(snapshots.last?.progressLabel == "20%")
+}
+
+@MainActor
+@Test
+func connectedStoreFetchesFullStatusSnapshotImmediately() async {
+    let sleeper = ControlledSleeper()
+    let client = ScriptedMoonrakerClient(
+        eventsPerConnect: [[.connected]],
+        statusSnapshots: [
+            PrinterStatus(state: .printing, filename: "benchy.gcode", progress: 0.12)
+        ]
+    )
+    let store = PrinterStatusStore(
+        client: client,
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        ),
+        statusSnapshotRefreshInterval: .seconds(60),
+        sleep: { duration in
+            await sleeper.sleep(for: duration)
+        }
+    )
+
+    store.start()
+    await sleeper.waitForPendingSleepCount(1)
+
+    #expect(await client.fetchCurrentStatusCallCount() == 1)
+    #expect(store.printerStatus.state == .printing)
+    #expect(store.printerStatus.filename == "benchy.gcode")
+    #expect(store.printerStatus.progress == 0.12)
+}
+
+@MainActor
+@Test
+func connectedStorePeriodicallyFetchesFullStatusSnapshot() async {
+    let sleeper = ControlledSleeper()
+    let client = ScriptedMoonrakerClient(
+        eventsPerConnect: [[.connected]],
+        statusSnapshots: [
+            PrinterStatus(state: .standby),
+            PrinterStatus(state: .printing, filename: "benchy.gcode", progress: 0.25)
+        ]
+    )
+    let store = PrinterStatusStore(
+        client: client,
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        ),
+        statusSnapshotRefreshInterval: .seconds(60),
+        sleep: { duration in
+            await sleeper.sleep(for: duration)
+        }
+    )
+
+    store.start()
+    await sleeper.waitForPendingSleepCount(1)
+    #expect(await client.fetchCurrentStatusCallCount() == 1)
+    #expect(await sleeper.pendingDurations() == [.seconds(60)])
+    #expect(store.printerStatus.state == .standby)
+
+    await sleeper.resumeAll()
+    await sleeper.waitForPendingSleepCount(1)
+
+    #expect(await client.fetchCurrentStatusCallCount() == 2)
+    #expect(await sleeper.pendingDurations() == [.seconds(60)])
+    #expect(store.printerStatus.state == .printing)
+    #expect(store.printerStatus.filename == "benchy.gcode")
+    #expect(store.printerStatus.progress == 0.25)
+}
+
+@MainActor
+@Test
+func disconnectedStoreDoesNotRunPeriodicFullStatusRefresh() async {
+    let sleeper = ControlledSleeper()
+    let client = ScriptedMoonrakerClient(
+        eventsPerConnect: [[.connected]],
+        statusSnapshots: [
+            PrinterStatus(state: .printing, filename: "benchy.gcode", progress: 0.25)
+        ]
+    )
+    let store = PrinterStatusStore(
+        client: client,
+        persistence: InMemoryMoonrakerConfigurationStore(
+            configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
+        ),
+        retryPolicy: MoonrakerRetryPolicy(delays: [.seconds(30)]),
+        statusSnapshotRefreshInterval: .seconds(60),
+        sleep: { duration in
+            await sleeper.sleep(for: duration)
+        }
+    )
+
+    store.start()
+    await sleeper.waitForPendingSleepCount(1)
+
+    #expect(await client.fetchCurrentStatusCallCount() == 1)
+    store.handle(event: .disconnected("Network lost"))
+    await sleeper.resumeFirst(matching: .seconds(60))
+
+    #expect(await client.fetchCurrentStatusCallCount() == 1)
+    #expect(store.connectionState == .disconnected)
+    #expect(await sleeper.pendingDurations() == [.seconds(30)])
 }
 
 @MainActor
@@ -222,7 +345,8 @@ func disconnectDoesNotScheduleReconnectForClientDisconnectedEvent() async {
         persistence: InMemoryMoonrakerConfigurationStore(
             configuration: MoonrakerConfiguration(serverURLString: "http://printer.local:7125", apiToken: nil)
         ),
-        retryPolicy: MoonrakerRetryPolicy(maxAttempts: 3, delay: { _ in .zero }),
+        retryPolicy: MoonrakerRetryPolicy(delays: [.zero, .zero, .zero]),
+        statusSnapshotRefreshInterval: nil,
         sleep: { _ in }
     )
 
@@ -445,7 +569,7 @@ func thumbnailMetadataRescansWhenInitialMetadataHasNoThumbnail() async {
         )
     )
 
-    try? await Task.sleep(for: .milliseconds(100))
+    await waitUntil { store.currentPrintThumbnailData == thumbnailData }
 
     #expect(store.currentPrintThumbnailData == thumbnailData)
     #expect(await client.rescanCallCount() == 1)
@@ -554,7 +678,7 @@ func thumbnailMetadataStopsAfterMaxRetriesAndManualRetryResumes() async {
     )
 
     store.handle(event: .printerStatus(status))
-    try? await Task.sleep(for: .milliseconds(100))
+    await waitUntil { store.isWaitingForManualCurrentPrintThumbnailRetry }
 
     #expect(store.currentPrintThumbnailData == nil)
     #expect(store.isWaitingForManualCurrentPrintThumbnailRetry)
@@ -566,7 +690,7 @@ func thumbnailMetadataStopsAfterMaxRetriesAndManualRetryResumes() async {
     #expect(await client.rescanCallCount() == 1)
 
     store.retryCurrentPrintThumbnail()
-    try? await Task.sleep(for: .milliseconds(100))
+    await waitUntil { store.currentPrintThumbnailData == thumbnailData }
 
     #expect(store.currentPrintThumbnailData == thumbnailData)
     #expect(!store.isWaitingForManualCurrentPrintThumbnailRetry)
@@ -623,7 +747,8 @@ func saveConfigurationAndConnectionFailuresAreLogged() async {
     let store = PrinterStatusStore(
         client: client,
         persistence: InMemoryMoonrakerConfigurationStore(),
-        retryPolicy: MoonrakerRetryPolicy(maxAttempts: 1, delay: { _ in .zero }),
+        retryPolicy: MoonrakerRetryPolicy(delays: []),
+        statusSnapshotRefreshInterval: nil,
         sleep: { _ in },
         logStore: logStore
     )
@@ -648,6 +773,10 @@ private actor NoopMoonrakerClient: MoonrakerClientProtocol {
     ) async {}
 
     func disconnect() async {}
+
+    func fetchCurrentStatus(configuration: MoonrakerValidatedConfiguration) async throws -> PrinterStatus {
+        PrinterStatus()
+    }
 
     func rescanGCodeMetadata(
         configuration: MoonrakerValidatedConfiguration,
@@ -687,6 +816,10 @@ private actor DisconnectEmittingMoonrakerClient: MoonrakerClientProtocol {
     func disconnect() async {
         disconnectCalls += 1
         eventHandler?(.disconnected("Disconnected"))
+    }
+
+    func fetchCurrentStatus(configuration: MoonrakerValidatedConfiguration) async throws -> PrinterStatus {
+        PrinterStatus()
     }
 
     func rescanGCodeMetadata(
@@ -769,9 +902,11 @@ private final class RecordingMoonrakerConfigurationStore: MoonrakerConfiguration
 
 private actor ControlledSleeper {
     private var continuations: [CheckedContinuation<Void, Never>] = []
+    private var durations: [Duration] = []
 
     func sleep(for duration: Duration) async {
         await withCheckedContinuation { continuation in
+            durations.append(duration)
             continuations.append(continuation)
         }
     }
@@ -785,7 +920,19 @@ private actor ControlledSleeper {
     func resumeAll() {
         let pending = continuations
         continuations.removeAll()
+        durations.removeAll()
         pending.forEach { $0.resume() }
+    }
+
+    func resumeFirst(matching duration: Duration) {
+        guard let index = durations.firstIndex(of: duration) else { return }
+        let continuation = continuations.remove(at: index)
+        durations.remove(at: index)
+        continuation.resume()
+    }
+
+    func pendingDurations() -> [Duration] {
+        durations
     }
 }
 
@@ -797,20 +944,34 @@ private extension NSLock {
     }
 }
 
+@MainActor
+private func waitUntil(_ condition: @MainActor () -> Bool) async {
+    for _ in 0..<50 {
+        if condition() {
+            return
+        }
+        try? await Task.sleep(for: .milliseconds(20))
+    }
+}
+
 private actor ScriptedMoonrakerClient: MoonrakerClientProtocol {
     private let eventsPerConnect: [[MoonrakerClientEvent]]
+    private let statusSnapshots: [PrinterStatus]
     private let metadataSequencesByFilename: [String: [MoonrakerFileMetadata]]
     private let thumbnailDataByPath: [String: Data]
     private var connectCalls = 0
+    private var statusSnapshotFetches = 0
     private var rescanCalls = 0
     private var metadataFetchCounts: [String: Int] = [:]
 
     init(
         eventsPerConnect: [[MoonrakerClientEvent]],
+        statusSnapshots: [PrinterStatus] = [],
         metadataSequencesByFilename: [String: [MoonrakerFileMetadata]] = [:],
         thumbnailDataByPath: [String: Data] = [:]
     ) {
         self.eventsPerConnect = eventsPerConnect
+        self.statusSnapshots = statusSnapshots
         self.metadataSequencesByFilename = metadataSequencesByFilename
         self.thumbnailDataByPath = thumbnailDataByPath
     }
@@ -828,6 +989,14 @@ private actor ScriptedMoonrakerClient: MoonrakerClientProtocol {
     }
 
     func disconnect() async {}
+
+    func fetchCurrentStatus(configuration: MoonrakerValidatedConfiguration) async throws -> PrinterStatus {
+        defer { statusSnapshotFetches += 1 }
+        guard !statusSnapshots.isEmpty else {
+            return PrinterStatus()
+        }
+        return statusSnapshots[min(statusSnapshotFetches, statusSnapshots.count - 1)]
+    }
 
     func rescanGCodeMetadata(
         configuration: MoonrakerValidatedConfiguration,
@@ -859,6 +1028,10 @@ private actor ScriptedMoonrakerClient: MoonrakerClientProtocol {
 
     func connectCallCount() -> Int {
         connectCalls
+    }
+
+    func fetchCurrentStatusCallCount() -> Int {
+        statusSnapshotFetches
     }
 
     func rescanCallCount() -> Int {

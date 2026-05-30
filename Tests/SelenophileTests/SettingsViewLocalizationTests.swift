@@ -160,6 +160,10 @@ private actor SettingsViewLocalizationNoopClient: MoonrakerClientProtocol {
 
     func disconnect() async {}
 
+    func fetchCurrentStatus(configuration: MoonrakerValidatedConfiguration) async throws -> PrinterStatus {
+        PrinterStatus()
+    }
+
     func rescanGCodeMetadata(
         configuration: MoonrakerValidatedConfiguration,
         filename: String

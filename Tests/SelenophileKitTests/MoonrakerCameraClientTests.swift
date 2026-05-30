@@ -147,6 +147,59 @@ func fetchGCodeMetadataUsesMetadataEndpoint() async throws {
 }
 
 @Test
+func fetchCurrentStatusUsesPrinterObjectsQueryEndpoint() async throws {
+    try await URLProtocolStub.withExclusiveAccess {
+        let session = makeURLSession()
+        let client = MoonrakerClient(session: session)
+        let configuration = MoonrakerValidatedConfiguration(
+            httpURL: URL(string: "http://printer.local:7125")!,
+            webSocketURL: URL(string: "ws://printer.local:7125/websocket")!,
+            apiToken: "secret",
+            cameraSnapshotURL: nil
+        )
+        await URLProtocolStub.setResponses([
+            .init(
+                url: URL(string: "http://printer.local:7125/printer/objects/query")!,
+                statusCode: 200,
+                headers: ["Content-Type": "application/json"],
+                body: Data(
+                    """
+                    {
+                      "result": {
+                        "eventtime": 1234.5,
+                        "status": {
+                          "print_stats": {
+                            "state": "printing",
+                            "filename": "benchy.gcode",
+                            "message": "Layer 3"
+                          },
+                          "display_status": {
+                            "progress": 0.25,
+                            "message": "Printing"
+                          }
+                        }
+                      }
+                    }
+                    """.utf8
+                )
+            ),
+        ])
+
+        let status = try await client.fetchCurrentStatus(configuration: configuration)
+        let requests = await URLProtocolStub.requests()
+
+        #expect(status.state == .printing)
+        #expect(status.filename == "benchy.gcode")
+        #expect(status.progress == 0.25)
+        #expect(requests.count == 1)
+        #expect(requests[0].httpMethod == "POST")
+        #expect(requests[0].url == URL(string: "http://printer.local:7125/printer/objects/query"))
+        #expect(requests[0].value(forHTTPHeaderField: "Authorization") == "Bearer secret")
+        #expect(requests[0].value(forHTTPHeaderField: "Content-Type") == "application/json")
+    }
+}
+
+@Test
 func rescanGCodeMetadataUsesPostMetascanEndpoint() async throws {
     try await URLProtocolStub.withExclusiveAccess {
         let session = makeURLSession()

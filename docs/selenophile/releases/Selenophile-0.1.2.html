@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Selenophile 0.1.2 Release Notes</title>
+</head>
+<body>
+  <h1>Selenophile 0.1.2</h1>
+  <p>Selenophile 0.1.2 improves Moonraker connection resilience so the menu bar status can recover when a printer starts a job while the app is idle or reconnecting.</p>
+  <h2>Highlights</h2>
+  <ul>
+    <li>Keep automatic reconnect attempts running with capped 30 second, 1 minute, and 5 minute backoff intervals.</li>
+    <li>Poll Moonraker's current object status while connected so silent printer-state changes are detected within the regular refresh window.</li>
+    <li>Update the UI and widget snapshot when a full status refresh discovers a newly active print.</li>
+    <li>Keep the connection badge in a retrying state while an automatic reconnect is scheduled.</li>
+    <li>Add regression coverage for reconnect backoff, periodic status snapshots, and Moonraker object-query parsing.</li>
+  </ul>
+  <h2>Current Limitations</h2>
+  <ul>
+    <li>This beta still focuses on monitoring. It does not upload G-code, start prints, pause, resume, cancel prints, or modify Klipper configuration.</li>
+    <li>The local release build is ad-hoc signed and is not notarized with a Developer ID certificate.</li>
+  </ul>
+</body>
+</html>

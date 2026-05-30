@@ -3,6 +3,20 @@
     <channel>
         <title>Selenophile</title>
         <item>
+            <title>0.1.2</title>
+            <pubDate>Sat, 30 May 2026 11:35:07 +0800</pubDate>
+            <sparkle:version>3</sparkle:version>
+            <sparkle:shortVersionString>0.1.2</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <sparkle:releaseNotesLink>https://kare-udon.github.io/Selenophile/selenophile/releases/Selenophile-0.1.2.html</sparkle:releaseNotesLink>
+            <enclosure url="https://github.com/Kare-Udon/Selenophile/releases/download/v0.1.2/Selenophile-0.1.2.dmg" length="4186524" type="application/octet-stream" sparkle:edSignature="ii8RQc/umbBcWa91Ia/MCcz+O33vQPdhkoP1B9JXUTzaJqhxwUQm+Wkg9IoH6wt39BFiS+49voO1+kRfZTf3CQ=="/>
+            <sparkle:deltas>
+                <enclosure url="https://kare-udon.github.io/Selenophile/selenophile/Selenophile3-2.delta" sparkle:deltaFrom="2" length="135478" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977616" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="+XBLHz3XhRTyFsKenrlgctcQj2bhE91a2tSMVEI9938h1yxq9fZ8d+hLrgAYulMd+KalgI4Un9gXfIgppGNiCQ=="/>
+                <enclosure url="https://kare-udon.github.io/Selenophile/selenophile/Selenophile3-1.delta" sparkle:deltaFrom="1" length="222758" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977616" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="ji6achQwgO+KY56rwUWbMMPbNCDr0j5voiBiO1204davPgaxgiIQN3sJgfcMRV39jYOo+xVATvPQH/iglao6Dw=="/>
+            </sparkle:deltas>
+        </item>
+        <item>
             <title>0.1.1</title>
             <pubDate>Thu, 14 May 2026 19:56:04 +0800</pubDate>
             <sparkle:version>2</sparkle:version>

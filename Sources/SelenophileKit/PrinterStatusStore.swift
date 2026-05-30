@@ -2,27 +2,37 @@ import Foundation
 import Observation
 
 public struct MoonrakerRetryPolicy: Sendable {
-    public var maxAttempts: Int
-    public var delay: @Sendable (_ attempt: Int) -> Duration
+    public var delays: [Duration]
 
     public init(
-        maxAttempts: Int = 3,
-        delay: @escaping @Sendable (_ attempt: Int) -> Duration = { attempt in
-            Self.defaultDelay(attempt: attempt)
-        }
+        delays: [Duration] = [.seconds(30), .seconds(60), .seconds(300)]
     ) {
-        self.maxAttempts = maxAttempts
-        self.delay = delay
+        self.delays = delays
+    }
+
+    public func delay(for failureCount: Int) -> Duration {
+        guard !delays.isEmpty else { return .zero }
+        let index = min(max(failureCount - 1, 0), delays.count - 1)
+        return delays[index]
+    }
+
+    public func displayAttempt(for failureCount: Int) -> Int {
+        guard !delays.isEmpty else { return 1 }
+        return min(max(failureCount, 1), delays.count)
+    }
+
+    public var displayAttemptLimit: Int {
+        max(delays.count, 1)
     }
 
     public static func defaultDelay(attempt: Int) -> Duration {
         switch attempt {
         case 1:
-            return .seconds(2)
+            return .seconds(30)
         case 2:
-            return .seconds(4)
+            return .seconds(60)
         default:
-            return .seconds(8)
+            return .seconds(300)
         }
     }
 }
@@ -165,10 +175,12 @@ public final class PrinterStatusStore {
     private let persistence: MoonrakerConfigurationPersisting
     private let statusRefreshPolicyPersistence: any PrinterStatusRefreshPolicyPersisting
     private let retryPolicy: MoonrakerRetryPolicy
+    private let statusSnapshotRefreshInterval: Duration?
     private let currentPrintThumbnailRetryLimit: Int
     private let sleep: @Sendable (Duration) async -> Void
     private var connectTask: Task<Void, Never>?
     private var reconnectTask: Task<Void, Never>?
+    private var statusSnapshotRefreshTask: Task<Void, Never>?
     private var metadataFetchTask: Task<Void, Never>?
     private var metadataFetchFilename: String?
     private var metadataFetchToken: UUID?
@@ -187,6 +199,7 @@ public final class PrinterStatusStore {
         statusRefreshPolicy: PrinterStatusRefreshPolicy? = nil,
         statusRefreshPolicyPersistence: any PrinterStatusRefreshPolicyPersisting = UserDefaultsPrinterStatusRefreshPolicyStore(),
         retryPolicy: MoonrakerRetryPolicy = MoonrakerRetryPolicy(),
+        statusSnapshotRefreshInterval: Duration? = .seconds(60),
         currentPrintThumbnailRetryLimit: Int = 3,
         sleep: @escaping @Sendable (Duration) async -> Void = { duration in
             try? await Task.sleep(for: duration)
@@ -200,6 +213,7 @@ public final class PrinterStatusStore {
         self.statusRefreshPolicyPersistence = statusRefreshPolicyPersistence
         self.statusRefreshPolicy = statusRefreshPolicy ?? statusRefreshPolicyPersistence.load()
         self.retryPolicy = retryPolicy
+        self.statusSnapshotRefreshInterval = statusSnapshotRefreshInterval
         self.currentPrintThumbnailRetryLimit = currentPrintThumbnailRetryLimit
         self.sleep = sleep
         self.configuration = persistence.load()
@@ -234,6 +248,9 @@ public final class PrinterStatusStore {
     public func connectionBadgeLabel(language: AppLanguage) -> String {
         if isWaitingForManualReconnect {
             return localized(.menuConnectionBadgeNeedsAttention, language: language)
+        }
+        if nextRetryAt != nil {
+            return localized(.menuConnectionBadgeRetrying, language: language)
         }
 
         switch connectionState {
@@ -489,10 +506,12 @@ public final class PrinterStatusStore {
         reconnectTask?.cancel()
         metadataFetchTask?.cancel()
         statusPublishTask?.cancel()
+        statusSnapshotRefreshTask?.cancel()
         connectTask = nil
         reconnectTask = nil
         metadataFetchTask = nil
         statusPublishTask = nil
+        statusSnapshotRefreshTask = nil
         lastStatusPublishedAt = nil
         metadataFetchFilename = nil
         metadataFetchToken = nil
@@ -567,8 +586,10 @@ public final class PrinterStatusStore {
         reconnectTask?.cancel()
         metadataFetchTask?.cancel()
         statusPublishTask?.cancel()
+        statusSnapshotRefreshTask?.cancel()
         metadataFetchTask = nil
         statusPublishTask = nil
+        statusSnapshotRefreshTask = nil
         lastStatusPublishedAt = nil
         metadataFetchFilename = nil
         metadataFetchToken = nil
@@ -617,13 +638,10 @@ public final class PrinterStatusStore {
             isWaitingForManualReconnect = false
             log(.info, "Moonraker connected")
             emitWidgetSnapshot()
+            startStatusSnapshotRefreshLoop()
         case .printerStatus(let status):
-            let previousStatus = livePrinterStatus
-            livePrinterStatus = status
-            liveLastUpdatedAt = Date()
+            applyStatusSnapshot(status)
             logStatusUpdate(status)
-            refreshPrintAssetsIfNeeded(for: livePrinterStatus)
-            publishStatusUpdate(previousStatus: previousStatus)
         case .printerStatusDelta(let delta):
             let previousStatus = livePrinterStatus
             livePrinterStatus = livePrinterStatus.applying(delta: delta)
@@ -642,6 +660,8 @@ public final class PrinterStatusStore {
                 emitWidgetSnapshot()
                 return
             }
+            statusSnapshotRefreshTask?.cancel()
+            statusSnapshotRefreshTask = nil
             connectionState = configuration == nil ? .unconfigured : .disconnected
             if let message {
                 lastErrorMessage = message
@@ -651,6 +671,8 @@ public final class PrinterStatusStore {
             }
             scheduleReconnectIfPossible()
         case .failed(let message):
+            statusSnapshotRefreshTask?.cancel()
+            statusSnapshotRefreshTask = nil
             connectionState = .failed
             lastErrorMessage = message
             log(.error, "Connection failed: \(message)")
@@ -665,20 +687,10 @@ public final class PrinterStatusStore {
         let failureCount = retryAttemptCount + 1
         retryAttemptCount = failureCount
 
-        guard failureCount < retryPolicy.maxAttempts else {
-            reconnectTask?.cancel()
-            reconnectTask = nil
-            nextRetryAt = nil
-            isWaitingForManualReconnect = true
-            log(.error, "Automatic reconnect stopped after \(retryPolicy.maxAttempts) attempts")
-            emitWidgetSnapshot()
-            return
-        }
-
         reconnectTask?.cancel()
-        let delay = retryPolicy.delay(failureCount)
+        let delay = retryPolicy.delay(for: failureCount)
         nextRetryAt = Date().addingTimeInterval(delay.timeInterval)
-        log(.warning, "Automatic reconnect scheduled in \(Int(delay.timeInterval.rounded())) seconds (\(failureCount)/\(retryPolicy.maxAttempts))")
+        log(.warning, "Automatic reconnect scheduled in \(Int(delay.timeInterval.rounded())) seconds")
         emitWidgetSnapshot()
         reconnectTask = Task { [weak self] in
             await self?.sleep(delay)
@@ -715,9 +727,45 @@ public final class PrinterStatusStore {
             locale: AppLocalization.locale(for: language),
             prefix,
             remaining,
-            retryAttemptCount,
-            retryPolicy.maxAttempts
+            retryPolicy.displayAttempt(for: retryAttemptCount),
+            retryPolicy.displayAttemptLimit
         )
+    }
+
+    private func startStatusSnapshotRefreshLoop() {
+        statusSnapshotRefreshTask?.cancel()
+        guard let statusSnapshotRefreshInterval else { return }
+        statusSnapshotRefreshTask = Task { [weak self] in
+            await self?.fetchCurrentStatusSnapshot()
+            while !Task.isCancelled {
+                await self?.sleep(statusSnapshotRefreshInterval)
+                guard !Task.isCancelled else { return }
+                await self?.fetchCurrentStatusSnapshot()
+            }
+        }
+    }
+
+    private func fetchCurrentStatusSnapshot() async {
+        guard connectionState == .connected else { return }
+        guard let configuration else { return }
+        do {
+            let validated = try configuration.validated()
+            let status = try await client.fetchCurrentStatus(configuration: validated)
+            guard !Task.isCancelled else { return }
+            applyStatusSnapshot(status)
+            logStatusUpdate(status)
+        } catch {
+            guard !Task.isCancelled else { return }
+            log(.warning, "Full status refresh failed: \(AppLogStore.diagnosticDescription(for: error))")
+        }
+    }
+
+    private func applyStatusSnapshot(_ status: PrinterStatus) {
+        let previousStatus = livePrinterStatus
+        livePrinterStatus = status
+        liveLastUpdatedAt = Date()
+        refreshPrintAssetsIfNeeded(for: livePrinterStatus)
+        publishStatusUpdate(previousStatus: previousStatus)
     }
 
     private func publishStatusUpdate(previousStatus: PrinterStatus) {
